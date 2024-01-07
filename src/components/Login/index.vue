@@ -29,6 +29,7 @@
             v-model="loginFormData.password"
             style="width: 100%"
             placeholder="请输入密码"
+            type="password"
           />
           <template v-if="!isLoginByPassword">
             <el-button
