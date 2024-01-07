@@ -61,3 +61,16 @@
   text-overflow: ellipsis;
   overflow: hidden;
 }
+
+.el-button {
+  font-size: 12px;
+  color: #fff;
+  background-color: #ff3a3a;
+  border-radius: 20px;
+  transition: 0s;
+}
+
+.el-button:focus, .el-button:hover {
+  color: #fff;
+  background-color: #ff3a3a;
+}

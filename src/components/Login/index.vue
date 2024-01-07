@@ -16,14 +16,23 @@
         <el-form-item prop="phone">
           <el-input v-model="loginFormData.phone" placeholder="请输入手机号" style="width: 100%" />
         </el-form-item>
-        <el-form-item prop="captcha">
+        <el-form-item>
           <el-input v-model="loginFormData.captcha" style="width: 65%;margin-right: 10px" placeholder="请输入短信验证码" />
-          <el-button style="width: calc(35% - 10px);">
+          <el-button
+            v-if="!isSentCaptcha"
+            ref="getcaptcha"
+            style="width: calc(35% - 10px);"
+            :disabled="!isPhone"
+            @click="getCaptcha"
+          >
             获取验证码
+          </el-button>
+          <el-button v-else :disabled="!isPhone">
+            {{ captchaCountdown }}秒后重发
           </el-button>
         </el-form-item>
         <el-form-item class="btn-login">
-          <el-button style="width: 100%">
+          <el-button style="width: 100%" :disabled="isCaptcha" @click="handleLogin(loginForm)">
             登录
           </el-button>
         </el-form-item>
@@ -37,17 +46,66 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { loginByCaptcha, schemaCaptcha } from '@/apis/login'
+import { ref, onMounted, watch } from 'vue'
 
 const isShowLogin = ref(true)
+const loginForm = ref('')
+const isPhone = ref(false)
+const isCaptcha = ref(true)
+const isSentCaptcha = ref(false)
+const captchaCountdown = ref(30)
+const reg = new RegExp(/^(?:(?:\+|00)86)?1\d{10}$/)
+
 const loginFormData = ref({
   phone: '',
   password: '',
   captcha: ''
 })
 const loginFormRules = ref({
+  phone: [
+    { required: true, message: '请输入电话号码', trigger: 'change' },
+    { pattern: /^(?:(?:\+|00)86)?1\d{10}$/, message: '请输入合规的电话号码', trigger: 'blur' }
+  ]
+})
+
+onMounted(() => {
 
 })
+watch(() => loginFormData.value.phone, val => {
+  reg.test(val) ? isPhone.value = true : isPhone.value = false
+})
+watch(() => loginFormData.value.captcha, async val => {
+  if (val.trim().length === 4 && reg.test(val.phone)) {
+    const res = await schemaCaptcha(loginFormData.value)
+    res.data.code === 200 ? isCaptcha.value = false : ''
+  }
+})
+
+const handleLogin = async formName => {
+  await loginForm.value.validate((valid, fields) => {
+    if (valid) console.log('submit')
+    else console.log('error submit!', fields)
+  })
+}
+const getCaptcha = async () => {
+  const res = await loginByCaptcha(loginFormData.value.phone)
+  if (res.data.code === 200) {
+    isCaptcha.value = true
+    isPhone.value = true
+    isSentCaptcha.value = true
+    const i = setInterval(() => {
+      if (captchaCountdown.value < 1) {
+        isCaptcha.value = false
+        isPhone.value = false
+        isSentCaptcha.value = false
+        return clearInterval(i)
+      }
+      captchaCountdown.value--
+    }, 1000)
+  }
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -110,13 +168,5 @@ const loginFormRules = ref({
   }
   .login-wrap .el-input__inner::-webkit-input-placeholder {
     color: #9b9b9b;
-  }
-
-  .login-wrap .el-button {
-    font-size: 12px;
-    color: #fff;
-    background: #ff3a3a;
-    border-radius: 20px;
-    transition: 0s;
   }
 </style>
