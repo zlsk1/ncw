@@ -16,30 +16,44 @@
         <el-form-item prop="phone">
           <el-input v-model="loginFormData.phone" placeholder="请输入手机号" style="width: 100%" />
         </el-form-item>
-        <el-form-item>
-          <el-input v-model="loginFormData.captcha" style="width: 65%;margin-right: 10px" placeholder="请输入短信验证码" />
-          <el-button
-            v-if="!isSentCaptcha"
-            ref="getcaptcha"
-            style="width: calc(35% - 10px);"
-            :disabled="!isPhone"
-            @click="getCaptcha"
-          >
-            获取验证码
-          </el-button>
-          <el-button v-else :disabled="!isPhone">
-            {{ captchaCountdown }}秒后重发
-          </el-button>
+        <el-form-item :prop="!isLoginByPassword ? 'captcha' : 'password'">
+          <el-input
+            v-if="!isLoginByPassword"
+            v-model="loginFormData.captcha"
+            style="width: 65%;margin-right: 10px"
+            placeholder="请输入短信验证码"
+          />
+          <el-input
+            v-else
+            v-model="loginFormData.password"
+            style="width: 100%"
+            placeholder="请输入密码"
+          />
+          <template v-if="!isLoginByPassword">
+            <el-button
+              v-if="!isSentCaptcha"
+              ref="getcaptcha"
+              style="width: calc(35% - 10px);"
+              :disabled="!isPhone"
+              @click="getCaptcha"
+            >
+              获取验证码
+            </el-button>
+            <el-button v-else disabled>
+              {{ captchaCountdown }}秒后重发
+            </el-button>
+          </template>
         </el-form-item>
         <el-form-item class="btn-login">
-          <el-button style="width: 100%" :disabled="isCaptcha" @click="handleLogin(loginForm)">
+          <el-button style="width: 100%" @click="handleLogin(loginForm)">
             登录
           </el-button>
         </el-form-item>
       </el-form>
-      <span class="f12">密码登陆</span>
+      <span v-if="!isLoginByPassword" class="f12 thumb" @click="switchLoginWay">密码登陆</span>
+      <span v-else class="f12 thumb" @click="switchLoginWay">验证码登陆</span>
       <template #footer>
-        &lt; <span>其他登录方式</span>
+        &lt; <span class="thumb">其他登录方式</span>
       </template>
     </el-dialog>
   </div>
@@ -51,61 +65,73 @@ import { ref, onMounted, watch } from 'vue'
 
 const isShowLogin = ref(true)
 const loginForm = ref('')
-const isPhone = ref(false)
-const isCaptcha = ref(true)
 const isSentCaptcha = ref(false)
+const isPhone = ref(false)
+const isLoginByPassword = ref(false)
 const captchaCountdown = ref(30)
 const reg = new RegExp(/^(?:(?:\+|00)86)?1\d{10}$/)
 
 const loginFormData = ref({
   phone: '',
   password: '',
-  captcha: ''
+  captcha: '',
+  isIptPhone: ''
 })
+// 自定义验证规则
+const validCaptcha = async (rule, value, callback) => {
+  const res = await schemaCaptcha(loginFormData)
+  if (!value) {
+    return callback(new Error('请输入验证码'))
+  } else if (res.data.code !== 200) return callback(new Error('验证码错误'))
+}
 const loginFormRules = ref({
   phone: [
     { required: true, message: '请输入电话号码', trigger: 'change' },
     { pattern: /^(?:(?:\+|00)86)?1\d{10}$/, message: '请输入合规的电话号码', trigger: 'blur' }
-  ]
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: 'change' }
+    // { pattern: /^\S*(?=\S{6,})(?=\S*\d)(?=\S*[A-Z])(?=\S*[a-z])\S*$/, message: '密码必须由大写字母、小写字母和数字组成', trigger: 'blur' }
+  ],
+  captcha: { validator: validCaptcha, trigger: 'blur' }
 })
+
+watch(
+  () => loginFormData.value.phone, (val) => {
+    reg.test(val) ? isPhone.value = true : isPhone.value = false
+  }
+
+)
 
 onMounted(() => {
 
 })
-watch(() => loginFormData.value.phone, val => {
-  reg.test(val) ? isPhone.value = true : isPhone.value = false
-})
-watch(() => loginFormData.value.captcha, async val => {
-  if (val.trim().length === 4 && reg.test(val.phone)) {
-    const res = await schemaCaptcha(loginFormData.value)
-    res.data.code === 200 ? isCaptcha.value = false : ''
-  }
-})
 
 const handleLogin = async formName => {
-  await loginForm.value.validate((valid, fields) => {
-    if (valid) console.log('submit')
-    else console.log('error submit!', fields)
+  await loginForm.value.validate(async (valid, fields) => {
+    if (valid) {
+      console.log('success!')
+    }
   })
 }
 const getCaptcha = async () => {
   const res = await loginByCaptcha(loginFormData.value.phone)
   if (res.data.code === 200) {
-    isCaptcha.value = true
-    isPhone.value = true
     isSentCaptcha.value = true
     const i = setInterval(() => {
-      if (captchaCountdown.value < 1) {
-        isCaptcha.value = false
-        isPhone.value = false
+      if (captchaCountdown.value > 0) {
+        captchaCountdown.value--
+      } else {
         isSentCaptcha.value = false
-        return clearInterval(i)
+        clearInterval(i)
       }
-      captchaCountdown.value--
     }, 1000)
   }
 }
-
+const switchLoginWay = () => {
+  loginForm.value.resetFields()
+  isLoginByPassword.value = !isLoginByPassword.value
+}
 </script>
 
 <style lang="scss" scoped>
