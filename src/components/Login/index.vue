@@ -1,8 +1,9 @@
 <template>
   <div class="login-wrap">
     <el-dialog
-      v-model="isShowLogin"
+      :model-value="isShow"
       width="25%"
+      @close="$emit('close', false)"
     >
       <template #header>
         <span class="header">手机号登录</span>
@@ -62,8 +63,13 @@
 <script setup>
 import { loginByCaptcha, schemaCaptcha } from '@/apis/login'
 import { ref, onMounted, watch } from 'vue'
+import { useUserStore } from '@/stores/user'
+const store = useUserStore()
 
-const isShowLogin = ref(true)
+defineProps({
+  isShow: { type: Boolean, default: false }
+})
+
 const loginForm = ref('')
 const isSentCaptcha = ref(false)
 const isPhone = ref(false)
@@ -104,13 +110,14 @@ watch(
 )
 
 onMounted(() => {
-
 })
 
 const handleLogin = async formName => {
   await loginForm.value.validate(async (valid, fields) => {
     if (valid) {
-      console.log('success!')
+      if (isLoginByPassword.value) {
+        store.login(loginFormData.value)
+      }
     }
   })
 }

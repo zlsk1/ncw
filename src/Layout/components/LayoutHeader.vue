@@ -45,12 +45,13 @@
       </ul>
       <el-input
         v-model="searchValue"
-        class="input"
         :prefix-icon="Search"
         placeholder="音乐/视频/电台/用户"
       />
-      <el-button>创作者中心</el-button>
-      <a href="" class="f12 login">登录</a>
+      <router-link to="/" class="creator">
+        <span>创作者中心</span>
+      </router-link>
+      <span href="" class="f12 login thumb" @click="isShow = !isShow">登录</span>
     </div>
     <div class="category-wrap">
       <ul>
@@ -86,14 +87,17 @@
         </li>
       </ul>
     </div>
+    <Login :is-show="isShow" @close="e => isShow = e" />
   </header>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { Search } from '@element-plus/icons-vue'
+import Login from '@/components/Login'
 
 const searchValue = ref('')
+const isShow = ref(false)
 </script>
 
 <style lang="scss" scoped>
@@ -116,6 +120,19 @@ const searchValue = ref('')
           height: 100%;
           opacity: 0;
         }
+      }
+    }
+    .creator {
+      width: 90px;
+      height: 30px;
+      text-align: center;
+      line-height: 30px;
+      font-size: 12px;
+      color: #fff;
+      border: 1px solid #666;
+      border-radius: 20px;
+      &:hover {
+        border: 1px solid #ccc;
       }
     }
     .nav {
@@ -194,17 +211,5 @@ const searchValue = ref('')
   }
   .header-wrap .el-input__inner::-webkit-input-placeholder {
     color: #9b9b9b;
-  }
-
-  .header-wrap .el-button {
-    border-radius: 20px;
-    font-size: 12px;
-    color: #ccc;
-    background: #242424;
-    border: 1px solid #4F4F4F;
-    transition: 0s;
-  }
-  .header-wrap .el-button:hover {
-    border: 1px solid #fff;
   }
 </style>
