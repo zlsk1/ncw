@@ -120,6 +120,8 @@ const handleLogin = async formName => {
       if (isLoginByPassword.value) {
         store.login(loginFormData.value)
       }
+      emit('close', false)
+      loginForm.value.resetFields()
     }
   })
 }

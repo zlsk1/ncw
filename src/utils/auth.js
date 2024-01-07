@@ -1,7 +1,11 @@
 export const getToken = () => {
-  return localStorage.getItem('token')
+  return JSON.parse(localStorage.getItem('token'))
 }
 
 export const clearToken = () => {
   return localStorage.removeItem('token')
+}
+
+export const getAvator = () => {
+  return JSON.parse(localStorage.getItem('userInfo'))?.avatarUrl
 }

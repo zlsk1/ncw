@@ -52,7 +52,7 @@
         <span>创作者中心</span>
       </router-link>
       <span
-        v-if="!store.token"
+        v-if="!token"
         href=""
         class="f12 login thumb"
         @click="isShow = !isShow"
@@ -61,6 +61,7 @@
         v-else
         class="avator"
         @visible-change="dropdownChange"
+        @command="logout"
       >
         <el-badge :value="12" :hidden="!isShowBadge">
           <img :src="avator" alt="">
@@ -97,7 +98,7 @@
                 <span>实名认证</span>
               </router-link>
             </el-dropdown-item>
-            <el-dropdown-item divided>
+            <el-dropdown-item divided command="1">
               <router-link to="/">
                 <span>退出</span>
               </router-link>
@@ -147,18 +148,23 @@
 <script setup>
 import { ref } from 'vue'
 import { useUserStore } from '@/stores/user'
+import { storeToRefs } from 'pinia'
 import { Search } from '@element-plus/icons-vue'
 import Login from '@/components/Login'
 
 const store = useUserStore()
+const { token } = storeToRefs(store)
+const { avator } = storeToRefs(store)
 
 const searchValue = ref('')
 const isShow = ref(false)
 const isShowBadge = ref(true)
-const avator = JSON.parse(localStorage.getItem('userInfo')).avatarUrl
 
 const dropdownChange = e => {
   isShowBadge.value = !e
+}
+const logout = () => {
+  store.logout()
 }
 </script>
 
