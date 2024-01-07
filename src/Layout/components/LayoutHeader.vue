@@ -51,7 +51,60 @@
       <router-link to="/" class="creator">
         <span>创作者中心</span>
       </router-link>
-      <span href="" class="f12 login thumb" @click="isShow = !isShow">登录</span>
+      <span
+        v-if="!store.token"
+        href=""
+        class="f12 login thumb"
+        @click="isShow = !isShow"
+      >登录</span>
+      <el-dropdown
+        v-else
+        class="avator"
+        @visible-change="dropdownChange"
+      >
+        <el-badge :value="12" :hidden="!isShowBadge">
+          <img :src="avator" alt="">
+        </el-badge>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item>
+              <router-link to="/">
+                <span>我的主页</span>
+              </router-link>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <router-link to="/">
+                <span>我的消息</span> <span class="message">{{ 12 }}</span>
+              </router-link>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <router-link to="/">
+                <span>我的等级</span>
+              </router-link>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <router-link to="/">
+                <span>VIP会员</span>
+              </router-link>
+            </el-dropdown-item>
+            <el-dropdown-item divided>
+              <router-link to="/">
+                <span>个人设置</span>
+              </router-link>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <router-link to="/">
+                <span>实名认证</span>
+              </router-link>
+            </el-dropdown-item>
+            <el-dropdown-item divided>
+              <router-link to="/">
+                <span>退出</span>
+              </router-link>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
     </div>
     <div class="category-wrap">
       <ul>
@@ -93,11 +146,20 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useUserStore } from '@/stores/user'
 import { Search } from '@element-plus/icons-vue'
 import Login from '@/components/Login'
 
+const store = useUserStore()
+
 const searchValue = ref('')
 const isShow = ref(false)
+const isShowBadge = ref(true)
+const avator = JSON.parse(localStorage.getItem('userInfo')).avatarUrl
+
+const dropdownChange = e => {
+  isShowBadge.value = !e
+}
 </script>
 
 <style lang="scss" scoped>
@@ -133,6 +195,13 @@ const isShow = ref(false)
       border-radius: 20px;
       &:hover {
         border: 1px solid #ccc;
+      }
+    }
+    .avator {
+      img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
       }
     }
     .nav {
@@ -193,6 +262,16 @@ const isShow = ref(false)
   .active-category {
     background-color: #9b0909;
   }
+  .message {
+    display: inline-block;
+    width: 24px;
+    height: 20px;
+    text-align: center;
+    font-size: 12px;
+    color: #fff;
+    background-color: $themeColor;
+    border-radius: 10px;
+  }
 </style>
 <style>
   .header-wrap .el-input__wrapper {
@@ -211,5 +290,10 @@ const isShow = ref(false)
   }
   .header-wrap .el-input__inner::-webkit-input-placeholder {
     color: #9b9b9b;
+  }
+
+  .header-wrap .el-badge__content--danger  {
+    background-color: #c20c0c;
+    border: none;
   }
 </style>
