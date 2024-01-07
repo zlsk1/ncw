@@ -1,0 +1,210 @@
+<template>
+  <header class="header-wrap">
+    <div class="w1100 fl-sb">
+      <div class="logo">
+        <h1>
+          <a href="/">网易云音乐</a>
+        </h1>
+      </div>
+      <ul class="nav fl">
+        <li>
+          <router-link to="/" class="active-nav">
+            发现音乐
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/">
+            我的音乐
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/">
+            关注
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/">
+            商城
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/">
+            音乐人
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/">
+            云推歌
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/">
+            下载客户端
+          </router-link>
+        </li>
+      </ul>
+      <el-input
+        v-model="searchValue"
+        class="input"
+        :prefix-icon="Search"
+        placeholder="音乐/视频/电台/用户"
+      />
+      <el-button>创作者中心</el-button>
+      <a href="" class="f12 login">登录</a>
+    </div>
+    <div class="category-wrap">
+      <ul>
+        <li>
+          <router-link to="/" class="active-category">
+            推荐
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/">
+            排行榜
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/">
+            歌单
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/">
+            主播电台
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/">
+            歌手
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/">
+            新碟上架
+          </router-link>
+        </li>
+      </ul>
+    </div>
+  </header>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { Search } from '@element-plus/icons-vue'
+
+const searchValue = ref('')
+</script>
+
+<style lang="scss" scoped>
+  .header-wrap {
+    height: 100px;
+    line-height: 70px;
+    color: #fff;
+    background: $bg_deep;
+    .logo {
+      width: 158px;
+      height: 70px;
+      background: url('@/assets/icons/topbar.png') no-repeat;
+      cursor: pointer;
+      h1 {
+        width: 100%;
+        height: 100%;
+        a {
+          display: block;
+          width: 100%;
+          height: 100%;
+          opacity: 0;
+        }
+      }
+    }
+    .nav {
+      li {
+        a {
+          position: relative;
+          display: block;
+          height: 70px;
+          padding: 0 18px;
+          color: #fff;
+          &:hover {
+            background-color: #000;
+          }
+        }
+      }
+    }
+    .login {
+      color: #787878;
+      &:hover {
+        text-decoration: underline;
+        color: #aaa;
+      }
+    }
+    .category-wrap {
+      width: 100%;
+      height: 30px;
+      line-height: 30px;
+      background: $themeColor;
+      ul {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 500px;
+        margin-left: 614px;
+        a {
+          padding: 3px 12px;
+          font-size: 12px;
+          color: #fff;
+          border-radius: 20px;
+        }
+      }
+    }
+  }
+  .active-nav {
+    background-color: #000;
+    &::after {
+      content: '';
+      position: absolute;
+      right: calc(50% - 6px);
+      bottom: 0;
+      width: 0;
+      height: 0;
+      border-width: 0 6px 6px;
+      border-style: solid;
+      border-color: transparent transparent $themeColor;
+    }
+  }
+  .active-category {
+    background-color: #9b0909;
+  }
+</style>
+<style>
+  .header-wrap .el-input__wrapper {
+    border-radius: 20px;
+  }
+  .header-wrap .el-input__wrapper {
+    box-shadow: none;
+  }
+  .header-wrap .el-input__wrapper:hover {
+    box-shadow: none;
+  }
+  .header-wrap .el-input {
+    width: 158px;
+    font-size: 12px;
+    color: #333;
+  }
+  .header-wrap .el-input__inner::-webkit-input-placeholder {
+    color: #9b9b9b;
+  }
+
+  .header-wrap .el-button {
+    border-radius: 20px;
+    font-size: 12px;
+    color: #ccc;
+    background: #242424;
+    border: 1px solid #4F4F4F;
+    transition: 0s;
+  }
+  .header-wrap .el-button:hover {
+    border: 1px solid #fff;
+  }
+</style>
