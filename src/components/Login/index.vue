@@ -3,7 +3,7 @@
     <el-dialog
       :model-value="isShow"
       width="25%"
-      @close="$emit('close', false)"
+      @close="closeDialog"
     >
       <template #header>
         <span class="header">手机号登录</span>
@@ -70,6 +70,7 @@ const store = useUserStore()
 defineProps({
   isShow: { type: Boolean, default: false }
 })
+const emit = defineEmits(['close'])
 
 const loginForm = ref('')
 const isSentCaptcha = ref(false)
@@ -139,6 +140,10 @@ const getCaptcha = async () => {
 const switchLoginWay = () => {
   loginForm.value.resetFields()
   isLoginByPassword.value = !isLoginByPassword.value
+}
+const closeDialog = () => {
+  emit('close', false)
+  loginForm.value.resetFields()
 }
 </script>
 
