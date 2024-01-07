@@ -91,7 +91,7 @@
         display: block;
         width: 45px;
         height: 45px;
-        margin: auto;
+        margin: 0 auto 10px;
       }
       li:nth-child(1) a {
         background: url('@/assets/icons/foot_enter_new2.png') -170px -5px no-repeat;
