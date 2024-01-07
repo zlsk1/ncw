@@ -5,58 +5,88 @@
       width="25%"
       @close="closeDialog"
     >
-      <template #header>
+      <!-- header 开始 -->
+      <template v-if="type === 0" #header>
+        <span class="header">登录</span>
+      </template>
+      <template v-else #header>
         <span class="header">手机号登录</span>
       </template>
-      <el-form
-        ref="loginForm"
-        :model="loginFormData"
-        :rules="loginFormRules"
-        style="margin-bottom: 50px"
-      >
-        <el-form-item prop="phone">
-          <el-input v-model="loginFormData.phone" placeholder="请输入手机号" style="width: 100%" />
-        </el-form-item>
-        <el-form-item :prop="!isLoginByPassword ? 'captcha' : 'password'">
-          <el-input
-            v-if="!isLoginByPassword"
-            v-model="loginFormData.captcha"
-            style="width: 65%;margin-right: 10px"
-            placeholder="请输入短信验证码"
-          />
-          <el-input
-            v-else
-            v-model="loginFormData.password"
-            style="width: 100%"
-            placeholder="请输入密码"
-            type="password"
-          />
-          <template v-if="!isLoginByPassword">
-            <el-button
-              v-if="!isSentCaptcha"
-              ref="getcaptcha"
-              style="width: calc(35% - 10px);"
-              :disabled="!isPhone"
-              @click="getCaptcha"
-            >
-              获取验证码
+      <!-- header 结束 -->
+      <!-- body 开始 -->
+      <div v-if="type === 0" style="display: flex;justify-content: space-between; margin-bottom: 40px">
+        <img src="@/assets/icons/bg_login_0.png" alt="" style="width: 125px; height: 220px">
+        <div style="text-align:center;">
+          <p class="f20">
+            扫码登录
+          </p>
+          <img src="" alt="">
+          <div class="f12">
+            使用
+            <router-link to="/" style="color: #409eff">
+              网易云音乐APP
+            </router-link>
+            扫码登录
+          </div>
+        </div>
+      </div>
+      <template v-else>
+        <el-form
+          ref="loginForm"
+          :model="loginFormData"
+          :rules="loginFormRules"
+          style="margin-bottom: 50px"
+        >
+          <el-form-item prop="phone">
+            <el-input v-model="loginFormData.phone" placeholder="请输入手机号" style="width: 100%" />
+          </el-form-item>
+          <el-form-item :prop="!isLoginByPassword ? 'captcha' : 'password'">
+            <el-input
+              v-if="!isLoginByPassword"
+              v-model="loginFormData.captcha"
+              style="width: 65%;margin-right: 10px"
+              placeholder="请输入短信验证码"
+            />
+            <el-input
+              v-else
+              v-model="loginFormData.password"
+              style="width: 100%"
+              placeholder="请输入密码"
+              type="password"
+            />
+            <template v-if="!isLoginByPassword">
+              <el-button
+                v-if="!isSentCaptcha"
+                ref="getcaptcha"
+                style="width: calc(35% - 10px);"
+                :disabled="!isPhone"
+                @click="getCaptcha"
+              >
+                获取验证码
+              </el-button>
+              <el-button v-else disabled>
+                {{ captchaCountdown }}秒后重发
+              </el-button>
+            </template>
+          </el-form-item>
+          <el-form-item class="btn-login">
+            <el-button style="width: 100%" @click="handleLogin(loginForm)">
+              登录
             </el-button>
-            <el-button v-else disabled>
-              {{ captchaCountdown }}秒后重发
-            </el-button>
-          </template>
-        </el-form-item>
-        <el-form-item class="btn-login">
-          <el-button style="width: 100%" @click="handleLogin(loginForm)">
-            登录
-          </el-button>
-        </el-form-item>
-      </el-form>
-      <span v-if="!isLoginByPassword" class="f12 thumb" @click="switchLoginWay">密码登陆</span>
-      <span v-else class="f12 thumb" @click="switchLoginWay">验证码登陆</span>
-      <template #footer>
+          </el-form-item>
+        </el-form>
+        <span v-if="!isLoginByPassword" class="f12 thumb" @click="switchLoginWay">密码登陆</span>
+        <span v-else class="f12 thumb" @click="switchLoginWay">验证码登陆</span>
+      </template>
+      <!-- body 结束 -->
+      <!-- footer 开始 -->
+      <template v-if="type === 0" #footer>
+        <span class="thumb">选择其他登录模式</span>
+      </template>
+      <template v-else #footer>
         &lt; <span class="thumb">其他登录方式</span>
       </template>
+      <!-- footer 结束 -->
     </el-dialog>
   </div>
 </template>
@@ -72,6 +102,7 @@ defineProps({
 })
 const emit = defineEmits(['close'])
 
+const type = ref(0)
 const loginForm = ref('')
 const isSentCaptcha = ref(false)
 const isPhone = ref(false)
@@ -119,9 +150,9 @@ const handleLogin = async formName => {
     if (valid) {
       if (isLoginByPassword.value) {
         store.login(loginFormData.value)
+        loginForm.value.resetFields()
       }
       emit('close', false)
-      loginForm.value.resetFields()
     }
   })
 }
@@ -145,7 +176,7 @@ const switchLoginWay = () => {
 }
 const closeDialog = () => {
   emit('close', false)
-  loginForm.value.resetFields()
+  type.value === 0 ? '' : loginForm.value.resetFields()
 }
 </script>
 

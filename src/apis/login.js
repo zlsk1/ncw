@@ -31,3 +31,29 @@ export const schemaCaptcha = ({ phone, captcha }) => {
     }
   })
 }
+
+export const getQrcodeKey = () => {
+  return http({
+    url: '/login/qr/key'
+  })
+}
+
+export const getQrcode = key => {
+  return http({
+    url: '/login/qr/create',
+    method: 'POST',
+    params: {
+      key
+    }
+  })
+}
+
+export const checkQrcodeStatus = key => {
+  return http({
+    url: '/login/qr/check',
+    method: 'POST',
+    params: {
+      key
+    }
+  })
+}
