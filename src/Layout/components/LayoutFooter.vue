@@ -8,31 +8,31 @@
         </li>
         <li>
           <a href="" target="_blank" />
-          <span>音乐开放平台</span>
+          <span>云村交易所</span>
         </li>
         <li>
           <a href="" target="_blank" />
-          <span>音乐开放平台</span>
+          <span>Amped Studio</span>
         </li>
         <li>
           <a href="" target="_blank" />
-          <span>音乐开放平台</span>
+          <span>X Studio虚拟歌手</span>
         </li>
         <li>
           <a href="" target="_blank" />
-          <span>音乐开放平台</span>
+          <span>用户认证</span>
         </li>
         <li>
           <a href="" target="_blank" />
-          <span>音乐开放平台</span>
+          <span>音乐交易平台</span>
         </li>
         <li>
           <a href="" target="_blank" />
-          <span>音乐开放平台</span>
+          <span>云推歌</span>
         </li>
         <li>
           <a href="" target="_blank" />
-          <span>音乐开放平台</span>
+          <span>赞赏</span>
         </li>
       </ul>
       <ul class="link">
