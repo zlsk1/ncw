@@ -1,4 +1,5 @@
 import http from '@/utils/http'
+import { getTimestamp } from '@/utils/time'
 
 export const loginByPassword = ({ phone, password }) => {
   return http({
@@ -35,5 +36,44 @@ export const schemaCaptcha = ({ phone, captcha }) => {
 export const logout = () => {
   return http({
     url: '/logout'
+  })
+}
+
+export const testPhone = (phone) => {
+  return http({
+    url: `/cellphone/existence/check?timeStamp=${getTimestamp()}`,
+    method: 'POST',
+    data: {
+      phone
+    }
+  })
+}
+
+export const register = ({ phone, captcha, password, nickname }) => {
+  return http({
+    url: '/register/cellphone',
+    method: 'POST',
+    data: {
+      phone,
+      captcha,
+      password,
+      nickname
+    }
+  })
+}
+
+export const createNickname = () => {
+  return http({
+    url: '/nickname/check'
+  })
+}
+
+export const testNickname = (nickname) => {
+  return http({
+    url: '/nickname/check',
+    method: 'POST',
+    data: {
+      nickname
+    }
   })
 }

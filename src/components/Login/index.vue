@@ -12,7 +12,7 @@
         ref="loginForm"
         :model="loginFormData"
         :rules="loginFormRules"
-        style="margin-bottom: 50px"
+        style="margin-bottom: 20px"
       >
         <el-form-item prop="phone">
           <el-input v-model="loginFormData.phone" placeholder="请输入手机号" style="width: 100%" />
@@ -46,23 +46,61 @@
             </el-button>
           </template>
         </el-form-item>
+        <template v-if="isRegister && !isLoginByPassword">
+          <el-form-item prop="nickname">
+            <el-input
+              v-model="loginFormData.nickname"
+              style="width: 100%"
+              placeholder="请输入昵称"
+            />
+          </el-form-item>
+          <el-form-item prop="password">
+            <el-input
+              v-model="loginFormData.password"
+              style="width: 100%"
+              placeholder="请输入密码"
+              type="password"
+            />
+          </el-form-item>
+          <el-form-item prop="passwordConfirm">
+            <el-input
+              v-model="loginFormData.passwordConfirm"
+              style="width: 100%"
+              placeholder="确认密码"
+              type="password"
+            />
+          </el-form-item>
+        </template>
         <el-form-item class="btn-login">
-          <el-button style="width: 100%" @click="handleLogin(loginForm)">
+          <el-button
+            v-if="isRegister"
+            class="btn"
+            style="width: 100%"
+            @click="handleLogin(loginForm)"
+          >
+            注册
+          </el-button>
+          <el-button
+            v-else
+            class="btn"
+            style="width: 100%"
+            @click="handleLogin(loginForm)"
+          >
             登录
           </el-button>
         </el-form-item>
       </el-form>
       <span v-if="!isLoginByPassword" class="f12 thumb" @click="switchLoginWay">密码登陆</span>
       <span v-else class="f12 thumb" @click="switchLoginWay">验证码登陆</span>
-      <template #footer>
+      <!-- <template #footer>
         &lt; <span class="thumb">注册</span>
-      </template>
+      </template> -->
     </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { loginByCaptcha, schemaCaptcha } from '@/apis/login'
+import { loginByCaptcha, schemaCaptcha, testPhone, testNickname, register } from '@/apis/login'
 import { ref, watch } from 'vue'
 import { useUserStore } from '@/stores/user'
 const store = useUserStore()
@@ -76,21 +114,36 @@ const loginForm = ref('')
 const isSentCaptcha = ref(false)
 const isPhone = ref(false)
 const isLoginByPassword = ref(false)
+const isRegister = ref(false)
 const captchaCountdown = ref(30)
 const reg = new RegExp(/^(?:(?:\+|00)86)?1\d{10}$/)
 
 const loginFormData = ref({
   phone: '',
   password: '',
+  passwordConfirm: '',
   captcha: '',
-  isIptPhone: ''
+  isIptPhone: '',
+  nickname: ''
 })
 // 自定义验证规则
 const validCaptcha = async (rule, value, callback) => {
-  const res = await schemaCaptcha(loginFormData)
   if (!value) {
     return callback(new Error('请输入验证码'))
-  } else if (res.data.code !== 200) return callback(new Error('验证码错误'))
+  }
+  if (value.trim().length === 4) {
+    const res = await schemaCaptcha(loginFormData)
+    if (res.data.code !== 200) return callback(new Error('验证码错误'))
+  }
+}
+const validPasswordConfirm = async (rule, value, callback) => {
+  if (!value) { return callback(new Error('请确认密码')) }
+  if (value !== loginFormData.value.password) return callback(new Error('两次输入的密码不一致'))
+}
+const validNickname = async (rule, value, callback) => {
+  if (!value) return callback(new Error('请输入昵称'))
+  const res = await testNickname()
+  if (!res.duplicated) return callback(new Error('昵称已存在'))
 }
 const loginFormRules = ref({
   phone: [
@@ -98,21 +151,34 @@ const loginFormRules = ref({
     { pattern: /^(?:(?:\+|00)86)?1\d{10}$/, message: '请输入合规的电话号码', trigger: 'blur' }
   ],
   password: [
-    { required: true, message: '请输入密码', trigger: 'change' }
-    // { pattern: /^\S*(?=\S{6,})(?=\S*\d)(?=\S*[A-Z])(?=\S*[a-z])\S*$/, message: '密码必须由大写字母、小写字母和数字组成', trigger: 'blur' }
+    { required: true, message: '请输入密码', trigger: 'change' },
+    { pattern: /^\S*(?=\S{6,})(?=\S*\d)(?=\S*[A-Z])(?=\S*[a-z])\S*$/, message: '密码必须包含大写字母、小写字母和数字', trigger: 'blur' }
   ],
+  nick: { validator: validNickname, trigger: 'change' },
+  passwordConfirm: { validator: validPasswordConfirm, trigger: 'blur' },
   captcha: { validator: validCaptcha, trigger: 'blur' }
 })
 
 watch(
-  () => loginFormData.value.phone, val => {
-    reg.test(val) ? isPhone.value = true : isPhone.value = false
+  () => loginFormData.value.phone, async val => {
+    if (reg.test(val)) {
+      isPhone.value = true
+      const res = await testPhone(val)
+      if (res.data.exist < 1) isRegister.value = true
+      else isRegister.value = false
+    } else {
+      isPhone.value = false
+    }
   }
 )
 
 const handleLogin = async formName => {
   await loginForm.value.validate(async (valid, fields) => {
     if (valid) {
+      if (isRegister.value) {
+        const res = await register()
+        console.log(res)
+      }
       if (isLoginByPassword.value) {
         store.loginAction(loginFormData.value)
         loginForm.value.resetFields()
@@ -138,6 +204,7 @@ const getCaptcha = async () => {
 const switchLoginWay = () => {
   loginForm.value.resetFields()
   isLoginByPassword.value = !isLoginByPassword.value
+  isRegister.value = false
 }
 const closeDialog = () => {
   emit('close', false)
@@ -169,7 +236,7 @@ const closeDialog = () => {
   .login-wrap .el-dialog__body {
     padding: 60px 70px 20px;
   }
-  .login-wrap .el-dialog__footer {
+  /* .login-wrap .el-dialog__footer {
     width: 100%;
     height: 50px;
     line-height: 50px;
@@ -179,7 +246,7 @@ const closeDialog = () => {
     color: #0c72c3;
     background-color: #f7f7f7;
     border-top: 1px solid #ccc;
-  }
+  } */
   .login-wrap .el-dialog__headerbtn {
     top: 0;
     height: 40px;
