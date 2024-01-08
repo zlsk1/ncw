@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { loginByPassword } from '@/apis/login'
+import { loginByPassword, logout } from '@/apis/login'
 import { getToken, clearToken, getAvator } from '@/utils/auth'
 
 export const useUserStore = defineStore('user', () => {
@@ -8,7 +8,7 @@ export const useUserStore = defineStore('user', () => {
   const avator = ref(getAvator())
   const nickname = ref('')
 
-  const login = async data => {
+  const loginAction = async data => {
     const { data: { code }, data: { token: _token }, data: { profile }} = await loginByPassword(data)
     if (code === 200) {
       localStorage.setItem('token', JSON.stringify(_token))
@@ -18,7 +18,8 @@ export const useUserStore = defineStore('user', () => {
       nickname.value = profile.nickname
     }
   }
-  const logout = () => {
+  const logoutAction = () => {
+    logout()
     clearToken()
     localStorage.removeItem('userInfo')
     nickname.value = ''
@@ -29,7 +30,7 @@ export const useUserStore = defineStore('user', () => {
     token,
     avator,
     nickname,
-    login,
-    logout
+    loginAction,
+    logoutAction
   }
 })

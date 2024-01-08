@@ -31,3 +31,9 @@ export const schemaCaptcha = ({ phone, captcha }) => {
     }
   })
 }
+
+export const logout = () => {
+  return http({
+    url: '/logout'
+  })
+}

@@ -55,7 +55,7 @@
       <span v-if="!isLoginByPassword" class="f12 thumb" @click="switchLoginWay">密码登陆</span>
       <span v-else class="f12 thumb" @click="switchLoginWay">验证码登陆</span>
       <template #footer>
-        &lt; <span class="thumb">其他登录方式</span>
+        &lt; <span class="thumb">注册</span>
       </template>
     </el-dialog>
   </div>
@@ -114,7 +114,7 @@ const handleLogin = async formName => {
   await loginForm.value.validate(async (valid, fields) => {
     if (valid) {
       if (isLoginByPassword.value) {
-        store.loginByPwAction(loginFormData.value)
+        store.loginAction(loginFormData.value)
         loginForm.value.resetFields()
       }
       emit('close', false)

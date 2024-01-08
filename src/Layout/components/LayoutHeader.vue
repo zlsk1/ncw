@@ -164,7 +164,7 @@ const dropdownChange = e => {
   isShowBadge.value = !e
 }
 const logout = () => {
-  store.logout()
+  store.logoutAction()
 }
 </script>
 
