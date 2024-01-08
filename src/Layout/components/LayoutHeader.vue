@@ -150,7 +150,7 @@ import { ref } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import { Search } from '@element-plus/icons-vue'
-import Login from '@/components/Login'
+import Login from '@/views/login'
 
 const store = useUserStore()
 const { token } = storeToRefs(store)

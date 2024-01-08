@@ -5,7 +5,13 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      component: () => import('@/Layout/index')
+      component: () => import('@/Layout/index'),
+      children: [
+        {
+          path: '',
+          component: () => import('@/views/Home')
+        }
+      ]
     }
   ]
 })
