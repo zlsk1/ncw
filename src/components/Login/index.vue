@@ -103,6 +103,7 @@
 import { loginByCaptcha, schemaCaptcha, testPhone, testNickname, register } from '@/apis/login'
 import { ref, watch } from 'vue'
 import { useUserStore } from '@/stores/user'
+import { getTimestamp } from '@/utils/time'
 const store = useUserStore()
 
 defineProps({
@@ -126,13 +127,13 @@ const loginFormData = ref({
   isIptPhone: '',
   nickname: ''
 })
-// 自定义验证规则
+// 自定义检验验证码
 const validCaptcha = async (rule, value, callback) => {
   if (!value) {
     return callback(new Error('请输入验证码'))
   }
   if (value.trim().length === 4) {
-    const res = await schemaCaptcha(loginFormData)
+    const res = await schemaCaptcha(loginFormData.value)
     if (res.data.code !== 200) return callback(new Error('验证码错误'))
   }
 }
@@ -155,7 +156,7 @@ const loginFormRules = ref({
     { pattern: /^\S*(?=\S{6,})(?=\S*\d)(?=\S*[A-Z])(?=\S*[a-z])\S*$/, message: '密码必须包含大写字母、小写字母和数字', trigger: 'blur' }
   ],
   nick: { validator: validNickname, trigger: 'change' },
-  passwordConfirm: { validator: validPasswordConfirm, trigger: 'blur' },
+  passwordConfirm: { validator: validPasswordConfirm, trigger: 'change' },
   captcha: { validator: validCaptcha, trigger: 'blur' }
 })
 
@@ -191,7 +192,8 @@ const getCaptcha = async () => {
   const res = await loginByCaptcha(loginFormData.value.phone)
   if (res.data.code === 200) {
     isSentCaptcha.value = true
-    const i = setInterval(() => {
+    let i = getTimestamp()
+    i = setInterval(() => {
       if (captchaCountdown.value > 0) {
         captchaCountdown.value--
       } else {
