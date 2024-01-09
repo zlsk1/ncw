@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { getBanner } from '@/apis/banner'
+import { getBanner } from '@/apis/home'
 import { onMounted, ref } from 'vue'
 
 const bannerList = ref([])
