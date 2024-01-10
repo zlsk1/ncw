@@ -90,7 +90,7 @@ watch(content, val => {
     content.value.append(first)
     await nextTick()
     props.autoplay ? handleAutoplay() : ''
-  }, 0)
+  }, 100)
 })
 </script>
 

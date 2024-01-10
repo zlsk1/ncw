@@ -4,6 +4,7 @@
     <div class="w980 content">
       <div class="left">
         <HomeRecomend />
+        <HomeNewAlbum />
       </div>
       <div class="right" />
     </div>
@@ -13,16 +14,17 @@
 <script setup>
 import HomeBanner from './components/HomeBanner'
 import HomeRecomend from './components/HomeRecomend'
+import HomeNewAlbum from './components/HoneNewAlbum.vue'
 </script>
 
 <style lang="scss" scoped>
 .content {
   display: flex;
   .left {
-    flex: 3;
+    width: 75%;
   }
   .right {
-    flex: 1;
+    width: 25%;
   }
 }
 </style>

@@ -18,3 +18,9 @@ export const getPersonalized = (limit = 30) => {
     }
   })
 }
+
+export const getNewAlbum = () => {
+  return http({
+    url: '/album/newest'
+  })
+}
