@@ -1,21 +1,21 @@
 <template>
   <div class="banner-wrap">
-    <el-carousel
-      height="285px"
-      class="w980"
-      trigger="click"
-      arrow="always"
-    >
-      <el-carousel-item v-for="item in bannerList" :key="item.targetId">
-        <img :src="item.imageUrl" alt="">
-      </el-carousel-item>
-    </el-carousel>
+    <CarouselWrap class="w980" height="285px">
+      <CarouselItem v-for="item in bannerList" :key="item.targetId">
+        <div class="fl download-wrap">
+          <img :src="item.imageUrl" alt="" style="width: 75%">
+          <a href="" class="download" />
+        </div>
+      </CarouselItem>
+    </CarouselWrap>
   </div>
 </template>
 
 <script setup>
 import { getBanner } from '@/apis/home'
 import { onMounted, ref } from 'vue'
+import CarouselWrap from '@/components/Carousel/CarouselWrap'
+import CarouselItem from '@/components/Carousel/CarouselItem'
 
 const bannerList = ref([])
 
@@ -33,9 +33,13 @@ onMounted(() => {
 .banner-wrap {
   text-align: center;
   background-color: $bg_deep;
-  img {
-    width: 980px;
-  }
+}
+.download-wrap {
+  height: 100%;
+}
+.download {
+  width: 25%;
+  background: url('@/assets/icons/download.png');
 }
 </style>
 
