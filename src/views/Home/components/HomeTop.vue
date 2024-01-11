@@ -1,38 +1,55 @@
 <template>
   <div class="top-wrap">
-    <div v-for="(item, index) in store.topId.slice(0, 3)" :key="item.name" class="item">
-      <div class="header">
-        <img :src="item.imgUrl" alt="">
-        <div class="right">
-          <p class="name">
-            {{ item.name }}
-          </p>
-          <span class="fl"><i class="play" /><i class="like" /></span>
-        </div>
-      </div>
-      <ul class="content">
-        <li v-for="(track, no) in topList[index]" :key="track.no" class="content-item">
-          <div class="fl">
-            <p class="rank">
-              {{ no + 1 }}
-            </p>
-            <router-link to="/">
-              <p class="track-name">
-                {{ track.name }}
-              </p>
-            </router-link>
-            <div class="icon">
-              <i class="play" />
-              <i class="addlist" />
-              <i class="like" />
-            </div>
-          </div>
-        </li>
-      </ul>
-      <div class="bottom">
-        <router-link to="/">
-          查看全部&gt;
+    <div class="top-header fl-sb">
+      <div class="left fl">
+        <router-link to="/" class="title">
+          榜单
         </router-link>
+      </div>
+      <div class="right">
+        <router-link to="/">
+          更多
+        </router-link>
+        <i />
+      </div>
+    </div>
+    <div class="top-container">
+      <div v-for="(item, index) in store.topId.slice(0, 3)" :key="item.name" class="item">
+        <div class="header">
+          <router-link to="/">
+            <img :src="item.imgUrl" alt="">
+          </router-link>
+          <div class="right">
+            <p class="name">
+              {{ item.name }}
+            </p>
+            <span class="fl"><i class="play" /><i class="like" /></span>
+          </div>
+        </div>
+        <ul class="content">
+          <li v-for="(track, no) in topList[index]" :key="track.no" class="content-item">
+            <div class="fl">
+              <p class="rank">
+                {{ no + 1 }}
+              </p>
+              <router-link to="/">
+                <p class="track-name">
+                  {{ track.name }}
+                </p>
+              </router-link>
+              <div class="icon">
+                <i class="play" />
+                <i class="addlist" />
+                <i class="like" />
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="bottom">
+          <router-link to="/">
+            查看全部&gt;
+          </router-link>
+        </div>
       </div>
     </div>
   </div>
@@ -66,7 +83,56 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
-  .top-wrap {
+  .top-header {
+    margin-bottom: 20px;
+    padding: 0 0 8px 30px;
+    font-size: 12px;
+    color: #666;
+    border-bottom: 2px solid #C10D0C;
+    background: url('@/assets/icons/index.png') -225px -158px no-repeat;
+    .left {
+      .title {
+      font-size: 18px;
+      color: #333;
+      }
+      .tab {
+        display: flex;
+        align-items: center;
+        li {
+          position: relative;
+          padding: 0 15px;
+          &::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: calc(50% - 5px);
+            width: 1px;
+            height: 10px;
+            background-color: #ccc;
+          }
+          &:last-child::after {
+            content: '';
+            width: 0;
+            height: 0;
+          }
+        }
+      }
+    }
+    .right {
+      display: flex;
+      align-items: center;
+      a {
+        margin-right: 6px;
+      }
+      i {
+        display: block;
+        width: 12px;
+        height: 12px;
+        background: url('@/assets/icons/index.png') 0 -240px no-repeat;
+      }
+    }
+  }
+  .top-container {
     display: flex;
     justify-content: space-between;
     border: 1px solid #ccc;

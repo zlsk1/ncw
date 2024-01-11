@@ -1,5 +1,18 @@
 <template>
   <div class="newAlbum-wrap">
+    <div class="top-header fl-sb">
+      <div class="left fl">
+        <router-link to="/" class="title">
+          榜单
+        </router-link>
+      </div>
+      <div class="right">
+        <router-link to="/">
+          更多
+        </router-link>
+        <i />
+      </div>
+    </div>
     <ul ref="content" class="fl newAlbum-content">
       <li
         v-for="(item, index) in albumList"
@@ -8,7 +21,9 @@
       >
         <ul class="fl-sb">
           <li v-for="item1 in item" :key="item1.id">
-            <img :src="item1.picUrl" alt="" class="album-img">
+            <router-link to="/">
+              <img :src="item1.picUrl" alt="" class="album-img">
+            </router-link>
             <div class="desc">
               <router-link to="/">
                 <p class="ellipsis-1">
@@ -91,15 +106,67 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-$img_width:100px;
-$img_height:100px;
-$pad:30px;
+  $img_width:100px;
+  $img_height:100px;
+  $pad:30px;
+  $selfHeight: 10.5px;
+  $header:108px;
   .newAlbum-wrap {
     position: relative;
+    margin: 60px 0 30px 0;
     overflow: hidden;
+    .top-header {
+      margin-bottom: 20px;
+      padding: 0 0 8px 30px;
+      font-size: 12px;
+      color: #666;
+      border-bottom: 2px solid #C10D0C;
+      background: url('@/assets/icons/index.png') -225px -158px no-repeat;
+      .left {
+        .title {
+        font-size: 18px;
+        color: #333;
+        }
+        .tab {
+          display: flex;
+          align-items: center;
+          li {
+            position: relative;
+            padding: 0 15px;
+            &::after {
+              content: '';
+              position: absolute;
+              right: 0;
+              top: calc(50% - 5px);
+              width: 1px;
+              height: 10px;
+              background-color: #ccc;
+            }
+            &:last-child::after {
+              content: '';
+              width: 0;
+              height: 0;
+            }
+          }
+        }
+      }
+      .right {
+        display: flex;
+        align-items: center;
+        a {
+          margin-right: 6px;
+        }
+        i {
+          display: block;
+          width: 12px;
+          height: 12px;
+          background: url('@/assets/icons/index.png') 0 -240px no-repeat;
+        }
+      }
+    }
     .newAlbum-content {
       background-color: #f5f5f5;
-      border: 1px solid #fff;
+      border: 1px solid #d3d3d3;
       .newAlbum-items {
         flex-shrink: 0;
         width: 100%;
@@ -116,13 +183,13 @@ $pad:30px;
     }
     .prev {
       position: absolute;
-      top: ($img_height + $pad + 10.5px) / 2;
+      top: ($img_height + $pad + $selfHeight + $header) / 2;
       left: 5px;
       cursor: pointer;
     }
     .next {
       position: absolute;
-      top: ($img_height + $pad + 10.5px) / 2;
+      top: ($img_height + $pad + $selfHeight + $header) / 2;
       right: 5px;
       cursor: pointer;
     }

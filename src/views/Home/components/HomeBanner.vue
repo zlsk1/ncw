@@ -2,10 +2,10 @@
   <div class="banner-wrap">
     <CarouselWrap class="w980" height="285px">
       <CarouselItem v-for="item in bannerList" :key="item.targetId">
-        <div class="fl download-wrap">
+        <router-link class="fl download-wrap" to="/">
           <img :src="item.imageUrl" alt="" style="width: 75%">
           <a href="" class="download" />
-        </div>
+        </router-link>
       </CarouselItem>
     </CarouselWrap>
   </div>
