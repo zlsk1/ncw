@@ -9,3 +9,7 @@ export const clearToken = () => {
 export const getAvator = () => {
   return JSON.parse(localStorage.getItem('userInfo'))?.avatarUrl
 }
+
+export const getNickname = () => {
+  return JSON.parse(localStorage.getItem('userInfo'))?.nickname
+}
