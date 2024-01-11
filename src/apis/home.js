@@ -24,3 +24,9 @@ export const getNewAlbum = () => {
     url: '/album/newest'
   })
 }
+
+export const getTop = () => {
+  return http({
+    url: '/toplist'
+  })
+}

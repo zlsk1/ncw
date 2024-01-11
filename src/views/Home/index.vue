@@ -5,6 +5,7 @@
       <div class="left">
         <HomeRecomend />
         <HomeNewAlbum />
+        <HomeTop />
       </div>
       <div class="right" />
     </div>
@@ -15,6 +16,7 @@
 import HomeBanner from './components/HomeBanner'
 import HomeRecomend from './components/HomeRecomend'
 import HomeNewAlbum from './components/HoneNewAlbum.vue'
+import HomeTop from './components/HomeTop.vue'
 </script>
 
 <style lang="scss" scoped>
