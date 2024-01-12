@@ -11,6 +11,7 @@
         <HomeSide />
       </div>
     </div>
+    <PlayBar :song-info="songInfo" />
   </div>
 </template>
 
@@ -20,6 +21,14 @@ import HomeRecomend from './components/HomeRecomend'
 import HomeNewAlbum from './components/HoneNewAlbum.vue'
 import HomeTop from './components/HomeTop.vue'
 import HomeSide from './components/HomeSide.vue'
+import PlayBar from '@/components/PlayBar/index'
+
+const songInfo = {
+  url: 'http://m7.music.126.net/20240112221349/e5b158ef92ba53e29337eb860010fa39/ymusic/0fd6/4f65/43ed/a8772889f38dfcb91c04da915b301617.mp3',
+  br: 8000,
+  name: '病变',
+  singer: 'Cubi/Fi9江澈'
+}
 </script>
 
 <style lang="scss" scoped>

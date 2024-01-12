@@ -38,7 +38,7 @@
                 </p>
               </router-link>
               <div class="icon">
-                <i class="play" />
+                <i class="play" @click="transmitSongInfo(track.id)" />
                 <i class="addlist" />
                 <i class="like" />
               </div>
@@ -59,9 +59,12 @@
 import { onMounted, ref } from 'vue'
 import { useTopStore } from '@/stores/top'
 import { getPlayListDetail } from '@/apis/playList'
+import { getSongUrl } from '@/apis/song'
 const store = useTopStore()
 const ids = ref([])
 const topList = ref([])
+const emit = defineEmits(['getsong'])
+
 const getTopList = (ids) => {
   const p = Promise.all([
     getPlayListDetail(ids[0]),
@@ -73,6 +76,12 @@ const getTopList = (ids) => {
       topList.value.push(item.data.playlist.tracks.slice(0, 10))
     }
   })
+}
+const transmitSongInfo = async id => {
+  console.log(id)
+  const res = await getSongUrl(id)
+  console.log(res)
+  emit('getsong', res)
 }
 
 onMounted(async () => {
