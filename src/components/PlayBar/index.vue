@@ -1,7 +1,14 @@
 <template>
   <div class="playBar-wrap">
-    <audio ref="audio" src="https://music.163.com/song/media/outer/url?id=id.mp3">
-      <source :src="props.songInfo.url">
+    <audio
+      ref="audio"
+      controls
+      style="position:absolute;left:0;bottom: 100px;margin-bottom: 200px"
+      @loadedmetadata="loadedmetadata"
+      @timeupdate="timeupdate"
+      @ended="ended"
+    >
+      <source :src="props.songInfo?.url">
     </audio>
     <div ref="playBar" class="playBar-content">
       <div class="bg" />
@@ -9,22 +16,22 @@
         <div class="content">
           <div class="btns fl-sb">
             <i class="prev" />
-            <i class="play" />
-            <!-- <i class="suspend" /> -->
+            <i v-if="paused" class="play" @click="play()" />
+            <i v-else class="pause" @click="pause()" />
             <i class="next" />
           </div>
           <div class="progressBar">
             <router-link class="img-container" to="/">
               <i class="img-wrap" />
-              <img src="https://p2.music.126.net/PXc76l9725qEnC1j-bMRrQ==/109951166261476409.jpg" alt="">
+              <img :src="props.songInfo?.picUrl" alt="">
             </router-link>
             <div class="bar-wrap">
               <div class="info">
                 <router-link class="track-name" to="/">
-                  {{ props.songInfo.name }}
+                  {{ props.songInfo?.name }}
                 </router-link>
                 <router-link class="singer-name" to="/">
-                  {{ props.songInfo.singer }}
+                  {{ props.songInfo?.singer }}
                 </router-link>
                 <router-link to="/">
                   <i class="from" />
@@ -37,8 +44,8 @@
               </div>
             </div>
             <div class="time">
-              <span class="now">{{ formatSongDuration(now) }} /</span>
-              <span class="end">{{ formatSongDuration(end) }}</span>
+              <span class="now">{{ formatSongDuration(now, 1) }} /</span>
+              <span class="end">{{ formatSongDuration(end, 0) }}</span>
             </div>
           </div>
           <div class="opera">
@@ -62,7 +69,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { watch, ref } from 'vue'
 import { formatSongDuration } from '@/utils/time.js'
 const props = defineProps({
   songInfo: { type: Object, default: () => {} }
@@ -70,10 +77,47 @@ const props = defineProps({
 
 const moveBtn = ref('')
 const playBar = ref('')
+const audio = ref('')
+const paused = ref(true)
 const now = ref('00:00')
-const end = ref(props.songInfo.br)
+const end = ref(props.songInfo?.time)
 const progressBarWidth = 466
 const btnWidth = 11
+const pregressTime = ref('')
+const isMove = ref(false)
+
+watch(() => props.songInfo, async val => {
+  const songQueue = await JSON.parse(localStorage.getItem('song_queue')) || []
+  songQueue.some(v => v.id === val.id) ? '' : songQueue.unshift(val)
+  localStorage.setItem('song_queue', JSON.stringify(songQueue))
+})
+
+const loadedmetadata = e => {
+  console.log(e)
+  audio.value.play()
+  paused.value = false
+}
+const play = () => {
+  audio.value.play()
+  paused.value = false
+}
+const pause = () => {
+  audio.value.pause()
+  paused.value = true
+}
+const timeupdate = e => {
+  now.value = e.target.currentTime
+  now.value = e.target.currentTime
+  if (!isMove.value) {
+    const percent = now.value / props.songInfo.time * 1000 * 100
+    document.querySelector('.played-bg').style.width = percent + 0.6 + '%'
+    moveBtn.value.style.left = `calc(${percent + 0.6}% - ${btnWidth}px)`
+  }
+}
+const ended = () => {
+  paused.value = true
+  document.querySelector('.played-bg').style.width = 0 + '%'
+}
 
 const mousedown = e1 => {
   e1.preventDefault()
@@ -82,7 +126,9 @@ const mousedown = e1 => {
   playBar.value.onmousemove = e2 => {
     e2.stopPropagation()
     if (e2.clientX > clientX && e2.clientX <= clientX + progressBarWidth) {
+      isMove.value = true
       const moveDistace = e2.clientX - clientX - btnWidth
+      pregressTime.value = (moveDistace / progressBarWidth) * props.songInfo.time / 1000
       moveBtn.value.style.left = moveDistace + 'px'
       playedBg.style.width = ((moveDistace / progressBarWidth) * 100) + 0.6 + '%'
     }
@@ -90,6 +136,7 @@ const mousedown = e1 => {
       e.stopPropagation()
       playBar.value.onmousemove = null
       playBar.value.onmouseup = null
+      audio.value.currentTime = pregressTime.value
     }
     playBar.value.onmouseout = () => {
       playBar.value.onmousemove = null
@@ -112,6 +159,7 @@ const clickProgress = e => {
   bottom: 0;
   width: 100%;
   height: 0;
+  z-index: 100;
   .playBar-content {
     position: absolute;
     zoom: 1;
@@ -158,9 +206,10 @@ const clickProgress = e => {
           background-position: -40px -204px;
         }
       }
-      .suspend {
+      .pause {
         width: 36px;
         height: 36px;
+        margin: 0 10px;
         background-position: 0 -165px;
         &:hover {
           background-position: -40px -165px;
@@ -248,6 +297,7 @@ const clickProgress = e => {
           height: 24px;
           background: url('@/assets/icons/iconall.png') 0 -250px no-repeat;
           cursor: pointer;
+          z-index: 200;
         }
         .bar-bg {
           width: 466px;
@@ -260,6 +310,7 @@ const clickProgress = e => {
           width: 0;
           height: 10px;
           background: url('@/assets/icons/statbar.png') left -66px no-repeat;
+          z-index: 100;
         }
       }
       .time {

@@ -33,12 +33,12 @@
                 {{ no + 1 }}
               </p>
               <router-link to="/">
-                <p class="track-name">
+                <p class="track-name ellipsis-1">
                   {{ track.name }}
                 </p>
               </router-link>
               <div class="icon">
-                <i class="play" @click="transmitSongInfo(track.id)" />
+                <i class="play" @click="transmitSongInfo({id: track.id, picUrl: track.al.picUrl, name: track.name, singer: track.ar.map(v => { return v.name }).join('/')})" />
                 <i class="addlist" />
                 <i class="like" />
               </div>
@@ -77,11 +77,9 @@ const getTopList = (ids) => {
     }
   })
 }
-const transmitSongInfo = async id => {
-  console.log(id)
-  const res = await getSongUrl(id)
-  console.log(res)
-  emit('getsong', res)
+const transmitSongInfo = async o => {
+  const { data: { data }} = await getSongUrl(o.id)
+  emit('getsong', Object.assign(o, { url: data[0].url, time: data[0].time, play: true }))
 }
 
 onMounted(async () => {
@@ -213,7 +211,7 @@ onMounted(async () => {
           .track-name {
             position: absolute;
             left: 50px;
-            width: 100%;
+            width: 170px;
             font-size: 12px;
             color: #000;
           }
