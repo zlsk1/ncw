@@ -46,8 +46,8 @@ const _i = computed(() => {
 })
 
 const goto = () => {
-  content.value.style.transition = 'all .3s linear'
-  content.value.style.transform = `translateX(calc(-100% * ${i.value}))`
+  content.value ? content.value.style.transition = 'all .3s linear' : ''
+  content.value ? content.value.style.transform = `translateX(calc(-100% * ${i.value}))` : ''
 }
 
 const next = () => {
@@ -55,8 +55,8 @@ const next = () => {
     i.value++
     goto()
   } else {
-    content.value.style.transition = 'none'
-    content.value.style.transform = `translateX(0)`
+    content.value ? content.value.style.transition = 'none' : ''
+    content.value ? content.value.style.transform = 'none' : 'translateX(0)'
     setTimeout(() => { i.value = 1; goto() }, 0)
   }
 }

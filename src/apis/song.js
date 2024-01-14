@@ -14,3 +14,12 @@ export const getSongUrl = (id, level = 'standard') => {
     }
   })
 }
+
+export const getLyric = id => {
+  return http({
+    url: '/lyric/new',
+    params: {
+      id
+    }
+  })
+}

@@ -1,67 +1,129 @@
 <template>
-  <div class="playBar-wrap">
-    <audio
-      ref="audio"
-      controls
-      style="position:absolute;left:0;bottom: 100px;margin-bottom: 200px"
-      @loadedmetadata="loadedmetadata"
-      @timeupdate="timeupdate"
-      @ended="ended"
-    >
-      <source :src="props.songInfo?.url">
-    </audio>
-    <div ref="playBar" class="playBar-content">
-      <div class="bg" />
-      <div class="w980">
+  <div v-clickOutside="closePlayList">
+    <div class="playBar-wrap">
+      <audio
+        ref="audio"
+        style="position:absolute;left:0;bottom: 100px;margin-bottom: 200px"
+        :src="`https://music.163.com/song/media/outer/url?id=${props.currentSong?.id}.mp3`"
+        @loadedmetadata="loadedmetadata"
+        @timeupdate="timeupdate"
+        @ended="ended"
+      />
+      <div ref="playBar" class="playBar-content">
+        <div class="bg" />
+        <div class="w980">
+          <div class="content">
+            <div class="btns fl-sb">
+              <i class="prev" />
+              <i v-if="paused" class="play" @click.stop="play()" />
+              <i v-else class="pause" @click.stop="pause()" />
+              <i class="next" />
+            </div>
+            <div class="progressBar">
+              <router-link class="img-container" to="/">
+                <i class="img-wrap" />
+                <img :src="props.currentSong?.picUrl" alt="">
+              </router-link>
+              <div class="bar-wrap">
+                <div class="info">
+                  <router-link class="track-name" to="/">
+                    {{ props.currentSong?.name }}
+                  </router-link>
+                  <router-link class="singer-name" to="/">
+                    {{ props.currentSong?.singer }}
+                  </router-link>
+                  <router-link to="/">
+                    <i class="from" />
+                  </router-link>
+                </div>
+                <div class="bar" @click="clickProgress">
+                  <i ref="moveBtn" class="moveBtn" @mousedown="mousedown" />
+                  <div class="bar-bg" />
+                  <div class="played-bg" />
+                </div>
+              </div>
+              <div class="time">
+                <span class="now">{{ formatSongDuration(now, 1) }} /</span>
+                <span class="end">{{ formatSongDuration(end, 0) }}</span>
+              </div>
+            </div>
+            <div class="opera">
+              <div class="fl">
+                <i class="pip" />
+                <i class="addlist" />
+                <i class="share" />
+              </div>
+              <div class="fl">
+                <i class="volume" />
+                <i class="playType" />
+                <div class="playlist">
+                  <i class="playlist-icon" @click.stop="isShow = !isShow" />
+                  <span class="playlist-count">
+                    {{ songQueue?.length }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <i class="lock" />
+            <i class="unlock" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="isShow" class="play-queue-wrap w980 fl">
+      <i class="close" @click.stop="isShow = false" />
+      <img :src="props.currentSong?.picUrl" alt="" class="bg-img">
+      <div class="msk" />
+      <div class="play-queue">
+        <div class="header fl-sb">
+          <p class="fw">
+            播放列表({{ songQueue?.length }})
+          </p>
+          <ul class="fl">
+            <li>
+              <i class="add-like" />
+              <span>收藏全部</span>
+            </li>
+            <li>
+              <i class="del" />
+              <span>清除</span>
+            </li>
+          </ul>
+        </div>
         <div class="content">
-          <div class="btns fl-sb">
-            <i class="prev" />
-            <i v-if="paused" class="play" @click="play()" />
-            <i v-else class="pause" @click="pause()" />
-            <i class="next" />
-          </div>
-          <div class="progressBar">
-            <router-link class="img-container" to="/">
-              <i class="img-wrap" />
-              <img :src="props.songInfo?.picUrl" alt="">
-            </router-link>
-            <div class="bar-wrap">
-              <div class="info">
-                <router-link class="track-name" to="/">
-                  {{ props.songInfo?.name }}
-                </router-link>
-                <router-link class="singer-name" to="/">
-                  {{ props.songInfo?.singer }}
-                </router-link>
-                <router-link to="/">
-                  <i class="from" />
-                </router-link>
+          <div v-for="item in songQueue" :key="item.id" class="item fl-sb">
+            <div v-if="item.id === props.currentSong.id" class="play" />
+            <p class="name">
+              {{ item.name }}
+            </p>
+            <div>
+              <div class="icons">
+                <i class="add-like" />
+                <i class="share" />
+                <i class="download" />
+                <i class="del" />
               </div>
-              <div class="bar" @click="clickProgress">
-                <i ref="moveBtn" class="moveBtn" @mousedown="mousedown" />
-                <div class="bar-bg" />
-                <div class="played-bg" />
-              </div>
-            </div>
-            <div class="time">
-              <span class="now">{{ formatSongDuration(now, 1) }} /</span>
-              <span class="end">{{ formatSongDuration(end, 0) }}</span>
+              <router-link to="/" class="singer ellipsis-1">
+                {{ item.singer }}
+              </router-link>
+              <p class="duration">
+                {{ formatSongDuration(item.time, 0) }}
+              </p>
+              <i class="from" />
             </div>
           </div>
-          <div class="opera">
-            <div class="fl">
-              <i class="pip" />
-              <i class="addlist" />
-              <i class="share" />
-            </div>
-            <div class="fl">
-              <i class="volume" />
-              <i class="playType" />
-              <i class="playlist" />
-            </div>
+        </div>
+      </div>
+      <div class="lyric">
+        <div class="name">
+          {{ props.currentSong?.name }}
+        </div>
+        <div class="word">
+          <div v-for="(item, index) in props?.currentSong.lrc" :key="index" class="per-line">
+            <p :style="{ 'font-size': item.split(']')[0].split('[')[1] <= formatSongDuration(now, 1) && formatSongDuration(now, 1) < props?.currentSong.lrc[index + 1].split(']')[0].split('[')[1] ? '16px': '12px' }">
+              {{ item.split(']')[1] }}
+            </p>
           </div>
-          <i class="lock" />
-          <i class="unlock" />
         </div>
       </div>
     </div>
@@ -72,7 +134,7 @@
 import { watch, ref } from 'vue'
 import { formatSongDuration } from '@/utils/time.js'
 const props = defineProps({
-  songInfo: { type: Object, default: () => {} }
+  currentSong: { type: Object, default: () => {} }
 })
 
 const moveBtn = ref('')
@@ -80,22 +142,27 @@ const playBar = ref('')
 const audio = ref('')
 const paused = ref(true)
 const now = ref('00:00')
-const end = ref(props.songInfo?.time)
+const end = ref(props.currentSong?.time)
 const progressBarWidth = 466
 const btnWidth = 11
 const pregressTime = ref('')
 const isMove = ref(false)
+const isShow = ref(false)
+const songQueue = ref(JSON.parse(localStorage.getItem('song_queue')))
 
-watch(() => props.songInfo, async val => {
+watch(() => props.currentSong, async val => {
+  end.value = val.time
   const songQueue = await JSON.parse(localStorage.getItem('song_queue')) || []
   songQueue.some(v => v.id === val.id) ? '' : songQueue.unshift(val)
   localStorage.setItem('song_queue', JSON.stringify(songQueue))
 })
+watch(now, val => {
+  console.log(val.toString())
+})
 
 const loadedmetadata = e => {
   console.log(e)
-  audio.value.play()
-  paused.value = false
+  play()
 }
 const play = () => {
   audio.value.play()
@@ -107,9 +174,8 @@ const pause = () => {
 }
 const timeupdate = e => {
   now.value = e.target.currentTime
-  now.value = e.target.currentTime
   if (!isMove.value) {
-    const percent = now.value / props.songInfo.time * 1000 * 100
+    const percent = now.value / props.currentSong.time * 1000 * 100
     document.querySelector('.played-bg').style.width = percent + 0.6 + '%'
     moveBtn.value.style.left = `calc(${percent + 0.6}% - ${btnWidth}px)`
   }
@@ -128,7 +194,7 @@ const mousedown = e1 => {
     if (e2.clientX > clientX && e2.clientX <= clientX + progressBarWidth) {
       isMove.value = true
       const moveDistace = e2.clientX - clientX - btnWidth
-      pregressTime.value = (moveDistace / progressBarWidth) * props.songInfo.time / 1000
+      pregressTime.value = (moveDistace / progressBarWidth) * props.currentSong.time / 1000
       moveBtn.value.style.left = moveDistace + 'px'
       playedBg.style.width = ((moveDistace / progressBarWidth) * 100) + 0.6 + '%'
     }
@@ -146,10 +212,14 @@ const mousedown = e1 => {
 const clickProgress = e => {
   const clientX = document.querySelector('.bar-wrap').getBoundingClientRect().left
   const playedBg = document.querySelector('.played-bg')
-  const moveDistace = e.clientX - clientX - btnWidth
+  const moveDistace = e.clientX - clientX
+  pregressTime.value = (moveDistace / progressBarWidth) * props.currentSong.time / 1000
   moveBtn.value.style.left = moveDistace + 'px'
   playedBg.style.width = ((moveDistace / progressBarWidth) * 100) + 0.6 + '%'
+  audio.value.currentTime = pregressTime.value
 }
+
+const closePlayList = () => { isShow.value = false }
 </script>
 
 <style lang="scss" scoped>
@@ -384,12 +454,222 @@ const clickProgress = e => {
         }
       }
       .playlist {
-        width: 60px;
-        height: 25px;
-        background-position: -42px -68px;
-        &:hover {
-          background-position: -42px -98px;
+        position: relative;
+        .playlist-icon {
+          width: 60px;
+          height: 25px;
+          background-position: -42px -68px;
+          &:hover {
+            background-position: -42px -98px;
+          }
         }
+        .playlist-count {
+          position: absolute;
+          right: 16px;
+          top: 6px;
+          font-size: 12px;
+          color: #666;
+        }
+      }
+    }
+  }
+}
+.play-queue-wrap {
+  position: fixed;
+  bottom: 46px;
+  left: calc(50% - 490px);
+  width: 100%;
+  height: 300px;
+  margin: auto;
+  font-size: 12px;
+  color: #e2e2e2;
+  background-color: #1f1f1f;
+  border-radius: 5px 5px 0 0;
+  z-index: 999;
+  overflow: hidden;
+  .bg-img {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 600px;
+    opacity: .1;
+    z-index: 1;
+  }
+  i {
+    display: block;
+    background: url('@/assets/icons/playlist.png') no-repeat;
+    cursor: pointer;
+  }
+  .add-like {
+    width: 16px;
+    height: 16px;
+    background-position: -24px 0;
+    &:hover {
+      background-position: -24px -20px;
+    }
+  }
+  .share {
+    width: 14px;
+    height: 16px;
+    &:hover {
+      background-position: 0 -20px;
+    }
+  }
+  .del {
+    width: 13px;
+    height: 16px;
+    background-position: -51px 0;
+    &:hover {
+      background-position: -51px -20px;
+    }
+  }
+  .download {
+    width: 14px;
+    height: 16px;
+    background-position: -57px -50px;
+    &:hover {
+      background-position: -80px -50px;
+    }
+  }
+  .from {
+    display: block;
+    width: 14px;
+    height: 15px;
+    background: url('@/assets/icons/playbar.png') -110px -103px no-repeat;
+    cursor: pointer;
+    &:hover {
+      background-position: -130px -103px;
+    }
+  }
+  .close {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    width: 30px;
+    height: 30px;
+    background-position: -195px 9px;
+    &:hover {
+      background-position: -195px -21px;
+    }
+  }
+  .play {
+    width: 10px;
+    height: 13px;
+    background: url('@/assets/icons/playlist.png') -182px 0 no-repeat;
+  }
+  .play-queue {
+    flex: 4;
+    color: #ccc;
+    background-color: #262626;
+    z-index: 4;
+    mix-blend-mode: difference;
+    a {
+      color: #ccc;
+    }
+    .header {
+      padding: 0 20px;
+      height: 40px;
+      line-height: 40px;
+      background: url('@/assets/icons/playlist_bg.png') -78px 0 no-repeat;
+      p {
+        font-size: 14px;
+      }
+      ul li {
+        display: flex;
+        height: 15px;
+        line-height: 15px;
+        padding: 0 10px;
+        cursor: pointer;
+        &:hover span {
+          text-decoration: underline;
+        }
+        &:hover .add-like {
+          background-position: -24px -20px;
+        }
+        &:hover .share {
+          background-position: 0 -20px;
+        }
+        &:hover .del {
+          background-position: -51px -20px;
+        }
+        span {
+          margin-left: 4px;
+        }
+      }
+    }
+    .content {
+      height: 260px;
+      overflow-y: auto;
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background: #868686;
+        border-radius: 10px;
+      }
+      &::-webkit-scrollbar-track {
+        background-color: #0c0c0f;
+      }
+      .item {
+        height: 28px;
+        padding: 0 10px;
+        line-height: 28px;
+        cursor: pointer;
+        &:hover {
+          color: #fff;
+          background: #0b0b0b;
+        }
+        &:hover a {
+          color: #fff;
+        }
+        &:hover .icons {
+          display: flex;
+        }
+        .icons {
+          display: none;
+          i {
+            margin-right: 10px;
+          }
+        }
+        .name {
+          flex: 5;
+          margin-left: 10px;
+        }
+        div {
+          display: flex;
+          align-items: center;
+          .singer {
+            width: 80px;
+          }
+          .duration {
+            margin: 0 30px;
+          }
+        }
+      }
+    }
+  }
+  .lyric {
+    flex: 3;
+    text-align: center;
+    color: #989898;
+    z-index: 4;
+    .name {
+      height: 40px;
+      line-height: 40px;
+      background: url('@/assets/icons/playlist_bg.png') no-repeat;
+    }
+    .word {
+      height: 260px;
+      overflow-y: auto;
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background: #868686;
+        border-radius: 10px;
+      }
+      &::-webkit-scrollbar-track {
+        background-color: #0c0c0f;
       }
     }
   }
