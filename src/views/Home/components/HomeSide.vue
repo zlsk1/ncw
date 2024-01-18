@@ -13,7 +13,7 @@
             <img class="vip" src="https://p6.music.126.net/obj/wonDlsKUwrLClGjCm8Kx/32582188101/3e49/6a48/39f3/c4124c59baca58313e16a62c5577808b.png" alt="">
           </div>
           <router-link class="level" to="/">
-            {{ getDetail().level }}
+            {{ info?.level }}
             <i />
           </router-link>
           <button class="signin is-check">
@@ -25,7 +25,7 @@
         <li>
           <router-link to="/">
             <p class="count">
-              {{ getDetail().eventCount }}
+              {{ info?.eventCount }}
             </p>
             <p class="f12">
               动态
@@ -35,7 +35,7 @@
         <li>
           <router-link to="/">
             <p class="count">
-              {{ getDetail().follows }}
+              {{ info?.follows }}
             </p>
             <p class="f12">
               关注
@@ -45,7 +45,7 @@
         <li>
           <router-link to="/">
             <p class="count">
-              {{ getDetail().followeds }}
+              {{ info?.followeds }}
             </p>
             <p class="f12">
               粉丝
@@ -111,11 +111,12 @@ const { nickname } = storeToRefs(store)
 
 const singerList = ref([])
 const djList = ref([])
+const info = ref(null)
 
 const getDetail = () => {
   store.actiongetUserDetail(JSON.parse(localStorage.getItem('userInfo')).profile.userId)
   const { level, profile } = JSON.parse(localStorage.getItem('userInfo'))
-  return {
+  info.value = {
     eventCount: profile.eventCount,
     follows: profile.follows,
     followeds: profile.followeds,
