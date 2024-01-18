@@ -69,7 +69,7 @@ const getNewAlbumList = async () => {
   }
 }
 const goto = () => {
-  content.value.style.transition = 'all .6s'
+  content.value.style.transition = 'all .6s linear'
   content.value.style.transform = `translateX(calc(-100% * ${i.value}))`
 }
 const next = () => {
@@ -168,12 +168,12 @@ watch(isRender, val => {
       }
     }
     .newAlbum-content {
-      background-color: #f5f5f5;
-      border: 1px solid #d3d3d3;
       .newAlbum-items {
         flex-shrink: 0;
         width: 100%;
         padding: $pad;
+        background-color: #f5f5f5;
+        border: 1px solid #d3d3d3;
         overflow: hidden;
         .album-img {
           width: $img_width;
