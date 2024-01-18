@@ -5,15 +5,11 @@ import App from './App.vue'
 import router from './router'
 import directive from './directive'
 
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
-
 import '@/styles/index.css'
 
 const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 app.use(directive)
-app.use(ElementPlus)
 
 app.mount('#app')
