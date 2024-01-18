@@ -28,7 +28,7 @@
 
 <script setup>
 import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
-import { onMounted, ref, computed, watch, nextTick } from 'vue'
+import { onMounted, ref, computed, watch, onUpdated } from 'vue'
 
 const props = defineProps({
   height: { type: String, default: '120px' },
@@ -39,6 +39,7 @@ const props = defineProps({
 const items = ref(null)
 const content = ref(null)
 const i = ref(0)
+const isRender = ref(false)
 let timer = null
 
 const _i = computed(() => {
@@ -75,22 +76,22 @@ const indicator = index => {
   i.value = index
 }
 const handleAutoplay = () => {
-  timer = setInterval(function () {
-    next()
-  }, props.interval)
+  timer = setInterval(() => { next() }, props.interval)
 }
-const mouseover = () => { clearInterval(timer) }
+const mouseover = () => { clearInterval(timer); timer = null }
 const mouseleave = () => { handleAutoplay() }
-onMounted(() => {
+onMounted(async () => {
 })
-watch(content, val => {
-  setTimeout(async () => {
-    items.value = val.children.length
-    const first = val.children[0].cloneNode(true)
+onUpdated(() => {
+  content.value.children.length ? isRender.value = true : ''
+})
+watch(isRender, val => {
+  if (val) {
+    items.value = content.value.children.length
+    const first = content.value.children[0].cloneNode(true)
     content.value.append(first)
-    await nextTick()
     props.autoplay ? handleAutoplay() : ''
-  }, 100)
+  }
 })
 </script>
 

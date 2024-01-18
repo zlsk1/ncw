@@ -3,7 +3,7 @@
     <div class="top-header fl-sb">
       <div class="left fl">
         <router-link to="/" class="title">
-          榜单
+          新碟上架
         </router-link>
       </div>
       <div class="right">
@@ -51,7 +51,7 @@
 
 <script setup>
 import { getNewAlbum } from '@/apis/home'
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, onUpdated } from 'vue'
 import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
 
 const albumList = ref([])
@@ -59,6 +59,7 @@ const per = 5
 const content = ref(null)
 const items = ref(0)
 const i = ref(0)
+const isRender = ref(false)
 
 const getNewAlbumList = async () => {
   const res = await getNewAlbum()
@@ -92,16 +93,18 @@ const prev = () => {
   }
 }
 
-watch(content, val => {
-  setTimeout(() => {
-    items.value = val.children.length
-    const first = val.children[0].cloneNode(true)
-    content.value.append(first)
-  }, 100)
-}
-)
 onMounted(() => {
   getNewAlbumList()
+})
+onUpdated(() => {
+  content.value.children.length ? isRender.value = true : ''
+})
+watch(isRender, val => {
+  if (val) {
+    items.value = content.value.children.length
+    const first = content.value.children[0].cloneNode(true)
+    content.value.append(first)
+  }
 })
 </script>
 
