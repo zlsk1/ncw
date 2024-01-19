@@ -2,8 +2,8 @@
   <div class="card-wrap">
     <router-link to="/">
       <img
+        v-lazy="imgUrl"
         class="card-img"
-        :src="imgUrl"
         alt=""
         :style="{height: imgHeight}"
       >

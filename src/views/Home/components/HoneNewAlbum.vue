@@ -22,7 +22,11 @@
         <ul class="fl-sb">
           <li v-for="item1 in item" :key="item1.id">
             <router-link to="/">
-              <img :src="item1.picUrl" alt="" class="album-img">
+              <img
+                :src="item1.picUrl"
+                alt=""
+                class="album-img"
+              >
             </router-link>
             <div class="desc">
               <router-link to="/">

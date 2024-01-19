@@ -1,7 +1,9 @@
-import clickOutside from './clickOutside'
+import { clickOutside } from './clickOutside'
+import { lazy } from './lazyload'
 
 const directives = {
-  clickOutside
+  clickOutside,
+  lazy
 }
 
 export default {

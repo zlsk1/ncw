@@ -17,7 +17,7 @@
       <div v-for="(item, index) in store.topId.slice(0, 3)" :key="item.name" class="item">
         <div class="header">
           <router-link to="/">
-            <img :src="item.imgUrl" alt="">
+            <img v-lazy="item.imgUrl" alt="">
           </router-link>
           <div class="right">
             <p class="name">

@@ -62,7 +62,7 @@
       <ul class="content">
         <li v-for="item in singerList" :key="item.id">
           <router-link to="/">
-            <img :src="item.picUrl" alt="">
+            <img v-lazy="item.picUrl" alt="">
             <div>
               <p class="name">
                 {{ item.name }}
@@ -85,7 +85,7 @@
       <ul class="content">
         <li v-for="item in djList" :key="item.id">
           <router-link to="/">
-            <img :src="item.avatarUrl" alt="">
+            <img v-lazy="item.avatarUrl" alt="">
             <div>
               <p class="name">
                 {{ item.nickName }}

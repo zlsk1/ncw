@@ -1,4 +1,4 @@
-const clickOutside = {
+export const clickOutside = {
   beforeMount (el, binding) {
     // 在元素上绑定一个事件监听器
     el.clickOutsideEvent = function (event) {
@@ -17,4 +17,3 @@ const clickOutside = {
   }
 }
 
-export default clickOutside

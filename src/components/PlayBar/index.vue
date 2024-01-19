@@ -71,9 +71,7 @@
       </div>
     </div>
     <div v-if="isShow" class="play-queue-wrap w980 fl">
-      <i class="close" @click.stop="isShow = false" />
       <img :src="props.currentSong?.picUrl" alt="" class="bg-img">
-      <div class="msk" />
       <div class="play-queue">
         <div class="header fl-sb">
           <p class="fw">
@@ -116,6 +114,7 @@
       </div>
       <div class="lyric">
         <div class="name">
+          <i class="close" @click.stop="isShow = false" />
           {{ props.currentSong?.name }}
         </div>
         <div ref="word" class="word">
@@ -557,6 +556,7 @@ const closePlayList = () => { isShow.value = false }
     width: 30px;
     height: 30px;
     background-position: -195px 9px;
+    z-index: 4;
     &:hover {
       background-position: -195px -21px;
     }
@@ -663,6 +663,7 @@ const closePlayList = () => { isShow.value = false }
     color: #989898;
     z-index: 4;
     .name {
+      position: relative;
       height: 40px;
       line-height: 40px;
       background: url('@/assets/icons/playlist_bg.png') no-repeat;
