@@ -118,12 +118,14 @@
         <div class="name">
           {{ props.currentSong?.name }}
         </div>
-        <div class="word">
-          <div v-for="(item, index) in props?.currentSong.lrc" :key="index" class="per-line">
-            <p :style="{ 'font-size': item.split(']')[0].split('[')[1] <= formatSongDuration(now, 1) && formatSongDuration(now, 1) < props?.currentSong.lrc[index + 1].split(']')[0].split('[')[1] ? '16px': '12px' }">
-              {{ item.split(']')[1] }}
-            </p>
-          </div>
+        <div ref="word" class="word">
+          <p
+            v-for="(item, index) in props?.currentSong.lrc"
+            :key="index"
+            :class="item.split(']')[0].split('[')[1] <= formatSongDuration(now, 1) && formatSongDuration(now, 1) < props?.currentSong.lrc[index + 1].split(']')[0].split('[')[1] ? 'active-lyric': 'per-line'"
+          >
+            {{ item.split(']')[1] }}
+          </p>
         </div>
       </div>
     </div>
@@ -149,6 +151,8 @@ const pregressTime = ref('')
 const isMove = ref(false)
 const isShow = ref(false)
 const songQueue = ref(JSON.parse(localStorage.getItem('song_queue')))
+const word = ref('')
+const index = ref(0)
 
 watch(() => props.currentSong, async val => {
   end.value = val.time
@@ -156,13 +160,10 @@ watch(() => props.currentSong, async val => {
   songQueue.some(v => v.id === val.id) ? '' : songQueue.unshift(val)
   localStorage.setItem('song_queue', JSON.stringify(songQueue))
 })
-watch(now, val => {
-  console.log(val.toString())
-})
 
 const loadedmetadata = e => {
-  console.log(e)
-  play()
+  // console.log(e)
+  // play()
 }
 const play = () => {
   audio.value.play()
@@ -173,12 +174,20 @@ const pause = () => {
   paused.value = true
 }
 const timeupdate = e => {
+  const _index = Array.from(word.value.children).findIndex(v => v.className === 'active-lyric')
+  if (index.value < _index) {
+    word.value.scrollTo({ top: _index * 32 - 128, behavior: 'smooth' })
+    index.value = _index
+  }
+
   now.value = e.target.currentTime
   if (!isMove.value) {
     const percent = now.value / props.currentSong.time * 1000 * 100
     document.querySelector('.played-bg').style.width = percent + 0.6 + '%'
     moveBtn.value.style.left = `calc(${percent + 0.6}% - ${btnWidth}px)`
   }
+  // if (active[0].offsetTop >= 110) {
+  // }
 }
 const ended = () => {
   paused.value = true
@@ -659,8 +668,12 @@ const closePlayList = () => { isShow.value = false }
       background: url('@/assets/icons/playlist_bg.png') no-repeat;
     }
     .word {
-      height: 260px;
+      height: 220px;
+      margin: 20px 0;
       overflow-y: auto;
+      div {
+        transition: all .3s linear;
+      }
       &::-webkit-scrollbar {
         width: 6px;
       }
@@ -671,7 +684,17 @@ const closePlayList = () => { isShow.value = false }
       &::-webkit-scrollbar-track {
         background-color: #0c0c0f;
       }
+      .per-line {
+        line-height: 32px;
+        font-size: 12px;
+        transition: color .7s linear;
+      }
     }
   }
+}
+.active-lyric {
+  line-height: 32px;
+  font-size: 14px;
+  color: #fff;
 }
 </style>
