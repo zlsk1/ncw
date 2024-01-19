@@ -26,12 +26,12 @@
             </router-link>
             <div class="desc">
               <router-link to="/">
-                <p class="ellipsis-1">
+                <p class="ellipsis-1 song">
                   {{ item1.name }}
                 </p>
               </router-link>
               <router-link to="/">
-                <p class="ellipsis-1">
+                <p class="ellipsis-1 singer">
                   {{ item1.artist.name }}
                 </p>
               </router-link>
@@ -170,7 +170,7 @@ watch(isRender, (newVal, oldVal) => {
       .newAlbum-items {
         flex-shrink: 0;
         width: 100%;
-        padding: $pad;
+        padding: $pad $pad 15px $pad;
         background-color: #f5f5f5;
         border: 1px solid #d3d3d3;
         overflow: hidden;
@@ -183,6 +183,15 @@ watch(isRender, (newVal, oldVal) => {
         }
         .desc {
           width: 100px;
+          margin-top: 8px;
+          font-size: 12px;
+          .song {
+            margin-bottom: 6px;
+            color: #000;
+          }
+          .signer {
+            color: #666;
+          }
         }
       }
     }
