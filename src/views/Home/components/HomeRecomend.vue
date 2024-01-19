@@ -45,9 +45,21 @@
         v-for="item in personalizedList"
         :key="item.id"
         class="card"
-        :img-url="item.picUrl"
         :play-count="formatPlayCount(item.playCount)"
       >
+        <router-link to="/">
+          <Pic
+            :src="item.picUrl"
+            crown
+            mask1
+            style="height: 140px"
+          />
+        </router-link>
+        <div class="card-play fl-sb">
+          <i class="icon-listen" />
+          <span class="count">{{ formatPlayCount(item.playCount) }}</span>
+          <i class="play" />
+        </div>
         <template #footer>
           <router-link to="/">
             {{ item.name }}
@@ -131,6 +143,37 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    .card-play {
+      position: absolute;
+      width: 100%;
+      height: 26px;
+      margin-top: -26px;
+      padding: 0 10px;
+      background: url('@/assets/icons/coverall.png') 0 -537px no-repeat;
+      color: #ccc;
+      z-index: 10;
+      .icon-listen {
+        display: block;
+        width: 14px;
+        height: 11px;
+        background: url('@/assets/icons/iconall.png') no-repeat;
+        background-position: 0 -24px;
+      }
+      .play {
+        display: block;
+        width: 16px;
+        height: 16px;
+        background: url('@/assets/icons/iconall.png') 0 0 no-repeat;
+        cursor: pointer;
+        &:hover {
+          background-position: 0 -60px;
+        }
+      }
+      .count {
+        position: absolute;
+        left: 30px;
+      }
+    }
     .card {
       flex-shrink: 0;
       width: calc((100% - 120px) / 4);

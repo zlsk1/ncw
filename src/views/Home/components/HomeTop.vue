@@ -17,7 +17,7 @@
       <div v-for="(item, index) in store.topId.slice(0, 3)" :key="item.name" class="item">
         <div class="header">
           <router-link to="/">
-            <img v-lazy="item.imgUrl" alt="">
+            <Pic :src="item.imgUrl" mask2 class="img" />
           </router-link>
           <div class="right">
             <p class="name">
@@ -160,9 +160,9 @@ onMounted(async () => {
         display: flex;
         padding: 20px 0 20px 20px;
         background-color: #f4f4f4;
-        img {
-          width: 100px;
-          height: 100px;
+        .img {
+          width: 80px;
+          height: 80px;
           margin-right: 10px;
         }
         .right {
