@@ -85,8 +85,8 @@ onMounted(async () => {
 onUpdated(() => {
   content.value.children.length ? isRender.value = true : ''
 })
-watch(isRender, val => {
-  if (val) {
+watch(isRender, (newVal, oldVal) => {
+  if (!oldVal) {
     items.value = content.value.children.length
     const first = content.value.children[0].cloneNode(true)
     content.value.append(first)

@@ -22,11 +22,6 @@
         <ul class="fl-sb">
           <li v-for="item1 in item" :key="item1.id">
             <router-link to="/">
-              <!-- <img
-                :src="item1.picUrl"
-                alt=""
-                class="album-img"
-              > -->
               <Pic album :src="item1.picUrl" class="album-img" />
             </router-link>
             <div class="desc">
@@ -105,8 +100,8 @@ onMounted(() => {
 onUpdated(() => {
   content.value.children.length ? isRender.value = true : ''
 })
-watch(isRender, val => {
-  if (val) {
+watch(isRender, (newVal, oldVal) => {
+  if (!oldVal) {
     items.value = content.value.children.length - 1
   }
 })
