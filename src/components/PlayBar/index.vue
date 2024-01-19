@@ -13,10 +13,10 @@
         <div class="w980">
           <div class="content">
             <div class="btns fl-sb">
-              <i class="prev" />
+              <i class="prev" @click="prev" />
               <i v-if="paused" class="play" @click.stop="play()" />
               <i v-else class="pause" @click.stop="pause()" />
-              <i class="next" />
+              <i class="next" @click="next" />
             </div>
             <div class="progressBar">
               <router-link class="img-container" to="/">
@@ -161,10 +161,12 @@ const word = ref('')
 const index = ref(0)
 
 watch(() => props.currentSong, async val => {
+  // console.log(val)
   end.value = val.time
-  const songQueue = await JSON.parse(localStorage.getItem('song_queue')) || []
-  songQueue.some(v => v.id === val.id) ? '' : songQueue.unshift(val)
-  localStorage.setItem('song_queue', JSON.stringify(songQueue))
+  const songs = await JSON.parse(localStorage.getItem('song_queue')) || []
+  songs.some(v => v.id === val.id) ? '' : songs.unshift(val)
+  songQueue.value = songs
+  localStorage.setItem('song_queue', JSON.stringify(songs))
 })
 
 const loadedmetadata = e => {
@@ -239,6 +241,16 @@ const clickProgress = e => {
 }
 
 const closePlayList = () => { isShow.value = false }
+
+const prev = () => {
+  const i = songQueue.value.findIndex(v => v.id === props.currentSong.id)
+  i > 0 ? emit('changeCurrent', songQueue.value[i - 1]) : emit('changeCurrent', songQueue.value[songQueue.value.length - 1])
+}
+
+const next = () => {
+  const i = songQueue.value.findIndex(v => v.id === props.currentSong.id)
+  i !== songQueue.value.length - 1 ? emit('changeCurrent', songQueue.value[i + 1]) : emit('changeCurrent', songQueue.value[0])
+}
 </script>
 
 <style lang="scss" scoped>
