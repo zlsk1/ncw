@@ -22,11 +22,12 @@
         <ul class="fl-sb">
           <li v-for="item1 in item" :key="item1.id">
             <router-link to="/">
-              <img
+              <!-- <img
                 :src="item1.picUrl"
                 alt=""
                 class="album-img"
-              >
+              > -->
+              <Pic album :src="item1.picUrl" class="album-img" />
             </router-link>
             <div class="desc">
               <router-link to="/">
@@ -71,6 +72,7 @@ const getNewAlbumList = async () => {
   for (let i = 0; i < length; i++) {
     albumList.value.push(res.data.albums.slice((per * i), per * (i + 1)))
   }
+  albumList.value.push(albumList.value[0])
 }
 const goto = () => {
   content.value.style.transition = 'all .6s linear'
@@ -105,9 +107,7 @@ onUpdated(() => {
 })
 watch(isRender, val => {
   if (val) {
-    items.value = content.value.children.length
-    const first = content.value.children[0].cloneNode(true)
-    content.value.append(first)
+    items.value = content.value.children.length - 1
   }
 })
 </script>
@@ -179,6 +179,9 @@ watch(isRender, val => {
         background-color: #f5f5f5;
         border: 1px solid #d3d3d3;
         overflow: hidden;
+        ul {
+          margin-right: 10px;
+        }
         .album-img {
           width: $img_width;
           height: $img_height;
