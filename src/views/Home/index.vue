@@ -11,7 +11,7 @@
         <HomeSide />
       </div>
     </div>
-    <PlayBar :current-song="songInfo" />
+    <PlayBar :current-song="songInfo" @changeCurrent="changeCurrent" />
   </div>
 </template>
 
@@ -25,6 +25,8 @@ import PlayBar from '@/components/PlayBar/index'
 import { ref } from 'vue'
 
 const songInfo = ref(JSON.parse(localStorage.getItem('song_queue'))[0])
+
+const changeCurrent = e => { songInfo.value = e }
 </script>
 
 <style lang="scss" scoped>

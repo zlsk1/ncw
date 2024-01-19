@@ -88,7 +88,12 @@
           </ul>
         </div>
         <div class="content">
-          <div v-for="item in songQueue" :key="item.id" class="item fl-sb">
+          <div
+            v-for="item in songQueue"
+            :key="item.id"
+            class="item fl-sb"
+            @click="emit('changeCurrent', item)"
+          >
             <div v-if="item.id === props.currentSong.id" class="play" />
             <p class="name">
               {{ item.name }}
@@ -138,6 +143,7 @@ import { judgeJson } from '@/utils/index'
 const props = defineProps({
   currentSong: { type: Object, default: () => {} }
 })
+const emit = defineEmits(['changeCurrent'])
 
 const progressBarWidth = 466
 const btnWidth = 11
@@ -181,9 +187,9 @@ const timeupdate = e => {
     moveBtn.value.style.left = `calc(${percent}% - ${btnWidth}px)`
   }
   if (isShow.value) {
-    const _index = word.value ? Array.from(word.value.children).findIndex(v => v.dataset.time > e.target.currentTime) : ''
+    const _index = Array.from(word.value.children).findIndex((v, i) => v.dataset.time > e.target.currentTime)
     if (index.value < _index) {
-      word.value.children[index.value].classList.replace('per-line', 'active-lyric')
+      word.value.children[index.value].textContent ? word.value.children[index.value].classList.replace('per-line', 'active-lyric') : ''
       word.value.children[index.value - 1]?.classList.replace('active-lyric', 'per-line')
       word.value.scrollTo({ top: _index * 32 - 96, behavior: 'smooth' })
       index.value = _index
