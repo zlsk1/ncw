@@ -137,15 +137,15 @@ import { formatSongDuration } from '@/utils/time.js'
 const props = defineProps({
   currentSong: { type: Object, default: () => {} }
 })
-
+// 按钮 当前时间 总时间 按钮宽 进度条宽 偏移量=按钮clientX-进度条clientX+按钮宽/2
+const progressBarWidth = 466
+const btnWidth = 11
 const moveBtn = ref('')
 const playBar = ref('')
 const audio = ref('')
 const paused = ref(true)
 const now = ref('00:00')
 const end = ref(props.currentSong?.time)
-const progressBarWidth = 466
-const btnWidth = 11
 const pregressTime = ref('')
 const isMove = ref(false)
 const isShow = ref(false)
@@ -173,44 +173,44 @@ const pause = () => {
   paused.value = true
 }
 const timeupdate = e => {
-  const _index = Array.from(word.value.children).findIndex(v => v.className === 'active-lyric')
+  if (!isMove.value) {
+    now.value = e.target.currentTime
+    const percent = now.value / props.currentSong.time * 1000 * 100
+    document.querySelector('.played-bg').style.width = percent + btnWidth / progressBarWidth + '%'
+    moveBtn.value.style.left = `calc(${percent}% - ${btnWidth}px)`
+  }
+  const _index = word.value ? Array.from(word.value.children).findIndex(v => v.className === 'active-lyric') : ''
   if (index.value < _index) {
     word.value.scrollTo({ top: _index * 32 - 128, behavior: 'smooth' })
     index.value = _index
   }
-
-  now.value = e.target.currentTime
-  if (!isMove.value) {
-    const percent = now.value / props.currentSong.time * 1000 * 100
-    document.querySelector('.played-bg').style.width = percent + 0.6 + '%'
-    moveBtn.value.style.left = `calc(${percent + 0.6}% - ${btnWidth}px)`
-  }
-  // if (active[0].offsetTop >= 110) {
-  // }
+  isMove.value = isMove.value ? false : ''
 }
 const ended = () => {
   paused.value = true
   document.querySelector('.played-bg').style.width = 0 + '%'
+  moveBtn.value.style.left = '-11px'
 }
 
 const mousedown = e1 => {
   e1.preventDefault()
   const playedBg = document.querySelector('.played-bg')
-  const clientX = document.querySelector('.bar-wrap').getBoundingClientRect().left
+  const Parentleft = document.querySelector('.bar-wrap').getBoundingClientRect().left
   playBar.value.onmousemove = e2 => {
-    e2.stopPropagation()
-    if (e2.clientX > clientX && e2.clientX <= clientX + progressBarWidth) {
+    if (e2.clientX > Parentleft && e2.clientX <= Parentleft + progressBarWidth) {
       isMove.value = true
-      const moveDistace = e2.clientX - clientX - btnWidth
-      pregressTime.value = (moveDistace / progressBarWidth) * props.currentSong.time / 1000
-      moveBtn.value.style.left = moveDistace + 'px'
-      playedBg.style.width = ((moveDistace / progressBarWidth) * 100) + 0.6 + '%'
+      const moveDistance = e2.clientX - Parentleft
+      const percent = moveDistance / progressBarWidth
+      pregressTime.value = percent * props.currentSong.time / 1000
+      moveBtn.value.style.left = -btnWidth + moveDistance + 'px'
+      playedBg.style.width = percent * 100 + '%'
+      now.value = props.currentSong.time / 1000 * percent
     }
     playBar.value.onmouseup = (e) => {
       e.stopPropagation()
+      audio.value.currentTime = pregressTime.value
       playBar.value.onmousemove = null
       playBar.value.onmouseup = null
-      audio.value.currentTime = pregressTime.value
     }
     playBar.value.onmouseout = () => {
       playBar.value.onmousemove = null
@@ -220,10 +220,10 @@ const mousedown = e1 => {
 const clickProgress = e => {
   const clientX = document.querySelector('.bar-wrap').getBoundingClientRect().left
   const playedBg = document.querySelector('.played-bg')
-  const moveDistace = e.clientX - clientX
-  pregressTime.value = (moveDistace / progressBarWidth) * props.currentSong.time / 1000
-  moveBtn.value.style.left = moveDistace + 'px'
-  playedBg.style.width = ((moveDistace / progressBarWidth) * 100) + 0.6 + '%'
+  const moveDistance = e.clientX - clientX
+  pregressTime.value = (moveDistance / progressBarWidth) * props.currentSong.time / 1000
+  moveBtn.value.style.left = -btnWidth + moveDistance + 'px'
+  playedBg.style.width = (moveDistance / progressBarWidth) * 100 + '%'
   audio.value.currentTime = pregressTime.value
 }
 
