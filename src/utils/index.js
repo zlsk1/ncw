@@ -11,3 +11,12 @@ export const formatPlayCount = count => {
     }
   }
 }
+
+export const judgeJson = str => {
+  try {
+    JSON.parse(str)
+    return true
+  } catch {
+    return false
+  }
+}

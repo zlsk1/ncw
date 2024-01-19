@@ -3,7 +3,6 @@
     <div class="playBar-wrap">
       <audio
         ref="audio"
-        style="position:absolute;left:0;bottom: 100px;margin-bottom: 200px"
         :src="`https://music.163.com/song/media/outer/url?id=${props.currentSong?.id}.mp3`"
         @loadedmetadata="loadedmetadata"
         @timeupdate="timeupdate"
@@ -121,9 +120,10 @@
           <p
             v-for="(item, index) in props?.currentSong.lrc"
             :key="index"
-            :class="item.split(']')[0].split('[')[1] <= formatSongDuration(now, 1) && formatSongDuration(now, 1) < props?.currentSong.lrc[index + 1].split(']')[0].split('[')[1] ? 'active-lyric': 'per-line'"
+            :data-time="judgeJson(item) ? JSON.parse(item).t / 1000 : Number(item.split(']')[0].split('[')[1]?.split(':')[0] * 60) + Number(item.split(']')[0].split('[')[1]?.split(':')[1])"
+            class="per-line"
           >
-            {{ item.split(']')[1] }}
+            {{ judgeJson(item) ? JSON.parse(item).c[0].tx : item.split(']')[1] }}
           </p>
         </div>
       </div>
@@ -133,11 +133,12 @@
 
 <script setup>
 import { watch, ref } from 'vue'
-import { formatSongDuration } from '@/utils/time.js'
+import { formatSongDuration } from '@/utils/time'
+import { judgeJson } from '@/utils/index'
 const props = defineProps({
   currentSong: { type: Object, default: () => {} }
 })
-// 按钮 当前时间 总时间 按钮宽 进度条宽 偏移量=按钮clientX-进度条clientX+按钮宽/2
+
 const progressBarWidth = 466
 const btnWidth = 11
 const moveBtn = ref('')
@@ -179,10 +180,14 @@ const timeupdate = e => {
     document.querySelector('.played-bg').style.width = percent + btnWidth / progressBarWidth + '%'
     moveBtn.value.style.left = `calc(${percent}% - ${btnWidth}px)`
   }
-  const _index = word.value ? Array.from(word.value.children).findIndex(v => v.className === 'active-lyric') : ''
-  if (index.value < _index) {
-    word.value.scrollTo({ top: _index * 32 - 128, behavior: 'smooth' })
-    index.value = _index
+  if (isShow.value) {
+    const _index = word.value ? Array.from(word.value.children).findIndex(v => v.dataset.time > e.target.currentTime) : ''
+    if (index.value < _index) {
+      word.value.children[index.value].classList.replace('per-line', 'active-lyric')
+      word.value.children[index.value - 1]?.classList.replace('active-lyric', 'per-line')
+      word.value.scrollTo({ top: _index * 32 - 96, behavior: 'smooth' })
+      index.value = _index
+    }
   }
   isMove.value = isMove.value ? false : ''
 }
@@ -671,6 +676,7 @@ const closePlayList = () => { isShow.value = false }
     .word {
       height: 220px;
       margin: 20px 0;
+      padding: 0 30px;
       overflow-y: auto;
       div {
         transition: all .3s linear;
@@ -686,6 +692,7 @@ const closePlayList = () => { isShow.value = false }
         background-color: #0c0c0f;
       }
       .per-line {
+        min-height: 32px;
         line-height: 32px;
         font-size: 12px;
         transition: color .7s linear;
