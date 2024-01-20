@@ -24,7 +24,7 @@ import HomeSide from './components/HomeSide.vue'
 import PlayBar from '@/components/PlayBar/index'
 import { ref } from 'vue'
 
-const songInfo = ref(JSON.parse(localStorage.getItem('song_queue'))[0])
+const songInfo = ref(JSON.parse(localStorage.getItem('song_queue'))[JSON.parse(localStorage.getItem('play_setting')).index])
 
 const changeCurrent = e => { songInfo.value = e }
 </script>

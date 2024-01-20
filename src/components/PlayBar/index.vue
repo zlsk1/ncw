@@ -115,10 +115,10 @@
         </div>
         <div class="content">
           <div
-            v-for="item in songQueue"
+            v-for="(item, i) in songQueue"
             :key="item.id"
             class="item fl-sb"
-            @click="emit('changeCurrent', item)"
+            @click="chooseSong(item, i)"
           >
             <div class="play-wrap">
               <div v-if="item.id === props.currentSong.id" class="play" />
@@ -165,7 +165,7 @@
 </template>
 
 <script setup>
-import { watch, ref } from 'vue'
+import { watch, ref, onMounted } from 'vue'
 import { formatSongDuration } from '@/utils/time'
 import { judgeJson } from '@/utils/index'
 const props = defineProps({
@@ -190,43 +190,24 @@ const volControl = ref('')
 const volWrap = ref('')
 const volBg = ref('')
 const isShowVol = ref(false)
+const settings = ref(null)
+
+onMounted(() => {
+  getplaySetting()
+  volControl.value.style.top = 99 - (90 * settings.value.volume) + 'px'
+  volBg.value.style.height = 90 * settings.value.volume + 'px'
+})
 
 watch(() => props.currentSong, val => {
-  // console.log(val)
   const songs = JSON.parse(localStorage.getItem('song_queue')) || []
   songs.some(v => v.id === val.id) ? '' : songs.unshift(val)
   songQueue.value = songs
   localStorage.setItem('song_queue', JSON.stringify(songs))
 })
 
-const controlVol = e => {
-  e.preventDefault()
-  const parentTop = volWrap.value.getBoundingClientRect().top
-  volWrap.value.onmousemove = e1 => {
-    const moveDistance = e1.clientY - parentTop - 6
-    if (moveDistance < 99 && moveDistance > 6) {
-      volControl.value.style.top = moveDistance + 'px'
-      volBg.value.style.height = 99 - moveDistance + 'px'
-      audio.value.volume = ((90 - moveDistance) / 90).toFixed(1) > 0 ? ((90 - moveDistance) / 90).toFixed(1) : 0
-    }
-  }
-  volWrap.value.onmouseup = () => {
-    volWrap.value.onmouseup = null
-    volWrap.value.onmousemove = null
-    volWrap.value.onmousemove = null
-  }
-}
-
-const clickVol = e => {
-  const parentTop = volWrap.value.getBoundingClientRect().top
-  const moveDistance = e.clientY - parentTop - 6
-  console.log(moveDistance)
-  if (moveDistance < 99 && moveDistance > 6) {
-    volControl.value.style.top = moveDistance + 'px'
-    volBg.value.style.height = 99 - moveDistance + 'px'
-    audio.value.volume = ((90 - moveDistance) / 90).toFixed(1) > 0 ? ((90 - moveDistance) / 90).toFixed(1) : 0
-  }
-}
+watch(isShowVol, val => {
+  if (!val) setplaySetting({ volume: audio.value.volume })
+})
 
 const loadedmetadata = e => {
 }
@@ -300,20 +281,91 @@ const closePlayList = () => {
 }
 
 const prev = () => {
-  const i = songQueue.value.findIndex(v => v.id === props.currentSong.id)
-  i > 0 ? emit('changeCurrent', songQueue.value[i - 1]) : emit('changeCurrent', songQueue.value[songQueue.value.length - 1])
   setAutoplay()
+  const i = songQueue.value.findIndex(v => v.id === props.currentSong.id)
+  if (i > 0) {
+    emit('changeCurrent', songQueue.value[i - 1])
+    setplaySetting({ index: i - 1 })
+  } else {
+    emit('changeCurrent', songQueue.value[songQueue.value.length - 1])
+    setplaySetting({ index: songQueue.value.length - 1 })
+  }
 }
 
 const next = () => {
-  const i = songQueue.value.findIndex(v => v.id === props.currentSong.id)
-  i !== songQueue.value.length - 1 ? emit('changeCurrent', songQueue.value[i + 1]) : emit('changeCurrent', songQueue.value[0])
   setAutoplay()
+  const i = songQueue.value.findIndex(v => v.id === props.currentSong.id)
+  if (i !== songQueue.value.length - 1) {
+    emit('changeCurrent', songQueue.value[i + 1])
+    setplaySetting({ index: i + 1 })
+  } else {
+    emit('changeCurrent', songQueue.value[0])
+    setplaySetting({ index: 0 })
+  }
+}
+
+const controlVol = e => {
+  e.preventDefault()
+  const parentTop = volWrap.value.getBoundingClientRect().top
+  volWrap.value.onmousemove = e1 => {
+    const moveDistance = e1.clientY - parentTop - 6
+    if (moveDistance < 99 && moveDistance > 6) {
+      volControl.value.style.top = moveDistance + 'px'
+      volBg.value.style.height = 99 - moveDistance + 'px'
+      audio.value.volume = ((90 - moveDistance) / 90).toFixed(1) > 0 ? ((90 - moveDistance) / 90).toFixed(1) : 0
+    }
+  }
+  volWrap.value.onmouseup = () => {
+    volWrap.value.onmouseup = null
+    volWrap.value.onmousemove = null
+    volWrap.value.onmousemove = null
+  }
+}
+
+const clickVol = e => {
+  const parentTop = volWrap.value.getBoundingClientRect().top
+  const moveDistance = e.clientY - parentTop - 6
+  if (moveDistance < 99 && moveDistance > 6) {
+    volControl.value.style.top = moveDistance + 'px'
+    volBg.value.style.height = 99 - moveDistance + 'px'
+    audio.value.volume = ((90 - moveDistance) / 90).toFixed(1) > 0 ? ((90 - moveDistance) / 90).toFixed(1) : 0
+  }
 }
 
 const setAutoplay = () => {
   if (!paused.value) audio.value.autoplay = true
   else audio.value.autoplay = false
+}
+
+const getplaySetting = () => {
+  if (!localStorage.getItem('play_setting')) {
+    const defaultSetting = {
+      autoplay: false,
+      index: 0,
+      lock: true,
+      mode: 4,
+      volume: 0.8
+    }
+    localStorage.setItem('play_setting', JSON.stringify(defaultSetting))
+  }
+  settings.value = JSON.parse(localStorage.getItem('play_setting'))
+}
+
+const setplaySetting = (obj) => {
+  const defaultSetting = {
+    autoplay: false,
+    index: 0,
+    lock: true,
+    mode: 4,
+    volume: 0.8
+  }
+  const newSetting = Object.assign(defaultSetting, obj)
+  localStorage.setItem('play_setting', JSON.stringify(newSetting))
+}
+
+const chooseSong = (item, i) => {
+  emit('changeCurrent', item)
+  setplaySetting({ index: i })
 }
 </script>
 
