@@ -15,6 +15,11 @@ export const getSongUrl = (id, level = 'standard') => {
   })
 }
 
+/**
+ *
+ * @param {*} id 音乐id
+ * @returns 歌词
+ */
 export const getLyric = id => {
   return http({
     url: '/lyric/new',

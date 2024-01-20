@@ -1,6 +1,12 @@
 import http from '@/utils/http'
 
-export const getHotSinger = (limit, offset) => {
+/**
+ *
+ * @param {*} limit 长度
+ * @param {*} offset 偏移数量 , 用于分页
+ * @returns 热门歌手
+ */
+export const getHotSinger = (limit, offset = 0) => {
   return http({
     url: '/top/artists',
     params: {
