@@ -4,6 +4,7 @@
       <audio
         ref="audio"
         :src="`https://music.163.com/song/media/outer/url?id=${props.currentSong?.id}.mp3`"
+        :loop="settings?.mode === 2"
         @loadedmetadata="loadedmetadata"
         @timeupdate="timeupdate"
         @ended="ended"
@@ -23,10 +24,9 @@
               <i
                 v-else
                 class="pause"
-                title="下一首"
                 @click.stop="pause()"
               />
-              <i class="next" @click="next" />
+              <i class="next" title="下一首" @click="next" />
             </div>
             <div class="progressBar">
               <router-link class="img-container" to="/">
@@ -80,7 +80,11 @@
                   </div>
                 </div>
                 <i class="volume" @click="isShowVol = !isShowVol" />
-                <i class="playType" title="循环" />
+                <i
+                  :class="['playType-byOrder', 'playType-byRadom', 'playType-byLoop'][settings?.mode]"
+                  :title="['循环', '随机', '单曲循环'][settings?.mode]"
+                  @click="switchMode"
+                />
                 <div class="playlist">
                   <i class="playlist-icon" title="播放列表" @click.stop="isShow = !isShow" />
                   <span class="playlist-count">
@@ -295,12 +299,17 @@ const prev = () => {
 const next = () => {
   setAutoplay()
   const i = songQueue.value.findIndex(v => v.id === props.currentSong.id)
-  if (i !== songQueue.value.length - 1) {
-    emit('changeCurrent', songQueue.value[i + 1])
-    setplaySetting({ index: i + 1 })
-  } else {
-    emit('changeCurrent', songQueue.value[0])
-    setplaySetting({ index: 0 })
+  if (!settings.value.mode) {
+    if (i !== songQueue.value.length - 1) {
+      emit('changeCurrent', songQueue.value[i + 1])
+      setplaySetting({ index: i + 1 })
+    } else {
+      emit('changeCurrent', songQueue.value[0])
+      setplaySetting({ index: 0 })
+    }
+  } else if (settings.value.mode) {
+    const i = Math.floor(Math.random() * songQueue.value.length)
+    emit('changeCurrent', songQueue.value[i])
   }
 }
 
@@ -360,12 +369,18 @@ const setplaySetting = (obj) => {
     volume: 0.8
   }
   const newSetting = Object.assign(defaultSetting, obj)
+  settings.value = newSetting
   localStorage.setItem('play_setting', JSON.stringify(newSetting))
 }
 
 const chooseSong = (item, i) => {
   emit('changeCurrent', item)
   setplaySetting({ index: i })
+}
+
+const switchMode = () => {
+  const mode = settings.value.mode >= 2 ? 0 : ++settings.value.mode
+  setplaySetting({ mode })
 }
 </script>
 
@@ -604,12 +619,28 @@ const chooseSong = (item, i) => {
           background-position: -31px -248px;
         }
       }
-      .playType {
+      .playType-byOrder {
         width: 25px;
         height: 25px;
         background-position: -3px -344px;
         &:hover {
           background-position: -33px -344px;
+        }
+      }
+      .playType-byRadom {
+        width: 25px;
+        height: 25px;
+        background-position: -66px -248px;
+        &:hover {
+          background-position: -93px -248px;
+        }
+      }
+      .playType-byLoop {
+        width: 25px;
+        height: 25px;
+        background-position: -66px -344px;
+        &:hover {
+          background-position: -93px -344px;
         }
       }
       .playlist {
