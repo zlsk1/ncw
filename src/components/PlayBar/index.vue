@@ -13,9 +13,19 @@
         <div class="w980">
           <div class="content">
             <div class="btns fl-sb">
-              <i class="prev" @click="prev" />
-              <i v-if="paused" class="play" @click.stop="play()" />
-              <i v-else class="pause" @click.stop="pause()" />
+              <i class="prev" title="上一首" @click="prev" />
+              <i
+                v-if="paused"
+                class="play"
+                title="播放/暂停"
+                @click.stop="play()"
+              />
+              <i
+                v-else
+                class="pause"
+                title="下一首"
+                @click.stop="pause()"
+              />
               <i class="next" @click="next" />
             </div>
             <div class="progressBar">
@@ -25,14 +35,22 @@
               </router-link>
               <div class="bar-wrap">
                 <div class="info">
-                  <router-link class="track-name" to="/">
+                  <router-link class="track-name ellipsis-1" to="/" :title="props.currentSong?.name">
                     {{ props.currentSong?.name }}
                   </router-link>
-                  <router-link class="singer-name" to="/">
-                    {{ props.currentSong?.singer }}
-                  </router-link>
+                  <div class="singer-name">
+                    <router-link
+                      v-for="(item, i) in props.currentSong?.singer.split('/')"
+                      :key="i"
+                      class="ellipsis-1"
+                      to="/"
+                      :title="props.currentSong?.singer"
+                    >
+                      {{ props.currentSong?.singer.split('/').length === 1 ? item : i === props.currentSong?.singer.split('/').length - 1 ? item : `${item}/` }}
+                    </router-link>
+                  </div>
                   <router-link to="/">
-                    <i class="from" />
+                    <i class="from" title="来自歌单" />
                   </router-link>
                 </div>
                 <div class="bar" @click="clickProgress">
@@ -48,9 +66,9 @@
             </div>
             <div class="opera">
               <div class="fl">
-                <i class="pip" />
-                <i class="addlist" />
-                <i class="share" />
+                <i class="pip" title="画中画歌词" />
+                <i class="addlist" title="收藏" />
+                <i class="share" title="分享" />
               </div>
               <div class="fl">
                 <div v-show="isShowVol" ref="volWrap" class="vol-wrap">
@@ -62,9 +80,9 @@
                   </div>
                 </div>
                 <i class="volume" @click="isShowVol = !isShowVol" />
-                <i class="playType" />
+                <i class="playType" title="循环" />
                 <div class="playlist">
-                  <i class="playlist-icon" @click.stop="isShow = !isShow" />
+                  <i class="playlist-icon" title="播放列表" @click.stop="isShow = !isShow" />
                   <span class="playlist-count">
                     {{ songQueue?.length }}
                   </span>
@@ -102,18 +120,20 @@
             class="item fl-sb"
             @click="emit('changeCurrent', item)"
           >
-            <div v-if="item.id === props.currentSong.id" class="play" />
+            <div class="play-wrap">
+              <div v-if="item.id === props.currentSong.id" class="play" />
+            </div>
             <p class="name">
               {{ item.name }}
             </p>
             <div>
               <div class="icons">
-                <i class="add-like" />
-                <i class="share" />
-                <i class="download" />
-                <i class="del" />
+                <i class="add-like" title="收藏" />
+                <i class="share" title="分享" />
+                <i class="download" title="下载" />
+                <i class="del" title="删除" />
               </div>
-              <router-link to="/" class="singer ellipsis-1">
+              <router-link to="/" class="singer ellipsis-1" :title="item.singer">
                 {{ item.singer }}
               </router-link>
               <p class="duration">
@@ -131,8 +151,8 @@
         </div>
         <div ref="word" class="word">
           <p
-            v-for="(item, index) in props?.currentSong.lrc"
-            :key="index"
+            v-for="(item, i) in props?.currentSong.lrc"
+            :key="i"
             :data-time="judgeJson(item) ? JSON.parse(item).t / 1000 : Number(item.split(']')[0].split('[')[1]?.split(':')[0] * 60) + Number(item.split(']')[0].split('[')[1]?.split(':')[1])"
             class="per-line"
           >
@@ -409,14 +429,24 @@ const setAutoplay = () => {
       .info {
         display: flex;
         .track-name {
+          max-width: 300px;
           margin-right: 10px;
           font-size: 12px;
-          color: #fff;
+          color: #e8e8e8;
+          &:hover {
+            text-decoration: underline;
+          }
         }
         .singer-name {
+          max-width: 220px;
           margin-right: 10px;
-          font-size: 12px;
-          color: #666;
+          a {
+            font-size: 12px;
+            color: #666;
+            &:hover {
+              text-decoration: underline;
+            }
+          }
         }
         .from {
           width: 14px;
@@ -703,6 +733,9 @@ const setAutoplay = () => {
         line-height: 15px;
         padding: 0 10px;
         cursor: pointer;
+        &:hover {
+          color: #fff;
+        }
         &:hover span {
           text-decoration: underline;
         }
@@ -748,6 +781,9 @@ const setAutoplay = () => {
         &:hover .icons {
           display: flex;
         }
+        .play-wrap {
+          width: 20px;
+        }
         .icons {
           display: none;
           i {
@@ -756,13 +792,15 @@ const setAutoplay = () => {
         }
         .name {
           flex: 5;
-          margin-left: 10px;
         }
         div {
           display: flex;
           align-items: center;
           .singer {
             width: 80px;
+            &:hover {
+              text-decoration: underline;
+            }
           }
           .duration {
             margin: 0 30px;
@@ -781,6 +819,7 @@ const setAutoplay = () => {
       height: 40px;
       line-height: 40px;
       background: url('@/assets/icons/playlist_bg.png') no-repeat;
+      color: #fff;
     }
     .word {
       height: 220px;

@@ -57,11 +57,11 @@
         </router-link>
         <div class="card-play fl-sb">
           <i class="icon-listen" />
-          <span class="count">{{ formatPlayCount(item.playCount) }}</span>
-          <i class="play" />
+          <span class="count f12">{{ formatPlayCount(item.playCount) }}</span>
+          <i class="play" title="播放" />
         </div>
         <template #footer>
-          <router-link to="/">
+          <router-link to="/" class="desc" :title="item.name">
             {{ item.name }}
           </router-link>
         </template>
@@ -122,6 +122,9 @@ onMounted(() => {
             width: 0;
             height: 0;
           }
+          &:hover {
+            text-decoration: underline;
+          }
         }
       }
     }
@@ -130,6 +133,9 @@ onMounted(() => {
       align-items: center;
       a {
         margin-right: 6px;
+        &:hover {
+          text-decoration: underline;
+        }
       }
       i {
         display: block;
@@ -182,6 +188,11 @@ onMounted(() => {
         .count {
           position: absolute;
           left: 30px;
+        }
+      }
+      .desc {
+        &:hover {
+          text-decoration: underline;
         }
       }
     }

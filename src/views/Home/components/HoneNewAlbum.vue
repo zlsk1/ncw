@@ -13,33 +13,44 @@
         <i />
       </div>
     </div>
-    <ul ref="content" class="fl newAlbum-content">
-      <li
-        v-for="(item, index) in albumList"
-        :key="index"
-        class="newAlbum-items"
-      >
-        <ul class="fl-sb">
-          <li v-for="item1 in item" :key="item1.id">
-            <router-link to="/">
-              <Pic album :src="item1.picUrl" class="album-img" />
-            </router-link>
-            <div class="desc">
-              <router-link to="/">
-                <p class="ellipsis-1 song">
-                  {{ item1.name }}
-                </p>
-              </router-link>
-              <router-link to="/">
-                <p class="ellipsis-1 singer">
-                  {{ item1.artist.name }}
-                </p>
-              </router-link>
-            </div>
-          </li>
-        </ul>
-      </li>
-    </ul>
+    <div class="content-wrap">
+      <ul ref="content" class="fl newAlbum-content">
+        <li
+          v-for="(item, index) in albumList"
+          :key="index"
+          class="newAlbum-items"
+        >
+          <ul class="fl-sb">
+            <li v-for="item1 in item" :key="item1.id">
+              <Card>
+                <router-link to="/">
+                  <Pic
+                    album
+                    hover-play
+                    :src="item1.picUrl"
+                    class="album-img"
+                  />
+                </router-link>
+                <template #footer>
+                  <div class="desc">
+                    <router-link to="/">
+                      <p class="ellipsis-1 song" :title="item1.name">
+                        {{ item1.name }}
+                      </p>
+                    </router-link>
+                    <router-link to="/">
+                      <p class="ellipsis-1 singer" :title="item1.artist.name">
+                        {{ item1.artist.name }}
+                      </p>
+                    </router-link>
+                  </div>
+                </template>
+              </Card>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
     <div class="prev" @click="prev">
       <ArrowLeft style="width: 1.5em;height: 1.5em" />
     </div>
@@ -53,6 +64,7 @@
 import { getNewAlbum } from '@/apis/home'
 import { ref, onMounted, watch, onUpdated } from 'vue'
 import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
+import Card from '@/components/Card'
 
 const albumList = ref([])
 const per = 5
@@ -70,7 +82,7 @@ const getNewAlbumList = async () => {
   albumList.value.push(albumList.value[0])
 }
 const goto = () => {
-  content.value.style.transition = 'all .6s linear'
+  content.value.style.transition = 'all 1s linear'
   content.value.style.transform = `translateX(calc(-100% * ${i.value}))`
 }
 const next = () => {
@@ -166,31 +178,40 @@ watch(isRender, (newVal, oldVal) => {
         }
       }
     }
-    .newAlbum-content {
-      .newAlbum-items {
-        flex-shrink: 0;
-        width: 100%;
-        padding: $pad $pad 15px $pad;
-        background-color: #f5f5f5;
-        border: 1px solid #d3d3d3;
-        overflow: hidden;
-        ul {
-          margin-right: 10px;
-        }
-        .album-img {
-          width: $img_width;
-          height: $img_height;
-        }
-        .desc {
-          width: 100px;
-          margin-top: 8px;
-          font-size: 12px;
-          .song {
-            margin-bottom: 6px;
-            color: #000;
+    .content-wrap {
+      width: 691px;
+      background-color: #f5f5f5;
+      border: 1px solid #d3d3d3;
+      .newAlbum-content {
+        .newAlbum-items {
+          flex-shrink: 0;
+          width: 100%;
+          padding: $pad $pad 15px $pad;
+          overflow: hidden;
+          ul {
+            margin-right: 10px;
           }
-          .signer {
-            color: #666;
+          .album-img {
+            width: $img_width;
+            height: $img_height;
+          }
+          .desc {
+            width: 100px;
+            margin-top: 4px;
+            font-size: 12px;
+            .song {
+              margin-bottom: 6px;
+              color: #000;
+              &:hover {
+                text-decoration: underline;
+              }
+            }
+            .singer {
+              color: #666;
+              &:hover {
+                text-decoration: underline;
+              }
+            }
           }
         }
       }

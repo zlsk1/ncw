@@ -4,6 +4,7 @@
     <i v-if="props.mask1" class="mask1" />
     <i v-if="props.mask2" class="mask2" />
     <i v-if="props.album" class="album" />
+    <i v-if="props.hoverPlay" class="hoverPlay" title="播放" />
     <img v-lazy="props.src" alt="">
   </div>
 </template>
@@ -14,7 +15,8 @@ const props = defineProps({
   album: { type: Boolean, default: false },
   crown: { type: Boolean, default: false },
   mask1: { type: Boolean, default: false },
-  mask2: { type: Boolean, default: false }
+  mask2: { type: Boolean, default: false },
+  hoverPlay: { type: Boolean, default: false }
 })
 </script>
 
@@ -52,6 +54,20 @@ const props = defineProps({
     width: 118px;
     height: 100px;
     background: url('@/assets/icons/coverall.png') 0 -570px no-repeat;
+  }
+  .hoverPlay {
+    display: none;
+    right: 10px;
+    bottom: 5px;
+    width: 22px;
+    height: 22px;
+    background: url('@/assets/icons/iconall.png') 0 -85px no-repeat;
+    &:hover  {
+      background: url('@/assets/icons/iconall.png') 0 -110px no-repeat;
+    }
+  }
+  &:hover .hoverPlay {
+    display: block;
   }
 }
 </style>

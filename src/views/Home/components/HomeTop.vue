@@ -20,10 +20,13 @@
             <Pic :src="item.imgUrl" mask2 class="img" />
           </router-link>
           <div class="right">
-            <p class="name">
+            <router-link to="/" class="name">
               {{ item.name }}
-            </p>
-            <span class="fl"><i class="play" /><i class="like" /></span>
+            </router-link>
+            <span class="fl">
+              <i class="play" title="播放" />
+              <i class="like" title="收藏" />
+            </span>
           </div>
         </div>
         <ul class="content">
@@ -38,9 +41,9 @@
                 </p>
               </router-link>
               <div class="icon">
-                <i class="play" @click="transmitSongInfo({id: track.id, picUrl: track.al.picUrl, name: track.name, singer: track.ar.map(v => { return v.name }).join('/')})" />
-                <i class="addlist" />
-                <i class="like" />
+                <i class="play" title="播放" @click="transmitSongInfo({id: track.id, picUrl: track.al.picUrl, name: track.name, singer: track.ar.map(v => { return v.name }).join('/')})" />
+                <i class="addlist" title="添加到播放列表" />
+                <i class="like" title="收藏" />
               </div>
             </div>
           </li>
@@ -167,8 +170,12 @@ onMounted(async () => {
         }
         .right {
           .name {
+            display: block;
             margin-bottom: 20px;
             font-weight: 700;
+            &:hover {
+              text-decoration: underline;
+            }
           }
           i {
             display: block;
@@ -179,9 +186,15 @@ onMounted(async () => {
           .play {
             margin-right: 10px;
             background: url('@/assets/icons/index.png')  -267px -205px no-repeat;
+            &:hover {
+              background-position: -267px -235px;
+            }
           }
           .like {
             background: url('@/assets/icons/index.png') -300px -205px no-repeat;
+            &:hover {
+              background-position: -300px -235px;
+            }
           }
         }
       }
@@ -221,6 +234,9 @@ onMounted(async () => {
             width: 170px;
             font-size: 12px;
             color: #000;
+            &:hover {
+              text-decoration: underline;
+            }
           }
           .icon {
             display: none;
@@ -236,12 +252,21 @@ onMounted(async () => {
             }
             .play {
               background: url('@/assets/icons/index.png') -267px -268px no-repeat;
+              &:hover {
+                background: url('@/assets/icons/index.png') -267px -288px no-repeat;
+              }
             }
             .addlist {
               background: url('@/assets/icons/icon.png') 0 -698px no-repeat;
+              &:hover {
+                background: url('@/assets/icons/icon.png') -22px -698px no-repeat;
+              }
             }
             .like {
               background: url('@/assets/icons/index.png') -297px -268px no-repeat;
+              &:hover {
+                background: url('@/assets/icons/index.png') -297px -288px no-repeat;
+              }
             }
           }
         }
