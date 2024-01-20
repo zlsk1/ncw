@@ -200,9 +200,9 @@ const timeupdate = e => {
   isMove.value = isMove.value ? false : ''
 }
 const ended = () => {
-  paused.value = true
   document.querySelector('.played-bg').style.width = 0 + '%'
   moveBtn.value.style.left = '-11px'
+  next()
 }
 
 const mousedown = e1 => {
@@ -245,11 +245,18 @@ const closePlayList = () => { isShow.value = false }
 const prev = () => {
   const i = songQueue.value.findIndex(v => v.id === props.currentSong.id)
   i > 0 ? emit('changeCurrent', songQueue.value[i - 1]) : emit('changeCurrent', songQueue.value[songQueue.value.length - 1])
+  setAutoplay()
 }
 
 const next = () => {
   const i = songQueue.value.findIndex(v => v.id === props.currentSong.id)
   i !== songQueue.value.length - 1 ? emit('changeCurrent', songQueue.value[i + 1]) : emit('changeCurrent', songQueue.value[0])
+  setAutoplay()
+}
+
+const setAutoplay = () => {
+  if (!paused.value) audio.value.autoplay = true
+  else audio.value.autoplay = false
 }
 </script>
 
