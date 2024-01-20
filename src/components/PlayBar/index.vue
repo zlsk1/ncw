@@ -43,7 +43,7 @@
               </div>
               <div class="time">
                 <span class="now">{{ formatSongDuration(now, 1) }} /</span>
-                <span class="end">{{ formatSongDuration(end, 0) }}</span>
+                <span class="end">{{ formatSongDuration(props.currentSong?.time, 0) }}</span>
               </div>
             </div>
             <div class="opera">
@@ -53,7 +53,15 @@
                 <i class="share" />
               </div>
               <div class="fl">
-                <i class="volume" />
+                <div v-show="isShowVol" ref="volWrap" class="vol-wrap">
+                  <div class="vol-bg" @click="clickVol">
+                    <div ref="volBg" class="bg-red" />
+                  </div>
+                  <div ref="volControl" class="vol-control-icon" @mousedown="controlVol">
+                    <div class="inner" />
+                  </div>
+                </div>
+                <i class="volume" @click="isShowVol = !isShowVol" />
                 <i class="playType" />
                 <div class="playlist">
                   <i class="playlist-icon" @click.stop="isShow = !isShow" />
@@ -152,26 +160,55 @@ const playBar = ref('')
 const audio = ref('')
 const paused = ref(true)
 const now = ref('00:00')
-const end = ref(props.currentSong?.time)
 const pregressTime = ref('')
 const isMove = ref(false)
 const isShow = ref(false)
 const songQueue = ref(JSON.parse(localStorage.getItem('song_queue')))
 const word = ref('')
 const index = ref(0)
+const volControl = ref('')
+const volWrap = ref('')
+const volBg = ref('')
+const isShowVol = ref(false)
 
-watch(() => props.currentSong, async val => {
+watch(() => props.currentSong, val => {
   // console.log(val)
-  end.value = val.time
-  const songs = await JSON.parse(localStorage.getItem('song_queue')) || []
+  const songs = JSON.parse(localStorage.getItem('song_queue')) || []
   songs.some(v => v.id === val.id) ? '' : songs.unshift(val)
   songQueue.value = songs
   localStorage.setItem('song_queue', JSON.stringify(songs))
 })
 
+const controlVol = e => {
+  e.preventDefault()
+  const parentTop = volWrap.value.getBoundingClientRect().top
+  volWrap.value.onmousemove = e1 => {
+    const moveDistance = e1.clientY - parentTop - 6
+    if (moveDistance < 99 && moveDistance > 6) {
+      volControl.value.style.top = moveDistance + 'px'
+      volBg.value.style.height = 99 - moveDistance + 'px'
+      audio.value.volume = ((90 - moveDistance) / 90).toFixed(1) > 0 ? ((90 - moveDistance) / 90).toFixed(1) : 0
+    }
+  }
+  volWrap.value.onmouseup = () => {
+    volWrap.value.onmouseup = null
+    volWrap.value.onmousemove = null
+    volWrap.value.onmousemove = null
+  }
+}
+
+const clickVol = e => {
+  const parentTop = volWrap.value.getBoundingClientRect().top
+  const moveDistance = e.clientY - parentTop - 6
+  console.log(moveDistance)
+  if (moveDistance < 99 && moveDistance > 6) {
+    volControl.value.style.top = moveDistance + 'px'
+    volBg.value.style.height = 99 - moveDistance + 'px'
+    audio.value.volume = ((90 - moveDistance) / 90).toFixed(1) > 0 ? ((90 - moveDistance) / 90).toFixed(1) : 0
+  }
+}
+
 const loadedmetadata = e => {
-  // console.log(e)
-  // play()
 }
 const play = () => {
   audio.value.play()
@@ -225,9 +262,6 @@ const mousedown = e1 => {
       playBar.value.onmousemove = null
       playBar.value.onmouseup = null
     }
-    playBar.value.onmouseout = () => {
-      playBar.value.onmousemove = null
-    }
   }
 }
 const clickProgress = e => {
@@ -240,7 +274,10 @@ const clickProgress = e => {
   audio.value.currentTime = pregressTime.value
 }
 
-const closePlayList = () => { isShow.value = false }
+const closePlayList = () => {
+  isShow.value = false
+  isShowVol.value = false
+}
 
 const prev = () => {
   const i = songQueue.value.findIndex(v => v.id === props.currentSong.id)
@@ -434,8 +471,10 @@ const setAutoplay = () => {
       }
     }
     .opera {
+      position: relative;
       display: flex;
       margin-top: 16px;
+      z-index: 30;
       >div {
         padding: 0 10px;
       }
@@ -509,6 +548,51 @@ const setAutoplay = () => {
           color: #666;
         }
       }
+      .vol-wrap {
+        position: absolute;
+        top: -132px;
+        right: 94px;
+        width: 32px;
+        height: 120px;
+        background-color: #292929;
+        .vol-bg {
+          position: absolute;
+          left: calc(50% - 2px);
+          top: 15px;
+          width: 4px;
+          height: 90px;
+          background-color: #191919;
+          border-radius: 100px;
+          .bg-red {
+            position: absolute;
+            left: calc(50% - 2px);
+            bottom: 0;
+            width: 4px;
+            height: 0;
+            background-color: $themeColor;
+            border-radius: 100px;
+          }
+        }
+        .vol-control-icon {
+          position: absolute;
+          left: 10px;
+          top: 99px;
+          width: 12px;
+          height: 12px;
+          background-color: #fff;
+          border-radius: 50%;
+          cursor: pointer;
+          .inner {
+            position: absolute;
+            left: calc(50% - 2px);
+            top: calc(50% - 2px);
+            width: 4px;
+            height: 4px;
+            background-color: $themeColor;
+            border-radius: 50%;
+          }
+        }
+      }
     }
   }
 }
@@ -523,7 +607,7 @@ const setAutoplay = () => {
   color: #e2e2e2;
   background-color: #1f1f1f;
   border-radius: 5px 5px 0 0;
-  z-index: 999;
+  z-index: 20;
   overflow: hidden;
   .bg-img {
     position: absolute;
