@@ -40,17 +40,17 @@
                   </router-link>
                   <div class="singer-name">
                     <router-link
-                      v-for="(item, i) in props.currentSong?.singer.split('/')"
+                      v-for="(item, i) in props.currentSong?.singer?.split('/')"
                       :key="i"
                       class="ellipsis-1"
                       to="/"
-                      :title="props.currentSong?.singer"
+                      :title="props.currentSong.singer"
                     >
                       {{ props.currentSong?.singer.split('/').length === 1 ? item : i === props.currentSong?.singer.split('/').length - 1 ? item : `${item}/` }}
                     </router-link>
                   </div>
                   <router-link to="/">
-                    <i class="from" title="来自歌单" />
+                    <i v-if="props.currentSong.name" class="from" title="来自歌单" />
                   </router-link>
                 </div>
                 <div class="bar" @click="clickProgress">
@@ -86,7 +86,7 @@
                   @click="switchMode"
                 />
                 <div class="playlist">
-                  <i class="playlist-icon" title="播放列表" @click.stop="openPlayList(props.currentSong.id)" />
+                  <i class="playlist-icon" title="播放列表" @click.stop="isShow = !isShow" />
                   <span class="playlist-count">
                     {{ songQueue?.length }}
                   </span>
@@ -111,7 +111,7 @@
               <i class="add-like" />
               <span>收藏全部</span>
             </li>
-            <li>
+            <li @click="delAll">
               <i class="del" />
               <span>清除</span>
             </li>
@@ -135,7 +135,7 @@
                 <i class="add-like" title="收藏" />
                 <i class="share" title="分享" />
                 <i class="download" title="下载" />
-                <i class="del" title="删除" />
+                <i class="del" title="删除" @click.stop="del(i)" />
               </div>
               <router-link to="/" class="singer ellipsis-1" :title="item.singer">
                 {{ item.singer }}
@@ -174,7 +174,7 @@ import { formatSongDuration } from '@/utils/time'
 import { judgeJson } from '@/utils/index'
 import { getLyric } from '@/apis/song'
 const props = defineProps({
-  currentSong: { type: Object, default: () => {} }
+  currentSong: { type: [Object, String], default: () => {} }
 })
 const emit = defineEmits(['changeCurrent'])
 
@@ -216,6 +216,9 @@ watch(isShowVol, val => {
 })
 
 const loadedmetadata = e => {
+  if (props.currentSong.id) {
+    getLrc(props.currentSong.id)
+  }
 }
 const play = () => {
   audio.value.play()
@@ -387,16 +390,20 @@ const switchMode = () => {
   setplaySetting({ mode })
 }
 
-const openPlayList = async id => {
-  isShow.value = !isShow.value
-  if (!lrc.value) {
-    getLrc(id)
-  }
-}
-
 const getLrc = async id => {
   const res = await getLyric(id)
   lrc.value = res.data.lrc.lyric.split('\n')
+}
+
+const delAll = () => {
+  localStorage.setItem('song_queue', JSON.stringify([]))
+  songQueue.value = []
+  setplaySetting({ index: 0 })
+}
+
+const del = i => {
+  songQueue.value.splice(i, 1)
+  localStorage.setItem('song_queue', JSON.stringify(songQueue.value))
 }
 </script>
 
