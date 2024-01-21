@@ -26,11 +26,11 @@
                 <router-link to="/">
                   <Pic
                     album
-                    hover-play
                     :src="item1.picUrl"
                     class="album-img"
                   />
                 </router-link>
+                <i class="hoverPlay" title="播放" @click="addPlayList(item1.id)" />
                 <template #footer>
                   <div class="desc">
                     <router-link to="/">
@@ -65,6 +65,9 @@ import { getNewAlbum } from '@/apis/home'
 import { ref, onMounted, watch, onUpdated } from 'vue'
 import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
 import Card from '@/components/Card'
+import { getPlayListDetail } from '@/apis/playList'
+import { getSongUrl } from '@/apis/song'
+import { ElMessage } from 'element-plus'
 
 const albumList = ref([])
 const per = 5
@@ -103,6 +106,15 @@ const prev = () => {
   } else {
     i.value--
     goto()
+  }
+}
+const addPlayList = async id => {
+  try {
+    const res = await getPlayListDetail(id)
+    const songs = await getSongUrl(res.data.playlist.id)
+    console.log(songs)
+  } catch {
+    ElMessage.error('sorry,no resource')
   }
 }
 
@@ -190,28 +202,48 @@ watch(isRender, (newVal, oldVal) => {
           overflow: hidden;
           ul {
             margin-right: 10px;
-          }
-          .album-img {
-            width: $img_width;
-            height: $img_height;
-          }
-          .desc {
-            width: 100px;
-            margin-top: 4px;
-            font-size: 12px;
-            .song {
-              margin-bottom: 6px;
-              color: #000;
-              &:hover {
-                text-decoration: underline;
+            li {
+              position: relative;
+              .album-img {
+                width: $img_width;
+                height: $img_height;
+              }
+              .desc {
+                width: 100px;
+                margin-top: 4px;
+                font-size: 12px;
+                .song {
+                  margin-bottom: 6px;
+                  color: #000;
+                  &:hover {
+                    text-decoration: underline;
+                  }
+                }
+                .singer {
+                  color: #666;
+                  &:hover {
+                    text-decoration: underline;
+                  }
+                }
+              }
+              .hoverPlay {
+                display: none;
+                position: absolute;
+                right: 7px;
+                top: 72px;
+                width: 22px;
+                height: 22px;
+                background: url('@/assets/icons/iconall.png') 0 -85px no-repeat;
+                cursor: pointer;
+                &:hover {
+                  background: url('@/assets/icons/iconall.png') 0 -110px no-repeat;
+                }
+              }
+              &:hover .hoverPlay {
+                display: block;
               }
             }
-            .singer {
-              color: #666;
-              &:hover {
-                text-decoration: underline;
-              }
-            }
+
           }
         }
       }
