@@ -86,7 +86,7 @@
                   @click="switchMode"
                 />
                 <div class="playlist">
-                  <i class="playlist-icon" title="播放列表" @click.stop="isShow = !isShow" />
+                  <i class="playlist-icon" title="播放列表" @click.stop="openPlayList(props.currentSong.id)" />
                   <span class="playlist-count">
                     {{ songQueue?.length }}
                   </span>
@@ -122,7 +122,7 @@
             v-for="(item, i) in songQueue"
             :key="item.id"
             class="item fl-sb"
-            @click="chooseSong(item, i)"
+            @click="chooseSong(item, i, item.id)"
           >
             <div class="play-wrap">
               <div v-if="item.id === props.currentSong.id" class="play" />
@@ -155,7 +155,7 @@
         </div>
         <div ref="word" class="word">
           <p
-            v-for="(item, i) in props?.currentSong.lrc"
+            v-for="(item, i) in lrc"
             :key="i"
             :data-time="judgeJson(item) ? JSON.parse(item).t / 1000 : Number(item.split(']')[0].split('[')[1]?.split(':')[0] * 60) + Number(item.split(']')[0].split('[')[1]?.split(':')[1])"
             class="per-line"
@@ -172,6 +172,7 @@
 import { watch, ref, onMounted } from 'vue'
 import { formatSongDuration } from '@/utils/time'
 import { judgeJson } from '@/utils/index'
+import { getLyric } from '@/apis/song'
 const props = defineProps({
   currentSong: { type: Object, default: () => {} }
 })
@@ -195,6 +196,7 @@ const volWrap = ref('')
 const volBg = ref('')
 const isShowVol = ref(false)
 const settings = ref(null)
+const lrc = ref(null)
 
 onMounted(() => {
   getplaySetting()
@@ -373,14 +375,28 @@ const setplaySetting = (obj) => {
   localStorage.setItem('play_setting', JSON.stringify(newSetting))
 }
 
-const chooseSong = (item, i) => {
+const chooseSong = (item, i, id) => {
   emit('changeCurrent', item)
   setplaySetting({ index: i })
+  setAutoplay()
+  getLrc(id)
 }
 
 const switchMode = () => {
   const mode = settings.value.mode >= 2 ? 0 : ++settings.value.mode
   setplaySetting({ mode })
+}
+
+const openPlayList = async id => {
+  isShow.value = !isShow.value
+  if (!lrc.value) {
+    getLrc(id)
+  }
+}
+
+const getLrc = async id => {
+  const res = await getLyric(id)
+  lrc.value = res.data.lrc.lyric.split('\n')
 }
 </script>
 

@@ -62,7 +62,7 @@
 import { onMounted, ref } from 'vue'
 import { useTopStore } from '@/stores/top'
 import { getPlayListDetail } from '@/apis/playList'
-import { getSongUrl, getLyric as getLyricAPI } from '@/apis/song'
+import { getSongUrl } from '@/apis/song'
 import { ElMessage } from 'element-plus'
 const store = useTopStore()
 const ids = ref([])
@@ -85,10 +85,7 @@ const transmitSongInfo = async o => {
   const res = await getSongUrl(o.id)
   if (res.data.code === -460) ElMessage.error(res.data.message)
   else {
-    const { data: { lrc: { lyric }}} = await getLyricAPI(o.id)
-    console.log(lyric.split('\n'))
-    // console.log(res.data.yrc.lyric.split('\n')) // 新版歌词
-    emit('getsong', Object.assign(o, { url: res.data.data[0].url, time: res.data.data[0].time, play: true, lrc: lyric.split('\n') }))
+    emit('getsong', Object.assign(o, { url: res.data.data[0].url, time: res.data.data[0].time }))
   }
 }
 

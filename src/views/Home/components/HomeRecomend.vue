@@ -58,7 +58,7 @@
         <div class="card-play fl-sb">
           <i class="icon-listen" />
           <span class="count f12">{{ formatPlayCount(item.playCount) }}</span>
-          <i class="play" title="播放" />
+          <i class="play" title="播放" @click="addPlayList(item.id)" />
         </div>
         <template #footer>
           <router-link to="/" class="desc" :title="item.name">
@@ -75,6 +75,9 @@ import Card from '@/components/Card'
 import { getPersonalized } from '@/apis/home'
 import { onMounted, ref } from 'vue'
 import { formatPlayCount } from '@/utils/index'
+import { getPlayListDetail } from '@/apis/playList'
+import { getSongUrl } from '@/apis/song'
+import { ElMessage } from 'element-plus'
 
 const personalizedList = ref([])
 
@@ -83,9 +86,30 @@ const getPersonalizedList = async () => {
   personalizedList.value = res.data.result
 }
 
+const addPlayList = async id => {
+  const res = await getPlayListDetail(id)
+  const idsStr = res.data.privileges.map(v => { return v.id }).join(',')
+  const songs = await getSongUrl(idsStr)
+  console.log(songs)
+  if (songs.data.code === -460) ElMessage.error(songs.data.message)
+  else {
+    const arr = songs.data.data.map((v, i) => {
+      return {
+        id: v.id,
+        url: v.url,
+        time: v.time,
+        name: res.data.playlist.tracks[i].al.name,
+        singer: res.data.playlist.tracks[i].ar.length === 1 ? res.data.playlist.tracks[i].ar[0].name : res.data.playlist.tracks[i].ar.map(v => { return v.name }).join('/'),
+        picUrl: res.data.playlist.tracks[i].al.picUrl }
+    })
+    localStorage.setItem('song_queue', JSON.stringify(arr))
+  }
+}
+
 onMounted(() => {
   getPersonalizedList()
 })
+
 </script>
 
 <style lang="scss" scoped>
