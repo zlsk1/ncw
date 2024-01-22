@@ -88,9 +88,8 @@ const getPersonalizedList = async () => {
 
 const addPlayList = async id => {
   const res = await getPlayListDetail(id)
-  const idsStr = res.data.privileges.map(v => { return v.id }).join(',')
+  const idsStr = res.data.playlist.tracks.map(v => { return v.id }).join(',')
   const songs = await getSongUrl(idsStr)
-  console.log(songs)
   if (songs.data.code === -460) ElMessage.error(songs.data.message)
   else {
     const arr = songs.data.data.map((v, i) => {
