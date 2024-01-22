@@ -23,9 +23,14 @@ import HomeTop from './components/HomeTop.vue'
 import HomeSide from './components/HomeSide.vue'
 import PlayBar from '@/components/PlayBar/index'
 import { ref } from 'vue'
+import { useSongQueueStore } from '@/stores/play'
+import { storeToRefs } from 'pinia'
 
-const songInfo = ref(JSON.parse(localStorage.getItem('song_queue')).length > 0
-  ? JSON.parse(localStorage.getItem('song_queue'))[JSON.parse(localStorage.getItem('play_setting')).index]
+const store = useSongQueueStore()
+const { songQueue } = storeToRefs(store)
+
+const songInfo = ref(songQueue.value.length > 0
+  ? songQueue.value[JSON.parse(localStorage.getItem('play_setting')).index]
   : {})
 
 const changeCurrent = e => { songInfo.value = e }

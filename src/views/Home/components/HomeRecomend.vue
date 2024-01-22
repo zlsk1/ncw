@@ -75,9 +75,8 @@ import Card from '@/components/Card'
 import { getPersonalized } from '@/apis/home'
 import { onMounted, ref } from 'vue'
 import { formatPlayCount } from '@/utils/index'
-import { getPlayListDetail } from '@/apis/playList'
-import { getSongUrl } from '@/apis/song'
-import { ElMessage } from 'element-plus'
+import { useSongQueueStore } from '@/stores/play'
+const store = useSongQueueStore()
 
 const personalizedList = ref([])
 
@@ -87,22 +86,7 @@ const getPersonalizedList = async () => {
 }
 
 const addPlayList = async id => {
-  const res = await getPlayListDetail(id)
-  const idsStr = res.data.playlist.tracks.map(v => { return v.id }).join(',')
-  const songs = await getSongUrl(idsStr)
-  if (songs.data.code === -460) ElMessage.error(songs.data.message)
-  else {
-    const arr = songs.data.data.map((v, i) => {
-      return {
-        id: v.id,
-        url: v.url,
-        time: v.time,
-        name: res.data.playlist.tracks[i].al.name,
-        singer: res.data.playlist.tracks[i].ar.length === 1 ? res.data.playlist.tracks[i].ar[0].name : res.data.playlist.tracks[i].ar.map(v => { return v.name }).join('/'),
-        picUrl: res.data.playlist.tracks[i].al.picUrl }
-    })
-    localStorage.setItem('song_queue', JSON.stringify(arr))
-  }
+  store.actionUpdateSongQueue(id)
 }
 
 onMounted(() => {

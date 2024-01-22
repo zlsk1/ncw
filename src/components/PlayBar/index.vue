@@ -99,7 +99,7 @@
         </div>
       </div>
     </div>
-    <div v-if="isShow" class="play-queue-wrap w980 fl">
+    <div v-show="isShow" class="play-queue-wrap w980 fl">
       <img :src="props.currentSong?.picUrl" alt="" class="bg-img">
       <div class="play-queue">
         <div class="header fl-sb">
@@ -173,8 +173,13 @@ import { watch, ref, onMounted } from 'vue'
 import { formatSongDuration } from '@/utils/time'
 import { judgeJson } from '@/utils/index'
 import { getLyric } from '@/apis/song'
+import { useSongQueueStore } from '@/stores/play'
+import { storeToRefs } from 'pinia'
+
+const store = useSongQueueStore()
+const { songQueue } = storeToRefs(store)
 const props = defineProps({
-  currentSong: { type: [Object, String], default: () => {} }
+  currentSong: { type: Object, default: () => {} }
 })
 const emit = defineEmits(['changeCurrent'])
 
@@ -188,7 +193,6 @@ const now = ref('00:00')
 const pregressTime = ref('')
 const isMove = ref(false)
 const isShow = ref(false)
-const songQueue = ref(JSON.parse(localStorage.getItem('song_queue')))
 const word = ref('')
 const index = ref(0)
 const volControl = ref('')
@@ -357,7 +361,7 @@ const getplaySetting = () => {
       autoplay: false,
       index: 0,
       lock: true,
-      mode: 4,
+      mode: 0,
       volume: 0.8
     }
     localStorage.setItem('play_setting', JSON.stringify(defaultSetting))
@@ -370,7 +374,7 @@ const setplaySetting = (obj) => {
     autoplay: false,
     index: 0,
     lock: true,
-    mode: 4,
+    mode: 0,
     volume: 0.8
   }
   const newSetting = Object.assign(defaultSetting, obj)
@@ -381,7 +385,8 @@ const setplaySetting = (obj) => {
 const chooseSong = (item, i, id) => {
   emit('changeCurrent', item)
   setplaySetting({ index: i })
-  setAutoplay()
+  paused.value = false
+  audio.value.autoplay = true
   getLrc(id)
 }
 
@@ -403,6 +408,7 @@ const delAll = () => {
 
 const del = i => {
   songQueue.value.splice(i, 1)
+  emit('changeCurrent', songQueue.value[i])
   localStorage.setItem('song_queue', JSON.stringify(songQueue.value))
 }
 </script>

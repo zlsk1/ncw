@@ -64,8 +64,10 @@ import { useTopStore } from '@/stores/top'
 import { getPlayListDetail } from '@/apis/playList'
 import { getSongUrl } from '@/apis/song'
 import { ElMessage } from 'element-plus'
+import { useSongQueueStore } from '@/stores/play'
+
 const store = useTopStore()
-const ids = ref([])
+const _store = useSongQueueStore()
 const topList = ref([])
 const emit = defineEmits(['getsong'])
 
@@ -89,31 +91,13 @@ const transmitSongInfo = async o => {
   }
 }
 const addPlayList = async id => {
-  const { data: { playlist: { tracks }}} = await getPlayListDetail(id)
-  const idsStr = tracks.map(v => { return v.id }).join(',')
-  const songs = await getSongUrl(idsStr)
-  if (songs.data.code === -460) ElMessage.error(songs.data.message)
-  else {
-    const { data: { data }} = songs
-    const arr = idsStr.split(',').map((v, i) => {
-      const index = data.findIndex(v1 => Number(v) === v1.id)
-      return {
-        id: data[index].id,
-        url: data[index].url,
-        time: data[index].time,
-        name: tracks[i].al.name,
-        singer: tracks[i].ar.length === 1 ? tracks[i].ar[0].name : tracks[i].ar.map(v => { return v.name }).join('/'),
-        picUrl: tracks[i].al.picUrl
-      }
-    })
-    localStorage.setItem('song_queue', JSON.stringify(arr))
-  }
+  _store.actionUpdateSongQueue(id)
 }
 
 onMounted(async () => {
   await store.actionTopId()
-  ids.value = [store.topId[0].id, store.topId[1].id, store.topId[2].id]
-  getTopList(ids.value)
+  const ids = [store.topId[0].id, store.topId[1].id, store.topId[2].id]
+  getTopList(ids)
 })
 </script>
 

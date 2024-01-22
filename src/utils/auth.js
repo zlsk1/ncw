@@ -13,3 +13,7 @@ export const getAvator = () => {
 export const getNickname = () => {
   return JSON.parse(localStorage.getItem('userInfo'))?.nickname
 }
+
+export const getSongQueue = () => {
+  return JSON.parse(localStorage.getItem('song_queue'))
+}
