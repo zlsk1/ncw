@@ -50,7 +50,7 @@
                     </router-link>
                   </div>
                   <router-link to="/">
-                    <i v-if="props.currentSong.name" class="from" title="来自歌单" />
+                    <i v-if="props.currentSong && props.currentSong.name" class="from" title="来自歌单" />
                   </router-link>
                 </div>
                 <div class="bar" @click="clickProgress">
@@ -125,7 +125,7 @@
             @click="chooseSong(item, i, item.id)"
           >
             <div class="play-wrap">
-              <div v-if="item.id === props.currentSong.id" class="play" />
+              <div v-if="item.id === props.currentSong?.id" class="play" />
             </div>
             <p class="name">
               {{ item.name }}
@@ -160,7 +160,11 @@
             :data-time="judgeJson(item) ? JSON.parse(item).t / 1000 : Number(item.split(']')[0].split('[')[1]?.split(':')[0] * 60) + Number(item.split(']')[0].split('[')[1]?.split(':')[1])"
             class="per-line"
           >
-            {{ judgeJson(item) ? JSON.parse(item).c[0].tx : item.split(']')[1] }}
+            {{ judgeJson(item)
+              ? JSON.parse(item).c.length === 1
+                ? JSON.parse(item).c[0].tx
+                : `${JSON.parse(item).c[0].tx}${JSON.parse(item).c[1].tx}`
+              : item.split(']')[1] }}
           </p>
         </div>
       </div>

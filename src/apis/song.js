@@ -28,3 +28,31 @@ export const getLyric = id => {
     }
   })
 }
+
+/**
+ *
+ * @param {*} ids 音乐id 可传入多个由逗号分隔的字符串ids
+ * @returns 歌曲详情
+ */
+export const getSongDetail = ids => {
+  return http({
+    url: '/song/detail',
+    params: {
+      ids
+    }
+  })
+}
+
+/**
+ *
+ * @param {*} id 音乐id
+ * @returns 相似歌曲
+ */
+export const getSongSimilar = id => {
+  return http({
+    url: '/simi/song',
+    params: {
+      id
+    }
+  })
+}

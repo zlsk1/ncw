@@ -3,15 +3,15 @@ export const getToken = () => {
 }
 
 export const clearToken = () => {
-  return localStorage.removeItem('token')
+  localStorage.removeItem('token')
 }
 
 export const getAvator = () => {
-  return JSON.parse(localStorage.getItem('userInfo'))?.avatarUrl
+  return JSON.parse(localStorage.getItem('userInfo'))?.profile.avatarUrl
 }
 
 export const getNickname = () => {
-  return JSON.parse(localStorage.getItem('userInfo'))?.nickname
+  return JSON.parse(localStorage.getItem('userInfo'))?.profile.nickname
 }
 
 export const getSongQueue = () => {

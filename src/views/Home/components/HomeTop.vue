@@ -35,8 +35,8 @@
               <p class="rank">
                 {{ no + 1 }}
               </p>
-              <router-link to="/">
-                <p class="track-name ellipsis-1">
+              <router-link :to="`/song/${track.id}`">
+                <p class="track-name ellipsis-1" :title="track.name">
                   {{ track.name }}
                 </p>
               </router-link>

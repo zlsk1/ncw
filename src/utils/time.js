@@ -37,3 +37,29 @@ export const formatSongDuration = (t, type) => {
     }
   }
 }
+
+/**
+ * 时间戳转化为 ‘1月20日 00:00’ 或 '2024年1月20日'
+ * @param {*} stamp
+ * @returns
+ */
+export const formatTimeStamp = (stamp) => {
+  const date = new Date()
+  const t = new Date(stamp).toLocaleString()
+  const a = t.split(' ')[0]
+  // const b = t.split(' ')[1]
+  const y = a.split('/')
+  // const h = b.split('-')
+  if (Number(y[0]) < date.getFullYear()) {
+    return `${y[0]}年${y[1]}月${y[2]}日`
+  } else if (Number(y[0]) === date.getFullYear()) {
+    return `${y[1]}月${y[2]}日 ${t.split(' ')[1].substring(0, 5)}`
+  }
+}
+
+export const isBeforeYesterday = (stamp) => {
+  const nowDay = new Date().getDate()
+  const d = new Date(stamp).toLocaleString().split(' ')[0].split('/')[2]
+  if (nowDay - d < 2) return true
+  else return false
+}
