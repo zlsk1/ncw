@@ -3,7 +3,7 @@
     <div class="playBar-wrap">
       <audio
         ref="audio"
-        :src="`https://music.163.com/song/media/outer/url?id=${props.currentSong?.id}.mp3`"
+        :src="`https://music.163.com/song/media/outer/url?id=${currentSong?.id}.mp3`"
         :loop="settings?.mode === 2"
         @loadedmetadata="loadedmetadata"
         @timeupdate="timeupdate"
@@ -31,26 +31,26 @@
             <div class="progressBar">
               <router-link class="img-container" to="/">
                 <i class="img-wrap" />
-                <img :src="props.currentSong?.picUrl" alt="">
+                <img :src="currentSong?.picUrl" alt="">
               </router-link>
               <div class="bar-wrap">
                 <div class="info">
-                  <router-link class="track-name ellipsis-1" to="/" :title="props.currentSong?.name">
-                    {{ props.currentSong?.name }}
+                  <router-link class="track-name ellipsis-1" to="/" :title="currentSong?.name">
+                    {{ currentSong?.name }}
                   </router-link>
                   <div class="singer-name">
                     <router-link
-                      v-for="(item, i) in props.currentSong?.singer?.split('/')"
+                      v-for="(item, i) in currentSong?.singer?.split('/')"
                       :key="i"
                       class="ellipsis-1"
                       to="/"
-                      :title="props.currentSong.singer"
+                      :title="currentSong.singer"
                     >
-                      {{ props.currentSong?.singer.split('/').length === 1 ? item : i === props.currentSong?.singer.split('/').length - 1 ? item : `${item}/` }}
+                      {{ currentSong?.singer.split('/').length === 1 ? item : i === currentSong?.singer.split('/').length - 1 ? item : `${item}/` }}
                     </router-link>
                   </div>
                   <router-link to="/">
-                    <i v-if="props.currentSong && props.currentSong.name" class="from" title="来自歌单" />
+                    <i v-if="currentSong && currentSong.name" class="from" title="来自歌单" />
                   </router-link>
                 </div>
                 <div class="bar" @click="clickProgress">
@@ -61,7 +61,7 @@
               </div>
               <div class="time">
                 <span class="now">{{ formatSongDuration(now, 1) }} /</span>
-                <span class="end">{{ formatSongDuration(props.currentSong?.time, 0) }}</span>
+                <span class="end">{{ formatSongDuration(currentSong?.time, 0) }}</span>
               </div>
             </div>
             <div class="opera">
@@ -100,7 +100,7 @@
       </div>
     </div>
     <div v-show="isShow" class="play-queue-wrap w980 fl">
-      <img :src="props.currentSong?.picUrl" alt="" class="bg-img">
+      <img :src="currentSong?.picUrl" alt="" class="bg-img">
       <div class="play-queue">
         <div class="header fl-sb">
           <p class="fw">
@@ -125,7 +125,7 @@
             @click="chooseSong(item, i, item.id)"
           >
             <div class="play-wrap">
-              <div v-if="item.id === props.currentSong?.id" class="play" />
+              <div v-if="item.id === currentSong?.id" class="play" />
             </div>
             <p class="name">
               {{ item.name }}
@@ -151,7 +151,7 @@
       <div class="lyric">
         <div class="name">
           <i class="close" @click.stop="isShow = false" />
-          {{ props.currentSong?.name }}
+          {{ currentSong?.name }}
         </div>
         <div ref="word" class="word">
           <p
@@ -181,11 +181,7 @@ import { useSongQueueStore } from '@/stores/play'
 import { storeToRefs } from 'pinia'
 
 const store = useSongQueueStore()
-const { songQueue } = storeToRefs(store)
-const props = defineProps({
-  currentSong: { type: Object, default: () => {} }
-})
-const emit = defineEmits(['changeCurrent'])
+const { songQueue, currentSong } = storeToRefs(store)
 
 const progressBarWidth = 466
 const btnWidth = 11
@@ -212,20 +208,20 @@ onMounted(() => {
   volBg.value.style.height = 90 * settings.value.volume + 'px'
 })
 
-watch(() => props.currentSong, val => {
-  const songs = JSON.parse(localStorage.getItem('song_queue')) || []
-  songs.some(v => v.id === val.id) ? '' : songs.unshift(val)
-  songQueue.value = songs
-  localStorage.setItem('song_queue', JSON.stringify(songs))
-})
+// watch(() => currentSong, val => {
+//   const songs = JSON.parse(localStorage.getItem('song_queue')) || []
+//   songs.some(v => v.id === val.id) ? '' : songs.unshift(val)
+//   songQueue.value = songs
+//   localStorage.setItem('song_queue', JSON.stringify(songs))
+// })
 
 watch(isShowVol, val => {
   if (!val) setplaySetting({ volume: audio.value.volume })
 })
 
 const loadedmetadata = e => {
-  if (props.currentSong.id) {
-    getLrc(props.currentSong.id)
+  if (currentSong.value.id) {
+    getLrc(currentSong.value.id)
   }
 }
 const play = () => {
@@ -239,7 +235,7 @@ const pause = () => {
 const timeupdate = e => {
   if (!isMove.value) {
     now.value = e.target.currentTime
-    const percent = now.value / props.currentSong.time * 1000 * 100
+    const percent = now.value / currentSong.time * 1000 * 100
     document.querySelector('.played-bg').style.width = percent + btnWidth / progressBarWidth + '%'
     moveBtn.value.style.left = `calc(${percent}% - ${btnWidth}px)`
   }
@@ -269,10 +265,10 @@ const mousedown = e1 => {
       isMove.value = true
       const moveDistance = e2.clientX - Parentleft
       const percent = moveDistance / progressBarWidth
-      pregressTime.value = percent * props.currentSong.time / 1000
+      pregressTime.value = percent * currentSong.time / 1000
       moveBtn.value.style.left = -btnWidth + moveDistance + 'px'
       playedBg.style.width = percent * 100 + '%'
-      now.value = props.currentSong.time / 1000 * percent
+      now.value = currentSong.time / 1000 * percent
     }
     playBar.value.onmouseup = (e) => {
       e.stopPropagation()
@@ -286,7 +282,7 @@ const clickProgress = e => {
   const clientX = document.querySelector('.bar-wrap').getBoundingClientRect().left
   const playedBg = document.querySelector('.played-bg')
   const moveDistance = e.clientX - clientX
-  pregressTime.value = (moveDistance / progressBarWidth) * props.currentSong.time / 1000
+  pregressTime.value = (moveDistance / progressBarWidth) * currentSong.time / 1000
   moveBtn.value.style.left = -btnWidth + moveDistance + 'px'
   playedBg.style.width = (moveDistance / progressBarWidth) * 100 + '%'
   audio.value.currentTime = pregressTime.value
@@ -299,30 +295,30 @@ const closePlayList = () => {
 
 const prev = () => {
   setAutoplay()
-  const i = songQueue.value.findIndex(v => v.id === props.currentSong.id)
+  const i = JSON.parse(localStorage.getItem('play_setting')).index
   if (i > 0) {
-    emit('changeCurrent', songQueue.value[i - 1])
+    currentSong.value = songQueue.value[i - 1]
     setplaySetting({ index: i - 1 })
   } else {
-    emit('changeCurrent', songQueue.value[songQueue.value.length - 1])
+    currentSong.value = songQueue.value[songQueue.value.length - 1]
     setplaySetting({ index: songQueue.value.length - 1 })
   }
 }
 
 const next = () => {
   setAutoplay()
-  const i = songQueue.value.findIndex(v => v.id === props.currentSong.id)
+  const i = JSON.parse(localStorage.getItem('play_setting')).index
   if (!settings.value.mode) {
     if (i !== songQueue.value.length - 1) {
-      emit('changeCurrent', songQueue.value[i + 1])
+      currentSong.value = songQueue.value[i + 1]
       setplaySetting({ index: i + 1 })
     } else {
-      emit('changeCurrent', songQueue.value[0])
+      currentSong.value = songQueue.value[0]
       setplaySetting({ index: 0 })
     }
   } else if (settings.value.mode) {
     const i = Math.floor(Math.random() * songQueue.value.length)
-    emit('changeCurrent', songQueue.value[i])
+    currentSong.value = songQueue.value[i]
   }
 }
 
@@ -387,7 +383,7 @@ const setplaySetting = (obj) => {
 }
 
 const chooseSong = (item, i, id) => {
-  emit('changeCurrent', item)
+  songQueue.value = item
   setplaySetting({ index: i })
   paused.value = false
   audio.value.autoplay = true
@@ -412,7 +408,7 @@ const delAll = () => {
 
 const del = i => {
   songQueue.value.splice(i, 1)
-  emit('changeCurrent', songQueue.value[i])
+  songQueue.value = songQueue.value[i]
   localStorage.setItem('song_queue', JSON.stringify(songQueue.value))
 }
 </script>

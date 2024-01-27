@@ -17,3 +17,9 @@ export const getNickname = () => {
 export const getSongQueue = () => {
   return JSON.parse(localStorage.getItem('song_queue'))
 }
+
+export const getCurrentSong = () => {
+  return localStorage.getItem('song_queue')
+    ? JSON.parse(localStorage.getItem('song_queue'))[JSON.parse(localStorage.getItem('play_setting')).index]
+    : null
+}

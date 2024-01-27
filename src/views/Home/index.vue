@@ -5,13 +5,13 @@
       <div class="left">
         <HomeRecomend />
         <HomeNewAlbum />
-        <HomeTop @getsong="songInfo = $event" />
+        <HomeTop />
       </div>
       <div class="right">
         <HomeSide />
       </div>
     </div>
-    <PlayBar :current-song="songInfo" @changeCurrent="changeCurrent" />
+    <PlayBar />
   </div>
 </template>
 
@@ -22,18 +22,6 @@ import HomeNewAlbum from './components/HoneNewAlbum.vue'
 import HomeTop from './components/HomeTop.vue'
 import HomeSide from './components/HomeSide.vue'
 import PlayBar from '@/components/PlayBar/index'
-import { ref } from 'vue'
-import { useSongQueueStore } from '@/stores/play'
-import { storeToRefs } from 'pinia'
-
-const store = useSongQueueStore()
-const { songQueue } = storeToRefs(store)
-
-const songInfo = ref(songQueue.value.length > 0
-  ? songQueue.value[JSON.parse(localStorage.getItem('play_setting')).index]
-  : {})
-
-const changeCurrent = e => { songInfo.value = e }
 </script>
 
 <style lang="scss" scoped>

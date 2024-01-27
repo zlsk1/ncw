@@ -41,7 +41,7 @@
                 </p>
               </router-link>
               <div class="icon">
-                <i class="play" title="播放" @click="transmitSongInfo({id: track.id, picUrl: track.al.picUrl, name: track.name, singer: track.ar.map(v => { return v.name }).join('/')})" />
+                <i class="play" title="播放" @click="updateSong({id: track.id, picUrl: track.al.picUrl, name: track.name, singer: track.ar.map(v => { return v.name }).join('/')})" />
                 <i class="addlist" title="添加到播放列表" />
                 <i class="like" title="收藏" />
               </div>
@@ -69,7 +69,6 @@ import { useSongQueueStore } from '@/stores/play'
 const store = useTopStore()
 const _store = useSongQueueStore()
 const topList = ref([])
-const emit = defineEmits(['getsong'])
 
 const getTopList = (ids) => {
   const p = Promise.all([
@@ -83,11 +82,22 @@ const getTopList = (ids) => {
     }
   })
 }
-const transmitSongInfo = async o => {
+const updateSong = async o => {
   const res = await getSongUrl(o.id)
   if (res.data.code === -460) ElMessage.error(res.data.message)
   else {
-    emit('getsong', Object.assign(o, { url: res.data.data[0].url, time: res.data.data[0].time }))
+    const mergeObj = Object.assign(o, { url: res.data.data[0].url, time: res.data.data[0].time })
+    if (_store.songQueue) {
+      if (!_store.songQueue.some(v => v.id === mergeObj.id)) {
+        _store.songQueue.unshift(mergeObj)
+        localStorage.setItem('song_queue', JSON.stringify(_store.songQueue))
+        localStorage.setItem('play_setting', JSON.stringify(Object.assign(JSON.parse(localStorage.getItem('play_setting')), { index: 0 })))
+        _store.actionUpdateCurrentSong()
+      }
+    } else {
+      localStorage.setItem('song_queue', JSON.stringify([mergeObj]))
+      _store.actionUpdateCurrentSong()
+    }
   }
 }
 const addPlayList = async id => {

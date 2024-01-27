@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { getSongQueue } from '@/utils/auth'
+import { getSongQueue, getCurrentSong } from '@/utils/auth'
 import { getPlayListDetail } from '@/apis/playList'
 import { getSongUrl } from '@/apis/song'
 import { ElMessage } from 'element-plus'
 
 export const useSongQueueStore = defineStore('songQueue', () => {
   const songQueue = ref(getSongQueue())
+  const currentSong = ref(getCurrentSong())
 
   const actionUpdateSongQueue = async id => {
     const { data: { playlist: { tracks }}} = await getPlayListDetail(id)
@@ -31,8 +32,16 @@ export const useSongQueueStore = defineStore('songQueue', () => {
     }
   }
 
+  const actionUpdateCurrentSong = () => {
+    currentSong.value = localStorage.getItem('song_queue')
+      ? JSON.parse(localStorage.getItem('song_queue'))[JSON.parse(localStorage.getItem('play_setting')).index]
+      : null
+  }
+
   return {
     songQueue,
-    actionUpdateSongQueue
+    currentSong,
+    actionUpdateSongQueue,
+    actionUpdateCurrentSong
   }
 })
