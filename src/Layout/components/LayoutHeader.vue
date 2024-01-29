@@ -108,38 +108,40 @@
       </el-dropdown>
     </div>
     <div class="category-wrap">
-      <ul>
-        <li>
-          <router-link to="/" class="active-category">
-            推荐
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/">
-            排行榜
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/">
-            歌单
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/">
-            主播电台
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/">
-            歌手
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/">
-            新碟上架
-          </router-link>
-        </li>
-      </ul>
+      <div class="w1100">
+        <ul>
+          <li>
+            <router-link to="/" class="active-category">
+              推荐
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/">
+              排行榜
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/">
+              歌单
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/">
+              主播电台
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/">
+              歌手
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/">
+              新碟上架
+            </router-link>
+          </li>
+        </ul>
+      </div>
     </div>
     <Login :is-show="isShow" @close="e => isShow = e" />
   </header>
@@ -241,15 +243,21 @@ const logout = () => {
         align-items: center;
         justify-content: space-between;
         width: 500px;
-        margin-left: 614px;
+        margin-left: 204px;
         a {
           padding: 3px 12px;
           font-size: 12px;
           color: #fff;
           border-radius: 20px;
+          &:hover {
+            background-color: #9b0909;
+          }
         }
       }
     }
+  }
+  .active-category {
+    background-color: #9b0909;
   }
   .active-nav {
     background-color: #000;
@@ -265,9 +273,6 @@ const logout = () => {
       border-color: transparent transparent $themeColor;
     }
   }
-  .active-category {
-    background-color: #9b0909;
-  }
   .message {
     display: inline-block;
     width: 24px;
@@ -278,27 +283,25 @@ const logout = () => {
     background-color: $themeColor;
     border-radius: 10px;
   }
-</style>
-<style>
-  .header-wrap .el-input__wrapper {
+  :deep(.el-input__wrapper) {
     border-radius: 20px;
-  }
-  .header-wrap .el-input__wrapper {
     box-shadow: none;
+    &:hover {
+      box-shadow: none;
+    }
+    .el-input__inner::-webkit-input-placeholder {
+      color: #9b9b9b;
+    }
   }
-  .header-wrap .el-input__wrapper:hover {
-    box-shadow: none;
-  }
-  .header-wrap .el-input {
+  :deep(.el-input) {
     width: 158px;
     font-size: 12px;
     color: #333;
   }
-  .header-wrap .el-input__inner::-webkit-input-placeholder {
+  :deep(.el-input__inner::-webkit-input-placeholder) {
     color: #9b9b9b;
   }
-
-  .header-wrap .el-badge__content--danger  {
+  :deep(.el-badge__content--danger) {
     background-color: #c20c0c;
     border: none;
   }
