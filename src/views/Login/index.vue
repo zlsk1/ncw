@@ -35,6 +35,7 @@
             <el-button
               v-if="!isSentCaptcha"
               ref="getcaptcha"
+              class="btn-getcaptcha"
               style="width: calc(35% - 10px);"
               :disabled="!isPhone"
               @click="getCaptcha"
@@ -101,7 +102,7 @@
 
 <script setup>
 import { loginByCaptcha, schemaCaptcha, testPhone, testNickname, register } from '@/apis/login'
-import { ref, watch } from 'vue'
+import { onUnmounted, ref, watch } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { getTimestamp } from '@/utils/time'
 const store = useUserStore()
@@ -120,8 +121,8 @@ const captchaCountdown = ref(30)
 const reg = new RegExp(/^(?:(?:\+|00)86)?1\d{10}$/)
 
 const loginFormData = ref({
-  phone: '',
-  password: '',
+  phone: '15280840851',
+  password: '@Gexiaoqian139',
   passwordConfirm: '',
   captcha: '',
   isIptPhone: '',
@@ -173,7 +174,7 @@ watch(
   }
 )
 
-const handleLogin = async formName => {
+let handleLogin = async formName => {
   await loginForm.value.validate(async (valid, fields) => {
     if (valid) {
       if (isRegister.value) {
@@ -188,7 +189,8 @@ const handleLogin = async formName => {
     }
   })
 }
-const getCaptcha = async () => {
+
+let getCaptcha = async () => {
   const res = await loginByCaptcha(loginFormData.value.phone)
   if (res.data.code === 200) {
     isSentCaptcha.value = true
@@ -203,18 +205,25 @@ const getCaptcha = async () => {
     }, 1000)
   }
 }
-const switchLoginWay = () => {
+
+let switchLoginWay = () => {
   loginForm.value.resetFields()
   isLoginByPassword.value = !isLoginByPassword.value
   isRegister.value = false
 }
-const closeDialog = () => {
+
+let closeDialog = () => {
   emit('close', false)
   loginForm.value.resetFields()
 }
+
+onUnmounted(() => {
+  handleLogin = null; getCaptcha = null; switchLoginWay = null; closeDialog = null
+})
 </script>
 
 <style lang="scss" scoped>
+.login-wrap{
   .header {
     padding: 60px 0 0 0 ;
     .phone {
@@ -224,55 +233,55 @@ const closeDialog = () => {
       width: 100%;
     }
   }
-</style>
-
-<style>
-  .login-wrap .el-dialog__header {
-    width: 100%;
-    height: 40px;
-    line-height: 40px;
-    padding: 0 0 0 20px;
+  .btn-getcaptcha {
     color: #fff;
-    background-color: #2d2d2d;
-  }
-  .login-wrap .el-dialog__body {
-    padding: 60px 70px 20px;
-  }
-  /* .login-wrap .el-dialog__footer {
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
-    padding: 0 0 0 20px;
-    text-align: left;
-    font-size: 12px;
-    color: #0c72c3;
-    background-color: #f7f7f7;
-    border-top: 1px solid #ccc;
-  } */
-  .login-wrap .el-dialog__headerbtn {
-    top: 0;
-    height: 40px;
-  }
-  .login-wrap .el-dialog__headerbtn:hover svg {
-    color: #909399;
-  }
-
-  .login-wrap .el-input__wrapper {
+    background-color: #ff3a3a;
     border-radius: 20px;
   }
-  .login-wrap .el-input__wrapper {
-    box-shadow: none;
-    border: 1px solid #e5e5e5;
+  :deep(.el-button.is-disabled) {
+    color: #a8abb2;
+    background-color: #fff !important;
   }
-  .login-wrap .el-input__wrapper:hover {
-    box-shadow: none;
+  .btn-login {
+    .btn {
+      color: #fff;
+      background-color: #ff3a3a;
+      border-radius: 20px;
+    }
   }
-  .login-wrap .el-input {
-    width: 158px;
-    font-size: 12px;
-    color: #333;
-  }
-  .login-wrap .el-input__inner::-webkit-input-placeholder {
-    color: #9b9b9b;
-  }
+
+}
+:deep(.el-button) {
+}
+:deep(.el-dialog__header) {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  padding: 0 0 0 20px;
+  color: #fff;
+  background-color: #2d2d2d;
+}
+:deep(.el-dialog__body) {
+  padding: 60px 70px 20px;
+}
+:deep(.el-dialog__headerbtn) {
+  top: 0;
+  height: 40px;
+}
+:deep(.el-dialog__headerbtn:hover svg) {
+  color: #909399;
+}
+:deep(.el-input__wrapper) {
+  border-radius: 20px;
+  box-shadow: none;
+  border: 1px solid #e5e5e5;
+}
+:deep(.el-input) {
+  width: 158px;
+  font-size: 12px;
+  color: #333;
+}
+:deep(.el-input__inner::-webkit-input-placeholder) {
+  color: #9b9b9b;
+}
 </style>

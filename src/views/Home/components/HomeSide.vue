@@ -1,6 +1,6 @@
 <template>
   <div class="side-wrap">
-    <div class="userInfo-wrap">
+    <div v-if="avator" class="userInfo-wrap">
       <div class="top">
         <router-link to="/" class="img-wrap">
           <img :src="avator" alt="">
@@ -114,7 +114,7 @@ const djList = ref([])
 const info = ref(null)
 
 const getDetail = () => {
-  store.actiongetUserDetail(JSON.parse(localStorage.getItem('userInfo')).profile.userId)
+  store.actiongetUserDetail(JSON.parse(localStorage.getItem('userInfo'))?.profile.userId)
   const { level, profile } = JSON.parse(localStorage.getItem('userInfo'))
   info.value = {
     eventCount: profile.eventCount,
@@ -123,17 +123,19 @@ const getDetail = () => {
     level: level
   }
 }
+
 const getSinger = async (limit) => {
   const res = await getHotSinger(limit)
   singerList.value = res.data.artists
 }
+
 const getDj = async limit => {
   const res = await getHotDj(limit)
   djList.value = res.data.data.list
 }
 
 onMounted(() => {
-  getDetail()
+  avator.value ? getDetail() : ''
   getSinger(5)
   getDj(5)
 })
