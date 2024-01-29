@@ -1,7 +1,8 @@
 import Pic from './Pic'
+import PlayBar from './PlayBar'
 
 const components = [
-  Pic
+  Pic, PlayBar
 ]
 
 export default {

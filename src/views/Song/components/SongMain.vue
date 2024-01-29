@@ -4,7 +4,7 @@
       <div class="left">
         <div class="img-wrap">
           <i class="icon-img" />
-          <img :src="props.data?.songs?.al.picUrl" alt="">
+          <img :src="data?.songs?.al.picUrl" alt="">
         </div>
       </div>
       <div class="right">
@@ -12,7 +12,7 @@
           <i class="icon-singleSong" />
           <div>
             <div class="fl">
-              <h2>{{ props.data?.songs?.al.name }}</h2>
+              <h2>{{ data?.songs?.al.name }}</h2>
               <i class="icon-mv" />
             </div>
           <!-- <span>{{ desc }}</span> -->
@@ -20,23 +20,23 @@
         </div>
         <div class="info f12">
           <div class="singer">
-            歌手：<router-link to="/">
-              {{ props.data?.songs?.ar.length === 0 ? props.data?.songs.ar[0].name : props.data?.songs.ar.map(v => {return v.name}).join('/') }}
+            歌手：<router-link v-for="(item, index) in data?.songs?.ar" :key="index" to="/">
+              {{ index !== data?.songs.ar.length - 1 ? `${item.name}/` : item.name }}
             </router-link>
           </div>
           <div class="singer">
             所属专辑：<router-link to="/">
-              {{ props.data?.songs.al.name }}
+              {{ data?.songs.al.name }}
             </router-link>
           </div>
         </div>
         <ul class="btns fl f12">
           <li class="play fl">
-            <i>
+            <i @click="play">
               <em class="icon-play" />
               播放
             </i>
-            <i class="icon-add" title="添加到播放列表" />
+            <i class="icon-add" title="添加到播放列表" @click="addPlayList" />
           </li>
           <li class="like">
             <i class="icon-like">收藏</i>
@@ -48,12 +48,12 @@
             <i class="icon-download">下载</i>
           </li>
           <li class="comment" @click="goComment">
-            <i class="icon-comment">({{ props.data?.songComment.total }})</i>
+            <i class="icon-comment">({{ data?.songComment.total }})</i>
           </li>
         </ul>
         <div class="lrc-wrap">
           <div ref="lrcContent" class="lrc-content">
-            <p v-for="(item, index) in props.data?.lrc.lyric.split('\n')" :key="index" class="f12 per-line">
+            <p v-for="(item, index) in data?.lrc.lyric.split('\n')" :key="index" class="f12 per-line">
               {{ judgeJson(item)
                 ? JSON.parse(item).c.length === 1
                   ? JSON.parse(item).c[0].tx
@@ -68,44 +68,50 @@
     <div class="comment-wrap">
       <div class="header">
         <h3>评论</h3>
-        <span class="f12">共{{ props.data?.songComment.total }}条评论</span>
+        <span class="f12">共{{ data?.songComment.total }}条评论</span>
       </div>
       <div class="content">
         <div class="my-comment fl">
-          <img :src="avator" alt="">
+          <img v-lazy="avator" alt="">
           <div class="input">
             <textarea
               ref="textarea"
+              v-model="comment"
               maxlength="140"
               placeholder="评论"
               @input="input"
             />
             <div class="utils fl-sb">
               <div class="fl">
-                <div class="emj">
-                  <i class="icon-emj" />
-                </div>
-                <i class="icon-aite" />
+                <Emj @choose="onChoose($event, 0)">
+                  <div class="emj">
+                    <i class="icon-emj" />
+                  </div>
+                </Emj>
+                <i ref="addAiteRef" class="icon-aite" @click="addAite(0)" />
+                <el-popover :virtual-ref="addAiteRef" trigger="click" virtual-triggering>
+                  空格后加上用户名
+                </el-popover>
               </div>
               <div class="f12 fl-sb">
-                <span class="txtlength">{{ txtLength }}/140</span>
-                <i class="icon-comment">评论</i>
+                <span class="txtlength">{{ comment.trim().length }}/140</span>
+                <i class="icon-comment" @click="handleComment">评论</i>
               </div>
             </div>
           </div>
         </div>
         <div class="others-comment">
-          <div v-if="offset <= 20" class="hot-comment-header">
+          <div v-if="offset <= 20" class="others-comment-header">
             精彩评论
           </div>
           <ul class="hot-comment-content">
             <li
-              v-for="item in props.data?.songComment?.hotComments"
+              v-for="(item, i) in data?.songComment?.hotComments"
               :key="item.commentId"
               class="fl hot-comment-items f12"
             >
               <router-link to="/">
-                <img :src="item.user.avatarUrl" alt="" class="avatar">
+                <img v-lazy="item.user.avatarUrl" alt="" class="avatar">
               </router-link>
               <div class="content">
                 <router-link to="/" class="name">
@@ -113,8 +119,8 @@
                 </router-link>
                 <img
                   v-if="item.user.vipRights && item.user.vipRights.associator"
+                  v-lazy="item.user.vipRights.associator.iconUrl"
                   class="vip"
-                  :src="item.user.vipRights.associator.iconUrl"
                   alt=""
                 >：
                 <span v-for="(content, indexC) in item.content.split('\n')" :key="indexC" class="words">
@@ -126,27 +132,49 @@
                   </div>
                   <div class="fl">
                     <span>
-                      <i class="icon-like" />
+                      <i :class="item.liked ? 'icon-liked' :'icon-like'" @click="like(item.commentId, item.liked, i)" />
                       <span class="like-count">({{ item.likedCount }})</span>
                     </span>
-                    <span class="reply">回复</span>
+                    <span class="reply" @click="openReply(i, item.user.nickname)">回复</span>
+                  </div>
+                </div>
+                <div v-if="DOMIndex === i" class="reply-textarea">
+                  <textarea ref="replyTextarea" v-model="reply" />
+                  <div class="utils fl-sb">
+                    <div class="fl">
+                      <Emj @choose="onChoose($event, 1)">
+                        <div class="emj">
+                          <i class="icon-emj" />
+                        </div>
+                      </Emj>
+                      <el-popover trigger="click">
+                        空格后加上用户名
+                        <template #reference>
+                          <i class="icon-aite" @click="addAite(1)" />
+                        </template>
+                      </el-popover>
+                    </div>
+                    <div class="f12 fl-sb">
+                      <span class="txtlength">{{ reply.trim().length }}/140</span>
+                      <i class="icon-comment" @click="handleReply(item.user.nickname)">回复</i>
+                    </div>
                   </div>
                 </div>
               </div>
             </li>
           </ul>
-          <div v-if="offset <= 20" class="new-comment-header">
-            最新评论({{ props.data?.songComment?.total }})
+          <div v-if="offset <= 20" class="others-comment-header">
+            最新评论({{ data?.songComment?.total }})
           </div>
           <ul class="hot-comment-content">
             <li
-              v-for="item in props.data?.songComment?.comments"
+              v-for="(item, i) in data?.songComment?.comments"
               :key="item.commentId"
               class="fl hot-comment-items f12"
             >
               <template v-if="!item.parentCommentId" />
               <router-link to="/">
-                <img :src="item.user.avatarUrl" alt="" class="avatar">
+                <img v-lazy="item.user.avatarUrl" alt="" class="avatar">
               </router-link>
               <div class="content">
                 <router-link to="/" class="name">
@@ -154,8 +182,8 @@
                 </router-link>
                 <img
                   v-if="item.user.vipRights && item.user.vipRights.associator"
+                  v-lazy="item.user.vipRights.associator?.iconUrl"
                   class="vip"
-                  :src="item.user.vipRights.associator?.iconUrl"
                   alt=""
                 >：
                 <span v-for="(content, indexC) in item.content.split('\n')" :key="indexC" class="words">
@@ -172,12 +200,35 @@
                     {{ isBeforeYesterday(item.time) ? item.timeStr : formatTimeStamp(item.time) }}
                   </div>
                   <div class="fl">
+                    <span v-if="item.user.userId === myId">删除</span>
                     <span>
                       <i class="icon-like" />
                       <span v-if="item.likedCount > 0" class="like-count">({{ item.likedCount }})</span>
                       <span v-else class="like-count-zero" />
                     </span>
-                    <span class="reply">回复</span>
+                    <span class="reply" @click="openReply(i = offset <= 20 ? i + data.songComment.hotComments.length : i, item.user.nickname)">回复</span>
+                  </div>
+                </div>
+                <div v-if="DOMIndex === i + 15 " class="reply-textarea">
+                  <textarea ref="replyTextarea" v-model="reply" />
+                  <div class="utils fl-sb">
+                    <div class="fl">
+                      <Emj @choose="onChoose($event, 1)">
+                        <div class="emj">
+                          <i class="icon-emj" />
+                        </div>
+                      </Emj>
+                      <el-popover trigger="click">
+                        空格后加上用户名
+                        <template #reference>
+                          <i class="icon-aite" @click="addAite(1)" />
+                        </template>
+                      </el-popover>
+                    </div>
+                    <div class="f12 fl-sb">
+                      <span class="txtlength">{{ reply.trim().length }}/140</span>
+                      <i class="icon-comment" @click="handleReply(item.user.nickname)">回复</i>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -187,7 +238,7 @@
             small
             background
             :page-size="20"
-            :total="props.data?.songComment?.total"
+            :total="data?.songComment?.total"
             layout="prev, pager, next"
             prev-text="上一页"
             next-text="下一页"
@@ -201,25 +252,58 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { judgeJson } from '@/utils/index'
-import { ArrowDown } from '@element-plus/icons-vue'
-import { useUserStore } from '@/stores/user'
-import { storeToRefs } from 'pinia'
+import { nextTick, onUnmounted, ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { judgeJson, debounce } from '@/utils/index'
 import { formatTimeStamp, isBeforeYesterday } from '@/utils/time'
+import { ArrowDown } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/stores/user'
+import { useSongQueueStore } from '@/stores/play'
+import { storeToRefs } from 'pinia'
+import { getSongUrl, getLyric, getSongDetail } from '@/apis/song'
+import { getSongComment } from '@/apis/comment'
+import { likeComment, sendCommentAPI, delCommentAPI } from '@/apis/comment'
+import Emj from '@/components/Emj'
 
-const props = defineProps({
-  data: { type: Object, default: () => {} }
-})
-const emit = defineEmits(['changePage'])
+const route = useRoute()
 
-const store = useUserStore()
-const { avator } = storeToRefs(store)
+const userStore = useUserStore()
+const { avator } = storeToRefs(userStore)
+const playStore = useSongQueueStore()
+const myId = JSON.parse(localStorage.getItem('userInfo')).profile.userId
 
 const textarea = ref(null)
-const txtLength = ref(0)
+const comment = ref('')
 const offset = ref(0)
 const lrcContent = ref('')
+const addAiteRef = ref(null)
+const reply = ref('')
+const DOMIndex = ref('')
+const replyTextarea = ref(null)
+const data = ref(null)
+
+const getData = id => {
+  const p = Promise.all([
+    getLyric(id),
+    getSongDetail(id),
+    getSongComment({ id })
+  ])
+  p.then(res => {
+    data.value = { lrc: res[0].data.lrc, songs: res[1].data.songs[0], songComment: res[2].data }
+  })
+}
+
+const getComment = async (id, offset) => {
+  const res = await getSongComment({ id, offset })
+  data.value.songComment = res.data
+}
+
+const changePage = e => {
+  offset.value = e * 20
+  offset.value = offset.value === 20 ? '' : offset // 获取第一页的数据时要包括精彩评论
+  getComment(route.params.id, offset.value)
+}
 
 const expandLrc = () => {
   if (lrcContent.value.nextSibling.children[0].textContent === '展开') {
@@ -233,19 +317,113 @@ const expandLrc = () => {
   }
 }
 
-const changePage = e => {
-  offset.value = e * 20
-  emit('changePage', offset.value)
-}
-
 const goComment = () => {
   window.scrollTo({ top: 680 })
   textarea.value.focus()
 }
 
-const input = e => {
-  txtLength.value = e.target.value.trim().length
+const play = async () => {
+  const { data: { data }} = await getSongUrl(data.songs.id)
+  playStore.currentSong = {
+    id: data[0].id,
+    picUrl: data.songs.al.picUrl,
+    name: data.songs.name,
+    singer: data.songs.ar.map(v => { return v.name }).join('/'),
+    url: data[0].url,
+    time: data[0].time
+  }
 }
+
+const addPlayList = async () => {
+  const { data: { data }} = await getSongUrl(data.songs.id)
+  const mergeObj = {
+    id: data[0].id,
+    picUrl: data.songs.al.picUrl,
+    name: data.songs.name,
+    singer: data.songs.ar.map(v => { return v.name }).join('/'),
+    url: data[0].url,
+    time: data[0].time
+  }
+  if (playStore.songQueue) {
+    if (!playStore.songQueue.some(v => v.id === mergeObj.id)) {
+      playStore.songQueue.unshift(mergeObj)
+      localStorage.setItem('song_queue', JSON.stringify(playStore.songQueue))
+      localStorage.setItem('play_setting', JSON.stringify(Object.assign(JSON.parse(localStorage.getItem('play_setting')), { index: 0 })))
+      playStore.actionUpdateCurrentSong()
+    }
+  } else {
+    localStorage.setItem('song_queue', JSON.stringify([mergeObj]))
+    playStore.actionUpdateCurrentSong()
+  }
+}
+
+const _input = e => {
+  // console.log(e)
+}
+
+let input = debounce(_input, 30)
+
+let onChoose = (e, type) => {
+  if (type === 0) comment.value += `[${e}]`
+  else if (type === 1) reply.value += `[${e}]`
+}
+
+let handleComment = async () => {
+  if (comment.value.trim().length === 0) {
+    ElMessage({
+      message: '输入点内容再提交吧',
+      type: 'error',
+      offset: window.innerHeight / 2,
+      duration: 2000
+    })
+  } else {
+    const res = await sendCommentAPI({ t: 1, type: 0, id: route.params.id, content: comment.value })
+    console.log(res)
+  }
+}
+
+let addAite = (type) => {
+  if (type === 0) comment.value += '@'
+  else if (type === 1) reply.value += '@'
+}
+
+const openReply = (i, nickname) => {
+  if (i === DOMIndex.value) DOMIndex.value = ''
+  else {
+    DOMIndex.value = i
+    nextTick(() => {
+      replyTextarea.value[0].focus()
+    })
+  }
+  reply.value = `${nickname}:`
+}
+
+const handleReply = (nickname) => {
+  if (reply.value === `${nickname}:`) {
+    ElMessage({
+      message: '输入点内容再提交吧',
+      type: 'error',
+      offset: window.innerHeight / 2,
+      duration: 2000
+    })
+  }
+}
+
+let like = async (cid, liked, index) => {
+  const res = await likeComment({ id: data.value.songs.id, cid, t: liked ? 0 : 1 })
+  if (res.status === 200) {
+    data.value.songComment.hotComments[index].liked = !liked
+    !liked
+      ? data.value.songComment.hotComments[index].likedCount += 1
+      : data.value.songComment.hotComments[index].likedCount -= 1
+  }
+}
+
+onMounted(() => { getData(route.params.id) })
+
+onUnmounted(() => {
+  input = null; onChoose = null; handleComment = null; addAite = null; like = null
+})
 
 </script>
 
@@ -455,43 +633,9 @@ const input = e => {
               z-index: 10;
             }
           }
-          .utils {
-            margin-top: 6px;
-            .emj {
-              .icon-emj {
-                display: block;
-                width: 18px;
-                height: 18px;
-                margin-right: 10px;
-                background: url('@/assets/icons/icon.png') -40px -490px no-repeat;
-                cursor: pointer;
-              }
-            }
-            .icon-aite {
-              display: block;
-              width: 18px;
-              height: 18px;
-              background: url('@/assets/icons/icon.png') -60px -490px no-repeat;
-              cursor: pointer;
-            }
-            .txtlength {
-              margin-right: 10px;
-              color: #aaa;
-            }
-            .icon-comment {
-              display: block;
-              width: 46px;
-              height: 25px;
-              line-height: 25px;
-              text-align: center;
-              color: #fff;
-              background: url('@/assets/icons/button.png') -84px -64px no-repeat;
-              cursor: pointer;
-            }
-          }
         }
         .others-comment {
-          .hot-comment-header {
+          .others-comment-header {
             padding: 6px 0;
             font-size: 12px;
             font-weight: 700;
@@ -540,7 +684,6 @@ const input = e => {
                   padding: 10px 20px;
                   background-color: #f4f4f4;
                   border: 1px solid #dedede;
-                  cursor: pointer;
                   &::after {
                     content: '';
                     position: absolute;
@@ -553,6 +696,9 @@ const input = e => {
                     background-color: #fff;
                     transform: rotate(45deg);
                     z-index: 10;
+                  }
+                  .name {
+                    cursor: pointer;
                   }
                 }
                 .bottom {
@@ -569,6 +715,15 @@ const input = e => {
                     cursor: pointer;
                     vertical-align: middle;
                   }
+                  .icon-liked {
+                    display: inline-block;
+                    width: 15px;
+                    height: 14px;
+                    margin-top: -4px;
+                    background: url('@/assets/icons/icon2.png') -170px 0 no-repeat;
+                    cursor: pointer;
+                    vertical-align: middle;
+                  }
                   .like-count {
                     padding: 0 10px;
                   }
@@ -579,6 +734,9 @@ const input = e => {
                     position: relative;
                     padding-left: 10px;
                     cursor: pointer;
+                    &:hover {
+                      text-decoration: underline;
+                    }
                     &::after {
                       content: '';
                       position: absolute;
@@ -590,19 +748,79 @@ const input = e => {
                     }
                   }
                 }
+                .reply-textarea {
+                  position: relative;
+                  margin-top: 10px;
+                  padding: 15px 20px 30px 20px;
+                  background: #f8f8f8;
+                  border: 1px solid #d9d9d9;
+                  bottom: 2px;
+                  &::after {
+                    content: '';
+                    position: absolute;
+                    right: 10px;
+                    top: -5px;
+                    width: 8px;
+                    height: 8px;
+                    background-color: #fff;
+                    border-left: 1px solid #cdcdcd;
+                    border-top: 1px solid #cdcdcd;
+                    transform: rotate(45deg);
+                  }
+                  textarea {
+                    width: 100%;
+                    height: 32px;
+                    padding: 6px;
+                    color: #333;
+                    border: 1px solid #cdcdcd;
+                    resize: none;
+                    outline: none;
+                  }
+                }
               }
             }
-          }
-          .new-comment-header {
-            padding: 6px 0;
-            font-size: 12px;
-            font-weight: 700;
-            border-bottom: 1px solid #ccc;
           }
           .paginationn {
             justify-content: center;
           }
         }
+      }
+    }
+  }
+  .utils {
+    margin-top: 6px;
+    .emj {
+      margin-right: 10px;
+      .icon-emj {
+        display: block;
+        width: 18px;
+        height: 18px;
+        background: url('@/assets/icons/icon.png') -40px -490px no-repeat;
+        cursor: pointer;
+      }
+    }
+    .icon-aite {
+      display: block;
+      width: 18px;
+      height: 18px;
+      background: url('@/assets/icons/icon.png') -60px -490px no-repeat;
+      cursor: pointer;
+    }
+    .txtlength {
+      margin-right: 10px;
+      color: #aaa;
+    }
+    .icon-comment {
+      display: block;
+      width: 46px;
+      height: 25px;
+      line-height: 25px;
+      text-align: center;
+      color: #fff;
+      background: url('@/assets/icons/button.png') -84px -64px no-repeat;
+      cursor: pointer;
+      &:hover {
+        background-position: -84px -94px;
       }
     }
   }

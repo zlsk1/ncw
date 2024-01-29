@@ -20,3 +20,29 @@ export const judgeJson = str => {
     return false
   }
 }
+
+/**
+ * 防抖
+ * @param {Function} fn
+ * @param {*} delay 延迟毫秒数
+ * @param {*} immediate 是否立即执行
+ */
+export function debounce (fn, delay, immediate = true) {
+  let timer = null
+  return function (...args) {
+    if (timer) {
+      if (immediate) return
+      clearTimeout(timer)
+    }
+    if (!timer && immediate) {
+      fn.apply(this, args)
+      timer = setTimeout(() => {
+        timer = null
+      }, delay)
+    } else {
+      timer = setTimeout(() => {
+        fn.apply(this, args)
+      }, delay)
+    }
+  }
+}

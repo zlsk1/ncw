@@ -235,7 +235,7 @@ const pause = () => {
 const timeupdate = e => {
   if (!isMove.value) {
     now.value = e.target.currentTime
-    const percent = now.value / currentSong.time * 1000 * 100
+    const percent = now.value / currentSong.value.time * 1000 * 100
     document.querySelector('.played-bg').style.width = percent + btnWidth / progressBarWidth + '%'
     moveBtn.value.style.left = `calc(${percent}% - ${btnWidth}px)`
   }
@@ -265,10 +265,10 @@ const mousedown = e1 => {
       isMove.value = true
       const moveDistance = e2.clientX - Parentleft
       const percent = moveDistance / progressBarWidth
-      pregressTime.value = percent * currentSong.time / 1000
+      pregressTime.value = percent * currentSong.value.time / 1000
       moveBtn.value.style.left = -btnWidth + moveDistance + 'px'
       playedBg.style.width = percent * 100 + '%'
-      now.value = currentSong.time / 1000 * percent
+      now.value = currentSong.value.time / 1000 * percent
     }
     playBar.value.onmouseup = (e) => {
       e.stopPropagation()
@@ -282,7 +282,7 @@ const clickProgress = e => {
   const clientX = document.querySelector('.bar-wrap').getBoundingClientRect().left
   const playedBg = document.querySelector('.played-bg')
   const moveDistance = e.clientX - clientX
-  pregressTime.value = (moveDistance / progressBarWidth) * currentSong.time / 1000
+  pregressTime.value = (moveDistance / progressBarWidth) * currentSong.value.time / 1000
   moveBtn.value.style.left = -btnWidth + moveDistance + 'px'
   playedBg.style.width = (moveDistance / progressBarWidth) * 100 + '%'
   audio.value.currentTime = pregressTime.value

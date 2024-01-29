@@ -21,7 +21,6 @@ import HomeRecomend from './components/HomeRecomend'
 import HomeNewAlbum from './components/HoneNewAlbum.vue'
 import HomeTop from './components/HomeTop.vue'
 import HomeSide from './components/HomeSide.vue'
-import PlayBar from '@/components/PlayBar/index'
 </script>
 
 <style lang="scss" scoped>

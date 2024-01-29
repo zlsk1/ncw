@@ -5,7 +5,7 @@
         相似歌曲
       </div>
       <ul>
-        <li v-for="item in props.similarSongs" :key="item.id" class="simi-items fl-sb">
+        <li v-for="item in simiList" :key="item.id" class="simi-items fl-sb">
           <div class="left">
             <div>
               <router-link :to="`/song/${item.id}`" class="name">
@@ -14,11 +14,14 @@
                 </p>
               </router-link>
             </div>
-            <div>
-              <router-link to="/" class="singer">
-                <p class="ellipsis-1" :title="item.artists.length === 1 ? item.artists.map(v => { return v.name }).join('/') : item.artists[0].name">
-                  {{ item.artists.length === 1 ? item.artists.map(v => { return v.name }).join('/') : item.artists[0].name }}
-                </p>
+            <div class="ellipsis-1" :title="item.artists.length === 1 ? item1.name : item.artists.map(v => { return v.name }).join('/')">
+              <router-link
+                v-for="(item1, index) in item.artists"
+                :key="item1.id"
+                to="/"
+                class="singer"
+              >
+                {{ index !== item.artists.length - 1 ? `${item1.name}/` : item1.name }}
               </router-link>
             </div>
           </div>
@@ -57,8 +60,21 @@
 </template>
 
 <script setup>
-const props = defineProps({
-  similarSongs: { type: Array, default: () => [] }
+import { getSongSimilar } from '@/apis/song'
+import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+
+const simiList = ref(null)
+
+const getSimi = async () => {
+  const res = await getSongSimilar(route.params.id)
+  simiList.value = res.data.songs
+}
+
+onMounted(() => {
+  getSimi()
 })
 </script>
 
