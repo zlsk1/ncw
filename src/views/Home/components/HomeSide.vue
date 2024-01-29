@@ -54,6 +54,12 @@
         </li>
       </ul>
     </div>
+    <div v-else class="youke">
+      <p class="f12">
+        登录网易云音乐，可以享受无限收藏的乐趣，并且无限同步到手机
+      </p>
+      <a href="#" @click.prevent="isShow = !isShow">用户登录</a>
+    </div>
     <div class="singer-wrap">
       <div class="header fl-sb">
         <span>入驻歌手</span>
@@ -95,6 +101,7 @@
         </li>
       </ul>
     </div>
+    <Login :is-show="isShow" @close="e => isShow = e" />
   </div>
 </template>
 
@@ -104,6 +111,7 @@ import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
 import { getHotSinger } from '@/apis/singer'
 import { getHotDj } from '@/apis/dj'
+import Login from '@/views/Login'
 
 const store = useUserStore()
 const { avator } = storeToRefs(store)
@@ -112,6 +120,7 @@ const { nickname } = storeToRefs(store)
 const singerList = ref([])
 const djList = ref([])
 const info = ref(null)
+const isShow = ref(false)
 
 const getDetail = () => {
   store.actiongetUserDetail(JSON.parse(localStorage.getItem('userInfo'))?.profile.userId)
@@ -240,6 +249,28 @@ onMounted(() => {
           background: #dadada;
         }
       }
+    }
+  }
+  .youke {
+    padding: 15px 20px;
+    background-color: #e9e9e9;
+    p {
+      width: 205px;
+      line-height: 20px;
+      color: #666;
+    }
+    a {
+      display: block;
+      width: 100px;
+      height: 30px;
+      margin: 20px auto 0 auto;
+      line-height: 30px;
+      text-align: center;
+      font-size: 12px;
+      color: #fff;
+      background-color: #d41414;
+      border-radius: 6px;
+      border: 1px solid #ab080d;
     }
   }
   .singer-wrap {

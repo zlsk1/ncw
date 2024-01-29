@@ -2,7 +2,7 @@
   <div class="login-wrap">
     <el-dialog
       :model-value="isShow"
-      width="25%"
+      style="width: 460px"
       @close="closeDialog"
     >
       <template #header>
@@ -91,8 +91,10 @@
           </el-button>
         </el-form-item>
       </el-form>
-      <span v-if="!isLoginByPassword" class="f12 thumb" @click="switchLoginWay">密码登陆</span>
-      <span v-else class="f12 thumb" @click="switchLoginWay">验证码登陆</span>
+      <div class="switchTpye">
+        <span v-if="!isLoginByPassword" class="f12 thumb" @click="switchLoginWay">密码登陆</span>
+        <span v-else class="f12 thumb" @click="switchLoginWay">验证码登陆</span>
+      </div>
       <!-- <template #footer>
         &lt; <span class="thumb">注册</span>
       </template> -->
@@ -121,8 +123,8 @@ const captchaCountdown = ref(30)
 const reg = new RegExp(/^(?:(?:\+|00)86)?1\d{10}$/)
 
 const loginFormData = ref({
-  phone: '15280840851',
-  password: '@Gexiaoqian139',
+  phone: '',
+  password: '',
   passwordConfirm: '',
   captcha: '',
   isIptPhone: '',
@@ -215,6 +217,7 @@ let switchLoginWay = () => {
 let closeDialog = () => {
   emit('close', false)
   loginForm.value.resetFields()
+  isLoginByPassword.value = false
 }
 
 onUnmounted(() => {
@@ -238,20 +241,22 @@ onUnmounted(() => {
     background-color: #ff3a3a;
     border-radius: 20px;
   }
-  :deep(.el-button.is-disabled) {
-    color: #a8abb2;
-    background-color: #fff !important;
-  }
   .btn-login {
+    margin-bottom: 40px;
     .btn {
       color: #fff;
       background-color: #ff3a3a;
       border-radius: 20px;
     }
   }
-
+  .switchTpye {
+    margin-bottom: 20px;
+    line-height: 0;
+  }
 }
-:deep(.el-button) {
+:deep(.el-button.is-disabled) {
+  color: #a8abb2;
+  background-color: #f3f3f3 !important;
 }
 :deep(.el-dialog__header) {
   width: 100%;
@@ -283,5 +288,8 @@ onUnmounted(() => {
 }
 :deep(.el-input__inner::-webkit-input-placeholder) {
   color: #9b9b9b;
+}
+:deep(.el-button) {
+  border: none;
 }
 </style>
