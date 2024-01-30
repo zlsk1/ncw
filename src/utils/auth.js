@@ -1,3 +1,5 @@
+import { defaultSetting } from '@/cogfig'
+
 export const getToken = () => {
   return JSON.parse(localStorage.getItem('token'))
 }
@@ -22,4 +24,19 @@ export const getCurrentSong = () => {
   return localStorage.getItem('song_queue')
     ? JSON.parse(localStorage.getItem('song_queue'))[JSON.parse(localStorage.getItem('play_setting')).index]
     : null
+}
+
+export const getSongIndex = () => {
+  return localStorage.getItem('play_setting')
+    ? JSON.parse(localStorage.getItem('play_setting')).index
+    : 0
+}
+
+export const getSetting = () => {
+  if (localStorage.getItem('play_setting')) {
+    return JSON.parse(localStorage.getItem('play_setting'))
+  } else {
+    JSON.parse(localStorage.setItem('play_setting', JSON.stringify(defaultSetting)))
+    return JSON.parse(localStorage.getItem('play_setting'))
+  }
 }

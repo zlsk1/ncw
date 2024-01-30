@@ -20,6 +20,12 @@
   justify-content: space-between;
 }
 
+.fl-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .f12 {
   font-size: 12px;
 }

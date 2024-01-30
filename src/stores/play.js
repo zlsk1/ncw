@@ -1,15 +1,18 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import { getSongQueue, getCurrentSong } from '@/utils/auth'
+import { ref, watch } from 'vue'
+import { getSongQueue, getCurrentSong, getSongIndex, getSetting } from '@/utils/auth'
 import { getPlayListDetail } from '@/apis/playList'
 import { getSongUrl } from '@/apis/song'
 import { ElMessage } from 'element-plus'
+import { defaultSetting } from '@/cogfig'
 
-export const useSongQueueStore = defineStore('songQueue', () => {
+export const usePlayStore = defineStore('play', () => {
   const songQueue = ref(getSongQueue())
   const currentSong = ref(getCurrentSong())
+  const index = ref(getSongIndex())
+  const setting = ref(getSetting())
 
-  const actionUpdateSongQueue = async id => {
+  const actionAddSongs = async id => {
     const { data: { playlist: { tracks }}} = await getPlayListDetail(id)
     const idsStr = tracks.map(v => { return v.id }).join(',')
     const songs = await getSongUrl(idsStr)
@@ -32,16 +35,71 @@ export const useSongQueueStore = defineStore('songQueue', () => {
     }
   }
 
+  const actionAddSong = async o => {
+    const res = await getSongUrl(o.id)
+    if (res.data.code === -460) ElMessage.error(res.data.message)
+    else {
+      const mergeObj = Object.assign(o, { url: res.data.data[0].url, time: res.data.data[0].time })
+      if (songQueue.value && !songQueue.value.some(v => v.id === mergeObj.id)) {
+        songQueue.value.unshift(mergeObj)
+        localStorage.setItem('song_queue', JSON.stringify(songQueue.value))
+        actionUpdateIndex(0)
+      }
+      if (!songQueue.value) {
+        songQueue.value = [mergeObj]
+        localStorage.setItem('song_queue', JSON.stringify([mergeObj]))
+      }
+      actionUpdateCurrentSong()
+    }
+  }
+
+  const actionDelAll = i => {
+    localStorage.setItem('song_queue', JSON.stringify([]))
+    songQueue.value = []
+    actionUpdateIndex(0)
+  }
+
+  const actionDelSong = i => {
+    index.value === songQueue.value.length - 1 ? actionUpdateIndex(--index.value) : ''
+    songQueue.value.splice(i, 1)
+    localStorage.setItem('song_queue', JSON.stringify(songQueue.value))
+  }
+
   const actionUpdateCurrentSong = () => {
     currentSong.value = localStorage.getItem('song_queue')
-      ? JSON.parse(localStorage.getItem('song_queue'))[JSON.parse(localStorage.getItem('play_setting')).index]
+      ? JSON.parse(localStorage.getItem('song_queue'))[getSongIndex()]
       : null
   }
+
+  const actionUpdateSetting = (obj) => {
+    Object.assign(setting.value, obj)
+    localStorage.setItem('play_setting', JSON.stringify(setting.value))
+  }
+
+  const actionUpdateIndex = i => {
+    actionUpdateSetting({ index: i })
+    index.value = i
+  }
+
+  watch(index, val => {
+    actionUpdateCurrentSong()
+  })
+
+  watch(setting, val => {
+    if (val) localStorage.setItem('play_setting', JSON.stringify(defaultSetting))
+  })
 
   return {
     songQueue,
     currentSong,
-    actionUpdateSongQueue,
-    actionUpdateCurrentSong
+    index,
+    setting,
+    actionAddSongs,
+    actionAddSong,
+    actionDelAll,
+    actionDelSong,
+    actionUpdateCurrentSong,
+    actionUpdateIndex,
+    actionUpdateSetting
   }
 })

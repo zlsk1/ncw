@@ -9,7 +9,7 @@ export const getTimestamp = () => {
  * @returns '00:00'
  */
 export const formatSongDuration = (t, type) => {
-  if (typeof (t) === 'string') return '00:00'
+  if (typeof (t) === 'string' || typeof (t) === 'undefined') return '00:00'
   const arr = [1000, 1000 * 60, 1000 * 60 * 60]
   let m, s
   if (type === 0) {

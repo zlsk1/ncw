@@ -75,8 +75,8 @@ import Card from '@/components/Card'
 import { getPersonalized } from '@/apis/home'
 import { onMounted, ref } from 'vue'
 import { formatPlayCount } from '@/utils/index'
-import { useSongQueueStore } from '@/stores/play'
-const store = useSongQueueStore()
+import { usePlayStore } from '@/stores/play'
+const store = usePlayStore()
 
 const personalizedList = ref([])
 
@@ -86,7 +86,7 @@ const getPersonalizedList = async () => {
 }
 
 const addPlayList = async id => {
-  store.actionUpdateSongQueue(id)
+  store.actionAddSongs(id)
 }
 
 onMounted(() => {

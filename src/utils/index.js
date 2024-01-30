@@ -25,7 +25,7 @@ export const judgeJson = str => {
  * 防抖
  * @param {Function} fn
  * @param {*} delay 延迟毫秒数
- * @param {*} immediate 是否立即执行
+ * @param {*} immediate 是否立即执行,默认立即执行
  */
 export function debounce (fn, delay, immediate = true) {
   let timer = null

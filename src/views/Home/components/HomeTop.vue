@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class="top-container">
-      <div v-for="(item, index) in store.topId.slice(0, 3)" :key="item.name" class="item">
+      <div v-for="(item, index) in topStore.topId.slice(0, 3)" :key="item.name" class="item">
         <div class="header">
           <router-link to="/">
             <Pic :src="item.imgUrl" mask2 class="img" />
@@ -62,12 +62,10 @@
 import { onMounted, ref } from 'vue'
 import { useTopStore } from '@/stores/top'
 import { getPlayListDetail } from '@/apis/playList'
-import { getSongUrl } from '@/apis/song'
-import { ElMessage } from 'element-plus'
-import { useSongQueueStore } from '@/stores/play'
+import { usePlayStore } from '@/stores/play'
 
-const store = useTopStore()
-const _store = useSongQueueStore()
+const topStore = useTopStore()
+const playStore = usePlayStore()
 const topList = ref([])
 
 const getTopList = (ids) => {
@@ -82,31 +80,18 @@ const getTopList = (ids) => {
     }
   })
 }
+
 const updateSong = async o => {
-  const res = await getSongUrl(o.id)
-  if (res.data.code === -460) ElMessage.error(res.data.message)
-  else {
-    const mergeObj = Object.assign(o, { url: res.data.data[0].url, time: res.data.data[0].time })
-    if (_store.songQueue) {
-      if (!_store.songQueue.some(v => v.id === mergeObj.id)) {
-        _store.songQueue.unshift(mergeObj)
-        localStorage.setItem('song_queue', JSON.stringify(_store.songQueue))
-        localStorage.setItem('play_setting', JSON.stringify(Object.assign(JSON.parse(localStorage.getItem('play_setting')), { index: 0 })))
-        _store.actionUpdateCurrentSong()
-      }
-    } else {
-      localStorage.setItem('song_queue', JSON.stringify([mergeObj]))
-      _store.actionUpdateCurrentSong()
-    }
-  }
+  playStore.actionAddSong(o)
 }
+
 const addPlayList = async id => {
-  _store.actionUpdateSongQueue(id)
+  playStore.actionAddSongs(id)
 }
 
 onMounted(async () => {
-  await store.actionTopId()
-  const ids = [store.topId[0].id, store.topId[1].id, store.topId[2].id]
+  await topStore.actionTopId()
+  const ids = topStore.topId.map(v => { return v.id })
   getTopList(ids)
 })
 </script>

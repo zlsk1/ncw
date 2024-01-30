@@ -14,7 +14,7 @@
                 </p>
               </router-link>
             </div>
-            <div class="ellipsis-1" :title="item.artists.length === 1 ? item1.name : item.artists.map(v => { return v.name }).join('/')">
+            <div class="ellipsis-1" :title="item.artists.length === 1 ? item.name : item.artists.map(v => { return v.name }).join('/')">
               <router-link
                 v-for="(item1, index) in item.artists"
                 :key="item1.id"

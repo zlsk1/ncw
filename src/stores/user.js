@@ -10,11 +10,11 @@ export const useUserStore = defineStore('user', () => {
   const nickname = ref(getNickname())
 
   const loginAction = async data => {
-    const { data: { code }, data: { token: _token }} = await loginByPassword(data)
+    const { data: { code, token: _token, profile }} = await loginByPassword(data)
     if (code === 200) {
       localStorage.setItem('token', JSON.stringify(_token))
       token.value = _token
-      await actiongetUserDetail()
+      await actiongetUserDetail(profile.userId)
     }
   }
   const logoutAction = () => {

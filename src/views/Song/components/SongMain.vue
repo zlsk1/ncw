@@ -259,7 +259,7 @@ import { formatTimeStamp, isBeforeYesterday } from '@/utils/time'
 import { ArrowDown } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
-import { useSongQueueStore } from '@/stores/play'
+import { usePlayStore } from '@/stores/play'
 import { storeToRefs } from 'pinia'
 import { getSongUrl, getLyric, getSongDetail } from '@/apis/song'
 import { getSongComment } from '@/apis/comment'
@@ -270,7 +270,7 @@ const route = useRoute()
 
 const userStore = useUserStore()
 const { avator } = storeToRefs(userStore)
-const playStore = useSongQueueStore()
+const playStore = usePlayStore()
 const myId = JSON.parse(localStorage.getItem('userInfo')).profile.userId
 
 const textarea = ref(null)

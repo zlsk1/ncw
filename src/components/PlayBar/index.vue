@@ -3,8 +3,8 @@
     <div class="playBar-wrap">
       <audio
         ref="audio"
-        :src="`https://music.163.com/song/media/outer/url?id=${currentSong?.id}.mp3`"
-        :loop="settings?.mode === 2"
+        :src="`https://music.163.com/song/media/outer/url?id=${store.currentSong?.id}.mp3`"
+        :loop="store.setting?.mode === 2"
         @loadedmetadata="loadedmetadata"
         @timeupdate="timeupdate"
         @ended="ended"
@@ -14,11 +14,11 @@
         <div class="w980">
           <div class="content">
             <div class="btns fl-sb">
-              <i class="prev" title="上一首" @click="prev" />
+              <i class="prev" title="上一首(ctrl+←)" @click="prev" />
               <i
-                v-if="paused"
+                v-if="isPaused"
                 class="play"
-                title="播放/暂停"
+                title="播放/暂停(ctrl+空格)"
                 @click.stop="play()"
               />
               <i
@@ -26,31 +26,31 @@
                 class="pause"
                 @click.stop="pause()"
               />
-              <i class="next" title="下一首" @click="next" />
+              <i class="next" title="下一首(ctrl+→)" @click="next" />
             </div>
             <div class="progressBar">
               <router-link class="img-container" to="/">
                 <i class="img-wrap" />
-                <img :src="currentSong?.picUrl" alt="">
+                <img :src="store.currentSong ? store.currentSong?.picUrl : 'https://s4.music.126.net/style/web2/img/default/default_album.jpg'">
               </router-link>
               <div class="bar-wrap">
                 <div class="info">
-                  <router-link class="track-name ellipsis-1" to="/" :title="currentSong?.name">
-                    {{ currentSong?.name }}
+                  <router-link class="track-name ellipsis-1" to="/" :title="store.currentSong?.name">
+                    {{ store.currentSong?.name }}
                   </router-link>
                   <div class="singer-name">
                     <router-link
-                      v-for="(item, i) in currentSong?.singer?.split('/')"
+                      v-for="(item, i) in store.currentSong?.singer?.split('/')"
                       :key="i"
                       class="ellipsis-1"
                       to="/"
-                      :title="currentSong.singer"
+                      :title="store.currentSong.singer"
                     >
-                      {{ currentSong?.singer.split('/').length === 1 ? item : i === currentSong?.singer.split('/').length - 1 ? item : `${item}/` }}
+                      {{ store.currentSong?.singer.split('/').length === 1 ? item : i === store.currentSong?.singer.split('/').length - 1 ? item : `${item}/` }}
                     </router-link>
                   </div>
                   <router-link to="/">
-                    <i v-if="currentSong && currentSong.name" class="from" title="来自歌单" />
+                    <i v-if="store.currentSong && store.currentSong.name" class="from" title="来自歌单" />
                   </router-link>
                 </div>
                 <div class="bar" @click="clickProgress">
@@ -61,7 +61,7 @@
               </div>
               <div class="time">
                 <span class="now">{{ formatSongDuration(now, 1) }} /</span>
-                <span class="end">{{ formatSongDuration(currentSong?.time, 0) }}</span>
+                <span class="end">{{ formatSongDuration(store.currentSong?.time, 0) }}</span>
               </div>
             </div>
             <div class="opera">
@@ -79,16 +79,16 @@
                     <div class="inner" />
                   </div>
                 </div>
-                <i class="volume" @click="isShowVol = !isShowVol" />
+                <i class="volume" @click="openVolControl" />
                 <i
-                  :class="['playType-byOrder', 'playType-byRadom', 'playType-byLoop'][settings?.mode]"
-                  :title="['循环', '随机', '单曲循环'][settings?.mode]"
+                  :class="['playType-byOrder', 'playType-byRadom', 'playType-byLoop'][store.setting?.mode]"
+                  :title="['循环', '随机', '单曲循环'][store.setting?.mode]"
                   @click="switchMode"
                 />
                 <div class="playlist">
                   <i class="playlist-icon" title="播放列表" @click.stop="isShow = !isShow" />
                   <span class="playlist-count">
-                    {{ songQueue?.length }}
+                    {{ store.songQueue?.length }}
                   </span>
                 </div>
               </div>
@@ -100,32 +100,32 @@
       </div>
     </div>
     <div v-show="isShow" class="play-queue-wrap w980 fl">
-      <img :src="currentSong?.picUrl" alt="" class="bg-img">
+      <img :src="store.currentSong?.picUrl" alt="" class="bg-img">
       <div class="play-queue">
         <div class="header fl-sb">
           <p class="fw">
-            播放列表({{ songQueue?.length }})
+            播放列表({{ store.songQueue?.length }})
           </p>
           <ul class="fl">
             <li>
               <i class="add-like" />
               <span>收藏全部</span>
             </li>
-            <li @click="delAll">
+            <li @click="store.actionDelAll">
               <i class="del" />
               <span>清除</span>
             </li>
           </ul>
         </div>
-        <div class="content">
+        <div v-if="store.currentSong" class="content">
           <div
-            v-for="(item, i) in songQueue"
+            v-for="(item, i) in store.songQueue"
             :key="item.id"
             class="item fl-sb"
             @click="chooseSong(item, i, item.id)"
           >
             <div class="play-wrap">
-              <div v-if="item.id === currentSong?.id" class="play" />
+              <div v-if="item.id === store.currentSong?.id" class="play" />
             </div>
             <p class="name">
               {{ item.name }}
@@ -135,11 +135,18 @@
                 <i class="add-like" title="收藏" />
                 <i class="share" title="分享" />
                 <i class="download" title="下载" />
-                <i class="del" title="删除" @click.stop="del(i)" />
+                <i class="del" title="删除" @click.stop="store.actionDelSong(i)" />
               </div>
-              <router-link to="/" class="singer ellipsis-1" :title="item.singer">
-                {{ item.singer }}
-              </router-link>
+              <p class="singer ellipsis-1">
+                <router-link
+                  v-for="(item1, i1) in item.singer.split('/')"
+                  :key="i1"
+                  to="/"
+                  :title="item.singer"
+                >
+                  {{ i1 === item.singer.split('/').length - 1 ? item1 : `${item1}/` }}
+                </router-link>
+              </p>
               <p class="duration">
                 {{ formatSongDuration(item.time, 0) }}
               </p>
@@ -147,11 +154,24 @@
             </div>
           </div>
         </div>
+        <div v-else class="no-song">
+          <div class="fl-center">
+            <i class="icon-face" />
+            <p>你还没有添加任何歌曲</p>
+          </div>
+          <p>
+            去首页<router-link to="/">
+              发现音乐
+            </router-link>, 或在<router-link to="/">
+              我的音乐
+            </router-link>收听自己收藏的歌单。
+          </p>
+        </div>
       </div>
       <div class="lyric">
         <div class="name">
           <i class="close" @click.stop="isShow = false" />
-          {{ currentSong?.name }}
+          {{ store.currentSong?.name }}
         </div>
         <div ref="word" class="word">
           <p
@@ -173,69 +193,71 @@
 </template>
 
 <script setup>
-import { watch, ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { formatSongDuration } from '@/utils/time'
 import { judgeJson } from '@/utils/index'
 import { getLyric } from '@/apis/song'
-import { useSongQueueStore } from '@/stores/play'
-import { storeToRefs } from 'pinia'
+import { usePlayStore } from '@/stores/play'
+import { debounce } from '@/utils/index'
 
-const store = useSongQueueStore()
-const { songQueue, currentSong } = storeToRefs(store)
+const store = usePlayStore()
 
 const progressBarWidth = 466
 const btnWidth = 11
-const moveBtn = ref('')
-const playBar = ref('')
-const audio = ref('')
-const paused = ref(true)
-const now = ref('00:00')
-const pregressTime = ref('')
+const moveBtn = ref(null)
+const playBar = ref(null)
+const audio = ref(null)
+const volControl = ref(null)
+const volWrap = ref(null)
+const volBg = ref(null)
+const isPaused = ref(true)
+const isShowVol = ref(false)
 const isMove = ref(false)
 const isShow = ref(false)
+const now = ref('00:00')
+const pregressTime = ref('')
 const word = ref('')
 const index = ref(0)
-const volControl = ref('')
-const volWrap = ref('')
-const volBg = ref('')
-const isShowVol = ref(false)
-const settings = ref(null)
 const lrc = ref(null)
 
 onMounted(() => {
-  getplaySetting()
-  volControl.value.style.top = 99 - (90 * settings.value.volume) + 'px'
-  volBg.value.style.height = 90 * settings.value.volume + 'px'
+  volControl.value.style.top = 99 - (90 * store.setting.volume) + 'px'
+  volBg.value.style.height = 90 * store.setting.volume + 'px'
 })
 
-// watch(() => currentSong, val => {
-//   const songs = JSON.parse(localStorage.getItem('song_queue')) || []
-//   songs.some(v => v.id === val.id) ? '' : songs.unshift(val)
-//   songQueue.value = songs
-//   localStorage.setItem('song_queue', JSON.stringify(songs))
-// })
-
-watch(isShowVol, val => {
-  if (!val) setplaySetting({ volume: audio.value.volume })
+onBeforeUnmount(() => {
+  store.actionUpdateSetting({ volume: audio.value.volume })
+  openVolControl = null; play = null; pause = null; mousedown = null; clickProgress = null; clickProgress = null; closePlayList = null; prev = null
+  next = null; controlVol = null; clickVol = null; chooseSong = null; switchMode = null
+  window.removeEventListener('keyup', keyup)
 })
+
+// 关闭时再存储音量
+let openVolControl = () => {
+  isShowVol.value = !isShowVol.value
+  if (!isShowVol.value) store.actionUpdateSetting({ volume: audio.value.volume })
+}
 
 const loadedmetadata = e => {
-  if (currentSong.value.id) {
-    getLrc(currentSong.value.id)
+  if (store.currentSong.id) {
+    getLrc(store.currentSong.id)
   }
 }
-const play = () => {
+
+let play = () => {
   audio.value.play()
-  paused.value = false
+  isPaused.value = false
 }
-const pause = () => {
+
+let pause = () => {
   audio.value.pause()
-  paused.value = true
+  isPaused.value = true
 }
+
 const timeupdate = e => {
   if (!isMove.value) {
     now.value = e.target.currentTime
-    const percent = now.value / currentSong.value.time * 1000 * 100
+    const percent = now.value / store.currentSong.time * 1000 * 100
     document.querySelector('.played-bg').style.width = percent + btnWidth / progressBarWidth + '%'
     moveBtn.value.style.left = `calc(${percent}% - ${btnWidth}px)`
   }
@@ -250,97 +272,104 @@ const timeupdate = e => {
   }
   isMove.value = isMove.value ? false : ''
 }
+
 const ended = () => {
   document.querySelector('.played-bg').style.width = 0 + '%'
   moveBtn.value.style.left = '-11px'
   next()
 }
 
-const mousedown = e1 => {
-  e1.preventDefault()
-  const playedBg = document.querySelector('.played-bg')
-  const Parentleft = document.querySelector('.bar-wrap').getBoundingClientRect().left
-  playBar.value.onmousemove = e2 => {
-    if (e2.clientX > Parentleft && e2.clientX <= Parentleft + progressBarWidth) {
-      isMove.value = true
-      const moveDistance = e2.clientX - Parentleft
-      const percent = moveDistance / progressBarWidth
-      pregressTime.value = percent * currentSong.value.time / 1000
-      moveBtn.value.style.left = -btnWidth + moveDistance + 'px'
-      playedBg.style.width = percent * 100 + '%'
-      now.value = currentSong.value.time / 1000 * percent
+let mousedown = e1 => {
+  if (store.currentSong) {
+    e1.preventDefault()
+    const playedBg = document.querySelector('.played-bg')
+    const Parentleft = document.querySelector('.bar-wrap').getBoundingClientRect().left
+    const mousemove = e2 => {
+      if (e2.clientX > Parentleft && e2.clientX <= Parentleft + progressBarWidth) {
+        isMove.value = true
+        const moveDistance = e2.clientX - Parentleft
+        const percent = moveDistance / progressBarWidth
+        pregressTime.value = percent * store.currentSong.time / 1000
+        moveBtn.value.style.left = -btnWidth + moveDistance + 'px'
+        playedBg.style.width = percent * 100 + '%'
+        now.value = store.currentSong.time / 1000 * percent
+      }
+      playBar.value.onmouseup = (e) => {
+        e.stopPropagation()
+        audio.value.currentTime = pregressTime.value
+        playBar.value.onmousemove = null
+        playBar.value.onmouseup = null
+      }
     }
-    playBar.value.onmouseup = (e) => {
-      e.stopPropagation()
-      audio.value.currentTime = pregressTime.value
-      playBar.value.onmousemove = null
-      playBar.value.onmouseup = null
-    }
+    playBar.value.onmousemove = debounce(mousemove, 16)
   }
 }
-const clickProgress = e => {
-  const clientX = document.querySelector('.bar-wrap').getBoundingClientRect().left
-  const playedBg = document.querySelector('.played-bg')
-  const moveDistance = e.clientX - clientX
-  pregressTime.value = (moveDistance / progressBarWidth) * currentSong.value.time / 1000
-  moveBtn.value.style.left = -btnWidth + moveDistance + 'px'
-  playedBg.style.width = (moveDistance / progressBarWidth) * 100 + '%'
-  audio.value.currentTime = pregressTime.value
+
+let clickProgress = e => {
+  if (store.currentSong) {
+    const clientX = document.querySelector('.bar-wrap').getBoundingClientRect().left
+    const playedBg = document.querySelector('.played-bg')
+    const moveDistance = e.clientX - clientX
+    pregressTime.value = (moveDistance / progressBarWidth) * store.currentSong.time / 1000
+    moveBtn.value.style.left = -btnWidth + moveDistance + 'px'
+    playedBg.style.width = (moveDistance / progressBarWidth) * 100 + '%'
+    audio.value.currentTime = pregressTime.value
+  }
 }
 
-const closePlayList = () => {
+let closePlayList = () => {
   isShow.value = false
   isShowVol.value = false
 }
 
-const prev = () => {
+let prev = () => {
+  if (store.songQueue.length === 1) return
   setAutoplay()
-  const i = JSON.parse(localStorage.getItem('play_setting')).index
-  if (i > 0) {
-    currentSong.value = songQueue.value[i - 1]
-    setplaySetting({ index: i - 1 })
+  if (store.index > 0) {
+    store.actionUpdateIndex(store.index - 1)
   } else {
-    currentSong.value = songQueue.value[songQueue.value.length - 1]
-    setplaySetting({ index: songQueue.value.length - 1 })
+    store.actionUpdateIndex(store.songQueue.length - 1)
   }
 }
 
-const next = () => {
+let next = () => {
+  if (store.songQueue.length === 1) return
   setAutoplay()
-  const i = JSON.parse(localStorage.getItem('play_setting')).index
-  if (!settings.value.mode) {
-    if (i !== songQueue.value.length - 1) {
-      currentSong.value = songQueue.value[i + 1]
-      setplaySetting({ index: i + 1 })
+  // 顺序播放
+  if (store.setting.mode === 0) {
+    if (store.index !== store.songQueue.length - 1) {
+      store.actionUpdateIndex(store.index + 1)
     } else {
-      currentSong.value = songQueue.value[0]
-      setplaySetting({ index: 0 })
+      store.actionUpdateIndex(0)
     }
-  } else if (settings.value.mode) {
-    const i = Math.floor(Math.random() * songQueue.value.length)
-    currentSong.value = songQueue.value[i]
+  } else if (store.setting.mode === 1) { // 随机播放
+    const i = Math.floor(Math.random() * store.songQueue.length)
+    store.actionUpdateIndex(i)
   }
 }
 
-const controlVol = e => {
+let controlVol = e => {
   e.preventDefault()
   const parentTop = volWrap.value.getBoundingClientRect().top
-  volWrap.value.onmousemove = e1 => {
-    const moveDistance = e1.clientY - parentTop - 6
-    if (moveDistance < 99 && moveDistance > 6) {
-      volControl.value.style.top = moveDistance + 'px'
-      volBg.value.style.height = 99 - moveDistance + 'px'
-      audio.value.volume = ((90 - moveDistance) / 90).toFixed(1) > 0 ? ((90 - moveDistance) / 90).toFixed(1) : 0
+  const mousemove = e1 => {
+    {
+      const moveDistance = e1.clientY - parentTop - 6
+      if (moveDistance < 99 && moveDistance > 6) {
+        volControl.value.style.top = moveDistance + 'px'
+        volBg.value.style.height = 99 - moveDistance + 'px'
+        audio.value.volume = ((90 - moveDistance) / 90).toFixed(1) > 0 ? ((90 - moveDistance) / 90).toFixed(1) : 0
+      }
+    }
+    volWrap.value.onmouseup = () => {
+      volWrap.value.onmouseup = null
+      volWrap.value.onmousemove = null
+      volWrap.value.onmousemove = null
     }
   }
-  volWrap.value.onmouseup = () => {
-    volWrap.value.onmouseup = null
-    volWrap.value.onmousemove = null
-    volWrap.value.onmousemove = null
-  }
+  volWrap.value.onmousemove = debounce(mousemove, 16)
 }
 
-const clickVol = e => {
+let clickVol = e => {
   const parentTop = volWrap.value.getBoundingClientRect().top
   const moveDistance = e.clientY - parentTop - 6
   if (moveDistance < 99 && moveDistance > 6) {
@@ -351,48 +380,20 @@ const clickVol = e => {
 }
 
 const setAutoplay = () => {
-  if (!paused.value) audio.value.autoplay = true
+  if (!isPaused.value) audio.value.autoplay = true
   else audio.value.autoplay = false
 }
 
-const getplaySetting = () => {
-  if (!localStorage.getItem('play_setting')) {
-    const defaultSetting = {
-      autoplay: false,
-      index: 0,
-      lock: true,
-      mode: 0,
-      volume: 0.8
-    }
-    localStorage.setItem('play_setting', JSON.stringify(defaultSetting))
-  }
-  settings.value = JSON.parse(localStorage.getItem('play_setting'))
-}
-
-const setplaySetting = (obj) => {
-  const defaultSetting = {
-    autoplay: false,
-    index: 0,
-    lock: true,
-    mode: 0,
-    volume: 0.8
-  }
-  const newSetting = Object.assign(defaultSetting, obj)
-  settings.value = newSetting
-  localStorage.setItem('play_setting', JSON.stringify(newSetting))
-}
-
-const chooseSong = (item, i, id) => {
-  songQueue.value = item
-  setplaySetting({ index: i })
-  paused.value = false
-  audio.value.autoplay = true
+let chooseSong = (item, i, id) => {
+  store.actionUpdateIndex(i)
+  play()
+  setAutoplay()
   getLrc(id)
 }
 
-const switchMode = () => {
-  const mode = settings.value.mode >= 2 ? 0 : ++settings.value.mode
-  setplaySetting({ mode })
+let switchMode = () => {
+  const mode = store.setting.mode >= 2 ? 0 : ++store.setting.mode
+  store.actionUpdateSetting({ mode })
 }
 
 const getLrc = async id => {
@@ -400,17 +401,17 @@ const getLrc = async id => {
   lrc.value = res.data.lrc.lyric.split('\n')
 }
 
-const delAll = () => {
-  localStorage.setItem('song_queue', JSON.stringify([]))
-  songQueue.value = []
-  setplaySetting({ index: 0 })
+const keyup = e => {
+  if (e.ctrlKey && e.code === 'Space') {
+    store.currentSong && isPaused.value ? play() : pause()
+  } else if (e.ctrlKey && e.code === 'ArrowRight') {
+    next()
+  } else if (e.ctrlKey && e.code === 'ArrowLeft') {
+    prev()
+  }
 }
 
-const del = i => {
-  songQueue.value.splice(i, 1)
-  songQueue.value = songQueue.value[i]
-  localStorage.setItem('song_queue', JSON.stringify(songQueue.value))
-}
+window.addEventListener('keyup', keyup)
 </script>
 
 <style lang="scss" scoped>
@@ -521,9 +522,18 @@ const del = i => {
           width: 34px;
           height: 34px;
         }
+        .default-img {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 34px;
+          height: 35px;
+          background: url('@/assets/icons/playbar.png') 0 -80px no-repeat;
+        }
       }
       .info {
         display: flex;
+        height: 16px;
         .track-name {
           max-width: 300px;
           margin-right: 10px;
@@ -910,14 +920,35 @@ const del = i => {
           align-items: center;
           .singer {
             width: 80px;
-            &:hover {
-              text-decoration: underline;
+            a {
+              cursor: pointer;
+              &:hover {
+                text-decoration: underline;
+              }
             }
           }
           .duration {
             margin: 0 30px;
           }
         }
+      }
+    }
+    .no-song {
+      width: 300px;
+      height: 70px;
+      margin: 95px auto 0 auto;
+      text-align: center;
+      >div {
+        margin-bottom: 20px;
+      }
+      .icon-face {
+        width: 36px;
+        height: 29px;
+        margin-right: 15px;
+        background: url('@/assets/icons/playlist.png') -138px 0 no-repeat;
+      }
+      a {
+        text-decoration: underline;
       }
     }
   }
