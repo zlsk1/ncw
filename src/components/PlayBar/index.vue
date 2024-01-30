@@ -29,13 +29,13 @@
               <i class="next" title="下一首(ctrl+→)" @click="next" />
             </div>
             <div class="progressBar">
-              <router-link class="img-container" to="/">
+              <router-link class="img-container" :to="`/song/${store?.currentSong.id}`">
                 <i class="img-wrap" />
                 <img :src="store.currentSong ? store.currentSong?.picUrl : 'https://s4.music.126.net/style/web2/img/default/default_album.jpg'">
               </router-link>
               <div class="bar-wrap">
                 <div class="info">
-                  <router-link class="track-name ellipsis-1" to="/" :title="store.currentSong?.name">
+                  <router-link class="track-name ellipsis-1" :to="`/song/${store?.currentSong.id}`" :title="store.currentSong?.name">
                     {{ store.currentSong?.name }}
                   </router-link>
                   <div class="singer-name">
