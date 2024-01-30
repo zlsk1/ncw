@@ -193,7 +193,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onBeforeUnmount, watch } from 'vue'
 import { formatSongDuration } from '@/utils/time'
 import { judgeJson } from '@/utils/index'
 import { getLyric } from '@/apis/song'
@@ -220,11 +220,6 @@ const word = ref('')
 const index = ref(0)
 const lrc = ref(null)
 
-onMounted(() => {
-  volControl.value.style.top = 99 - (90 * store.setting.volume) + 'px'
-  volBg.value.style.height = 90 * store.setting.volume + 'px'
-})
-
 onBeforeUnmount(() => {
   store.actionUpdateSetting({ volume: audio.value.volume })
   openVolControl = null; play = null; pause = null; mousedown = null; clickProgress = null; clickProgress = null; closePlayList = null; prev = null
@@ -232,11 +227,15 @@ onBeforeUnmount(() => {
   window.removeEventListener('keyup', keyup)
 })
 
-// 关闭时再存储音量
-let openVolControl = () => {
-  isShowVol.value = !isShowVol.value
-  if (!isShowVol.value) store.actionUpdateSetting({ volume: audio.value.volume })
-}
+// 监听当前歌曲的变化（解决正在播放时切换其他的歌曲不能正常播放）
+watch(() => store.currentSong, (newVal, oldVal) => {
+  if (newVal.id === oldVal.id) {
+    audio.value.currentTime = 0
+    play()
+  } else {
+    play()
+  }
+})
 
 const loadedmetadata = e => {
   if (store.currentSong.id) {
@@ -252,12 +251,18 @@ let play = () => {
 let pause = () => {
   audio.value.pause()
   isPaused.value = true
+  setAutoplay()
+}
+
+const setAutoplay = () => {
+  if (!isPaused.value) audio.value.autoplay = true
+  else audio.value.autoplay = false
 }
 
 const timeupdate = e => {
   if (!isMove.value) {
     now.value = e.target.currentTime
-    const percent = now.value / store.currentSong.time * 1000 * 100
+    const percent = now.value / store.currentSong?.time * 1000 * 100
     document.querySelector('.played-bg').style.width = percent + btnWidth / progressBarWidth + '%'
     moveBtn.value.style.left = `calc(${percent}% - ${btnWidth}px)`
   }
@@ -317,14 +322,8 @@ let clickProgress = e => {
   }
 }
 
-let closePlayList = () => {
-  isShow.value = false
-  isShowVol.value = false
-}
-
 let prev = () => {
-  if (store.songQueue.length === 1) return
-  setAutoplay()
+  onelength()
   if (store.index > 0) {
     store.actionUpdateIndex(store.index - 1)
   } else {
@@ -333,8 +332,7 @@ let prev = () => {
 }
 
 let next = () => {
-  if (store.songQueue.length === 1) return
-  setAutoplay()
+  onelength()
   // 顺序播放
   if (store.setting.mode === 0) {
     if (store.index !== store.songQueue.length - 1) {
@@ -379,15 +377,22 @@ let clickVol = e => {
   }
 }
 
-const setAutoplay = () => {
-  if (!isPaused.value) audio.value.autoplay = true
-  else audio.value.autoplay = false
+let openVolControl = () => {
+  isShowVol.value = !isShowVol.value
+  volControl.value.style.top = 99 - (90 * store.setting.volume) + 'px'
+  volBg.value.style.height = 90 * store.setting.volume + 'px'
+  if (!isShowVol.value) store.actionUpdateSetting({ volume: audio.value.volume }) // 关闭时再存储音量
+}
+
+let closePlayList = () => {
+  isShow.value = false
+  isShowVol.value = false
+  store.actionUpdateSetting({ volume: audio.value.volume })
 }
 
 let chooseSong = (item, i, id) => {
   store.actionUpdateIndex(i)
   play()
-  setAutoplay()
   getLrc(id)
 }
 
@@ -405,13 +410,17 @@ const keyup = e => {
   if (e.ctrlKey && e.code === 'Space') {
     store.currentSong && isPaused.value ? play() : pause()
   } else if (e.ctrlKey && e.code === 'ArrowRight') {
+    onelength()
     next()
   } else if (e.ctrlKey && e.code === 'ArrowLeft') {
+    onelength()
     prev()
   }
 }
 
 window.addEventListener('keyup', keyup)
+
+const onelength = () => { if (store.songQueue.length === 1) return }
 </script>
 
 <style lang="scss" scoped>

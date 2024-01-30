@@ -35,27 +35,39 @@ export const usePlayStore = defineStore('play', () => {
     }
   }
 
-  const actionAddSong = async o => {
+  /**
+   *
+   * @param {*} o 歌曲对象 {id,picUrl,name,singer}
+   * @param {*} type =0 插入方式 0为首项即立即播放 1为最后即添加到播放列表
+   */
+  const actionAddSong = async (o, type = 0) => {
     const res = await getSongUrl(o.id)
     if (res.data.code === -460) ElMessage.error(res.data.message)
     else {
       const mergeObj = Object.assign(o, { url: res.data.data[0].url, time: res.data.data[0].time })
-      if (songQueue.value && !songQueue.value.some(v => v.id === mergeObj.id)) {
-        songQueue.value.unshift(mergeObj)
+      const has = songQueue.value.some(v => v.id === mergeObj.id)
+      if (songQueue.value && !has) {
+        !type ? songQueue.value.unshift(mergeObj) : songQueue.value.push(mergeObj)
         localStorage.setItem('song_queue', JSON.stringify(songQueue.value))
         actionUpdateIndex(0)
-      }
-      if (!songQueue.value) {
+      } else if (has) {
+        const index = songQueue.value.findIndex(v => v.id === mergeObj.id)
+        actionUpdateIndex(index)
+      } else if (!songQueue.value) {
         songQueue.value = [mergeObj]
         localStorage.setItem('song_queue', JSON.stringify([mergeObj]))
+        actionUpdateIndex(0)
       }
-      actionUpdateCurrentSong()
+      if (!type || songQueue.value.length === 1) {
+        actionUpdateCurrentSong()
+      }
     }
   }
 
   const actionDelAll = i => {
     localStorage.setItem('song_queue', JSON.stringify([]))
     songQueue.value = []
+    currentSong.value = []
     actionUpdateIndex(0)
   }
 
@@ -81,12 +93,12 @@ export const usePlayStore = defineStore('play', () => {
     index.value = i
   }
 
-  watch(index, val => {
+  watch(index, () => {
     actionUpdateCurrentSong()
   })
 
   watch(setting, val => {
-    if (val) localStorage.setItem('play_setting', JSON.stringify(defaultSetting))
+    if (!val) localStorage.setItem('play_setting', JSON.stringify(defaultSetting))
   })
 
   return {

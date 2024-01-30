@@ -42,7 +42,7 @@
               </router-link>
               <div class="icon">
                 <i class="play" title="播放" @click="updateSong({id: track.id, picUrl: track.al.picUrl, name: track.name, singer: track.ar.map(v => { return v.name }).join('/')})" />
-                <i class="addlist" title="添加到播放列表" />
+                <i class="addlist" title="添加到播放列表" @click="updateSong({id: track.id, picUrl: track.al.picUrl, name: track.name, singer: track.ar.map(v => { return v.name }).join('/')}, 1)" />
                 <i class="like" title="收藏" />
               </div>
             </div>
@@ -81,13 +81,9 @@ const getTopList = (ids) => {
   })
 }
 
-const updateSong = async o => {
-  playStore.actionAddSong(o)
-}
+const updateSong = async (o, type) => { playStore.actionAddSong(o, type) }
 
-const addPlayList = async id => {
-  playStore.actionAddSongs(id)
-}
+const addPlayList = async id => { playStore.actionAddSongs(id) }
 
 onMounted(async () => {
   await topStore.actionTopId()

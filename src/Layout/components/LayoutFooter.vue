@@ -81,7 +81,7 @@
 
 <style lang="scss" scoped>
   .footer-wrap {
-    padding: 20px 0;
+    padding: 20px 0 70px 0;
     text-align: center;
     font-size: 12px;
     color: #666;
