@@ -254,7 +254,7 @@
 
 <script setup>
 import { nextTick, onUnmounted, ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { judgeJson, debounce } from '@/utils/index'
 import { formatTimeStamp, isBeforeYesterday } from '@/utils/time'
 import { ArrowDown } from '@element-plus/icons-vue'
@@ -291,6 +291,11 @@ onMounted(() => {
 
 onUnmounted(() => {
   input = null; onChoose = null; handleComment = null; addAite = null; like = null
+})
+
+onBeforeRouteUpdate((to, from) => {
+  console.log(to)
+  if (to) getData(to.params.id)
 })
 
 const getData = id => {

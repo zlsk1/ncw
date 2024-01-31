@@ -62,7 +62,7 @@
 <script setup>
 import { getSongSimilar } from '@/apis/song'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { usePlayStore } from '@/stores/play'
 
 const playStore = usePlayStore()
@@ -77,6 +77,10 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   play = null
+})
+
+onBeforeRouteUpdate((to, from) => {
+  if (to) getSimi(to.params.id)
 })
 
 const getSimi = async () => {

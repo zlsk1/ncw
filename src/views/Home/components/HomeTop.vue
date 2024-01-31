@@ -61,12 +61,18 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useTopStore } from '@/stores/top'
-import { getPlayListDetail } from '@/apis/playList'
 import { usePlayStore } from '@/stores/play'
+import { getPlayListDetail } from '@/apis/playList'
 
 const topStore = useTopStore()
 const playStore = usePlayStore()
 const topList = ref([])
+
+onMounted(async () => {
+  await topStore.actionTopId()
+  const ids = topStore.topId.map(v => { return v.id })
+  getTopList(ids)
+})
 
 const getTopList = (ids) => {
   const p = Promise.all([
@@ -84,12 +90,6 @@ const getTopList = (ids) => {
 const updateSong = async (o, type) => { playStore.actionAddSong(o, type) }
 
 const addPlayList = async id => { playStore.actionAddSongs(id) }
-
-onMounted(async () => {
-  await topStore.actionTopId()
-  const ids = topStore.topId.map(v => { return v.id })
-  getTopList(ids)
-})
 </script>
 
 <style lang="scss" scoped>
