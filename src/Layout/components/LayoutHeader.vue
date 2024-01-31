@@ -64,7 +64,7 @@
         @command="logout"
       >
         <el-badge :value="12" :hidden="!isShowBadge">
-          <img :src="avator" alt="">
+          <img :src="avator + '?param=30y30'" alt="">
         </el-badge>
         <template #dropdown>
           <el-dropdown-menu>
@@ -111,12 +111,12 @@
       <div class="w1100">
         <ul>
           <li>
-            <router-link to="/" class="active-category">
+            <router-link to="/" :class="route.path === '/' ? 'active-category' : ''">
               推荐
             </router-link>
           </li>
           <li>
-            <router-link to="/">
+            <router-link to="/toplist" :class="route.path.includes('/toplist') ? 'active-category' : ''">
               排行榜
             </router-link>
           </li>
@@ -153,6 +153,9 @@ import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import { Search } from '@element-plus/icons-vue'
 import Login from '@/views/login'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 
 const store = useUserStore()
 const { token } = storeToRefs(store)
@@ -207,8 +210,6 @@ const logout = () => {
     }
     .avator {
       img {
-        width: 30px;
-        height: 30px;
         border-radius: 50%;
       }
     }

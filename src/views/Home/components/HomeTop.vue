@@ -17,7 +17,7 @@
       <div v-for="(item, index) in topStore.topId.slice(0, 3)" :key="item.name" class="item">
         <div class="header">
           <router-link to="/">
-            <Pic :src="item.imgUrl" mask2 class="img" />
+            <Pic :src="`${item.imgUrl}?param=80y80`" mask2 class="img" />
           </router-link>
           <div class="right">
             <router-link to="/" class="name">
@@ -157,8 +157,6 @@ const addPlayList = async id => { playStore.actionAddSongs(id) }
         padding: 20px 0 20px 20px;
         background-color: #f4f4f4;
         .img {
-          width: 80px;
-          height: 80px;
           margin-right: 10px;
         }
         .right {

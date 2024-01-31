@@ -32,7 +32,7 @@
             <div class="progressBar">
               <router-link class="img-container" :to="`/song/${store?.currentSong?.id}`">
                 <i class="img-wrap" />
-                <img :src="store.currentSong ? store.currentSong?.picUrl : 'https://s4.music.126.net/style/web2/img/default/default_album.jpg'">
+                <img :src="store.currentSong ? `${store.currentSong?.picUrl}?param=34y34` : 'https://s4.music.126.net/style/web2/img/default/default_album.jpg?param=34y34'">
               </router-link>
               <div class="bar-wrap">
                 <div class="info">

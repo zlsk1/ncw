@@ -4,7 +4,7 @@
       <div class="left">
         <div class="img-wrap">
           <i class="icon-img" />
-          <img :src="data?.songs?.al.picUrl" alt="">
+          <img :src="`${data?.songs?.al.picUrl}?param=130y130`" alt="">
         </div>
       </div>
       <div class="right">
@@ -73,7 +73,7 @@
 
       <div class="content">
         <div class="my-comment fl">
-          <img v-lazy="avator" alt="">
+          <img v-lazy="avator + '?param=50y50'" alt="">
           <div class="input">
             <textarea
               ref="textarea"
@@ -112,7 +112,7 @@
               class="fl hot-comment-items f12"
             >
               <router-link to="/">
-                <img v-lazy="item.user.avatarUrl" alt="" class="avatar">
+                <img v-lazy="item.user.avatarUrl + '?param=50y50'" alt="" class="avatar">
               </router-link>
               <div class="content">
                 <router-link to="/" class="name">
@@ -120,7 +120,7 @@
                 </router-link>
                 <img
                   v-if="item.user.vipRights && item.user.vipRights.associator"
-                  v-lazy="item.user.vipRights.associator.iconUrl"
+                  v-lazy="`${item.user.vipRights.associator.iconUrl}?param=50y50`"
                   class="vip"
                   alt=""
                 >：
@@ -175,7 +175,7 @@
             >
               <template v-if="!item.parentCommentId" />
               <router-link to="/">
-                <img v-lazy="item.user.avatarUrl" alt="" class="avatar">
+                <img v-lazy="item.user.avatarUrl + '?param=50y50'" alt="" class="avatar">
               </router-link>
               <div class="content">
                 <router-link to="/" class="name">
@@ -183,7 +183,7 @@
                 </router-link>
                 <img
                   v-if="item.user.vipRights && item.user.vipRights.associator"
-                  v-lazy="item.user.vipRights.associator?.iconUrl"
+                  v-lazy="item.user.vipRights.associator?.iconUrl + '?param=50y50'"
                   class="vip"
                   alt=""
                 >：
@@ -420,12 +420,10 @@ let like = async (cid, liked, index) => {
             background: url('@/assets/icons/coverall.png') -140px -580px no-repeat;
           }
           img {
-          position: absolute;
-          left: 67px;
-          top: 68px;
-          width: 132px;
-          height: 132px;
-          border-radius: 50%
+            position: absolute;
+            left: 67px;
+            top: 68px;
+            border-radius: 50%
           }
         }
       }
@@ -578,7 +576,6 @@ let like = async (cid, liked, index) => {
         .my-comment {
           margin-bottom: 10px;
           img {
-            width: 50px;
             height: 50px;
             margin-right: 10px;
           }

@@ -26,8 +26,7 @@
                 <router-link to="/">
                   <Pic
                     album
-                    :src="item1.picUrl"
-                    class="album-img"
+                    :src="`${item1.picUrl}?param=100y100`"
                   />
                 </router-link>
                 <i class="hoverPlay" title="播放" @click="addPlayList(item1.id)" />
@@ -204,10 +203,6 @@ watch(isRender, (newVal, oldVal) => {
             margin-right: 10px;
             li {
               position: relative;
-              .album-img {
-                width: $img_width;
-                height: $img_height;
-              }
               .desc {
                 width: 100px;
                 margin-top: 4px;

@@ -49,10 +49,9 @@
       >
         <router-link to="/">
           <Pic
-            :src="item.picUrl"
+            :src="`${item.picUrl}?param=140y140`"
             crown
             mask1
-            class="card-img"
           />
         </router-link>
         <div class="card-play fl-sb">
@@ -161,10 +160,6 @@ onMounted(() => {
       width: calc((100% - 120px) / 4);
       &:nth-child(-n+4) {
         margin-bottom: 40px;
-      }
-      .card-img {
-        width: 140px;
-        height: 140px;
       }
       .card-play {
         position: absolute;

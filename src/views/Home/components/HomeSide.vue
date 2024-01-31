@@ -3,7 +3,7 @@
     <div v-if="avator" class="userInfo-wrap">
       <div class="top">
         <router-link to="/" class="img-wrap">
-          <img :src="avator" alt="">
+          <img :src="`${avator}?param=80y80`" alt="">
         </router-link>
         <div>
           <div class="fl-sb">
@@ -68,7 +68,7 @@
       <ul class="content">
         <li v-for="item in singerList" :key="item.id">
           <router-link to="/">
-            <img v-lazy="item.picUrl" alt="">
+            <img v-lazy="`${item.picUrl}?param=62y62`" alt="">
             <div>
               <p class="name">
                 {{ item.name }}
@@ -91,7 +91,7 @@
       <ul class="content">
         <li v-for="item in djList" :key="item.id">
           <router-link to="/">
-            <img v-lazy="item.avatarUrl" alt="">
+            <img v-lazy="`${item.avatarUrl}?param=40y40`" alt="">
             <div>
               <p class="name">
                 {{ item.nickName }}
@@ -162,8 +162,6 @@ onMounted(() => {
       display: flex;
       margin-bottom: 20px;
       .img-wrap {
-        width: 100%;
-        height: 100%;
         margin-right: 10px;
         padding: 2px;
         border: 1px solid #dadada;
