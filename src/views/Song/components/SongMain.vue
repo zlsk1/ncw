@@ -32,11 +32,11 @@
         </div>
         <ul class="btns fl f12">
           <li class="play fl">
-            <i @click="play">
+            <i @click="play({id:data?.songs.id, picUrl: data?.songs?.al.picUrl, name: data?.songs?.al.name, singer: data?.songs?.ar.map(v=>{return v.name}).join('/') })">
               <em class="icon-play" />
               播放
             </i>
-            <i class="icon-add" title="添加到播放列表" @click="addPlayList" />
+            <i class="icon-add" title="添加到播放列表" @click="play({id:data?.songs.id, picUrl: data?.songs?.al.picUrl, name: data?.songs?.al.name, singer: data?.songs?.ar.map(v=>{return v.name}).join('/') }, 1)" />
           </li>
           <li class="like">
             <i class="icon-like">收藏</i>
@@ -61,7 +61,7 @@
                 : item.split(']')[1] }}
             </p>
           </div>
-          <span class="expand f12" @click="expandLrc"><span>展开</span><ArrowDown style="width: 1em;height: 1em" /></span>
+          <span v-if="data?.lrc.lyric.split('\n').length > 20" class="expand f12" @click="expandLrc"><span>展开</span><ArrowDown style="width: 1em;height: 1em" /></span>
         </div>
       </div>
     </div>
@@ -70,6 +70,7 @@
         <h3>评论</h3>
         <span class="f12">共{{ data?.songComment.total }}条评论</span>
       </div>
+
       <div class="content">
         <div class="my-comment fl">
           <img v-lazy="avator" alt="">
@@ -261,7 +262,7 @@ import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import { usePlayStore } from '@/stores/play'
 import { storeToRefs } from 'pinia'
-import { getSongUrl, getLyric, getSongDetail } from '@/apis/song'
+import { getLyric, getSongDetail } from '@/apis/song'
 import { getSongComment } from '@/apis/comment'
 import { likeComment, sendCommentAPI, delCommentAPI } from '@/apis/comment'
 import Emj from '@/components/Emj'
@@ -274,23 +275,32 @@ const playStore = usePlayStore()
 const myId = JSON.parse(localStorage.getItem('userInfo')).profile.userId
 
 const textarea = ref(null)
+const addAiteRef = ref(null)
+const replyTextarea = ref(null)
+const lrcContent = ref(null)
 const comment = ref('')
 const offset = ref(0)
-const lrcContent = ref('')
-const addAiteRef = ref(null)
 const reply = ref('')
 const DOMIndex = ref('')
-const replyTextarea = ref(null)
 const data = ref(null)
+const maxHeight = '304px'
+
+onMounted(() => {
+  getData(route.params.id)
+})
+
+onUnmounted(() => {
+  input = null; onChoose = null; handleComment = null; addAite = null; like = null
+})
 
 const getData = id => {
   const p = Promise.all([
-    getLyric(id),
     getSongDetail(id),
+    getLyric(id),
     getSongComment({ id })
   ])
   p.then(res => {
-    data.value = { lrc: res[0].data.lrc, songs: res[1].data.songs[0], songComment: res[2].data }
+    data.value = { songs: res[0].data.songs[0], lrc: res[1].data.lrc, songComment: res[2].data }
   })
 }
 
@@ -299,63 +309,30 @@ const getComment = async (id, offset) => {
   data.value.songComment = res.data
 }
 
-const changePage = e => {
+const changePage = async e => {
   offset.value = e * 20
-  offset.value = offset.value === 20 ? '' : offset // 获取第一页的数据时要包括精彩评论
-  getComment(route.params.id, offset.value)
+  offset.value = offset.value === 20 ? '' : offset.value // 获取第一页的数据时要包括精彩评论
+  await getComment(route.params.id, offset.value)
 }
 
 const expandLrc = () => {
   if (lrcContent.value.nextSibling.children[0].textContent === '展开') {
-    lrcContent.value.style.height = 'auto'
+    lrcContent.value.style.maxHeight = '9999px'
     lrcContent.value.nextSibling.children[0].textContent = '收起'
     lrcContent.value.nextSibling.children[1].style.transform = 'rotate(180deg)'
   } else {
-    lrcContent.value.style.height = '310px'
+    lrcContent.value.style.maxHeight = maxHeight
     lrcContent.value.nextSibling.children[0].textContent = '展开'
     lrcContent.value.nextSibling.children[1].style.transform = 'rotate(0)'
   }
 }
 
 const goComment = () => {
-  window.scrollTo({ top: 680 })
+  window.scrollTo({ top: document.querySelector('.comment-wrap .header').getBoundingClientRect().top })
   textarea.value.focus()
 }
 
-const play = async () => {
-  const { data: { data }} = await getSongUrl(data.songs.id)
-  playStore.currentSong = {
-    id: data[0].id,
-    picUrl: data.songs.al.picUrl,
-    name: data.songs.name,
-    singer: data.songs.ar.map(v => { return v.name }).join('/'),
-    url: data[0].url,
-    time: data[0].time
-  }
-}
-
-const addPlayList = async () => {
-  const { data: { data }} = await getSongUrl(data.songs.id)
-  const mergeObj = {
-    id: data[0].id,
-    picUrl: data.songs.al.picUrl,
-    name: data.songs.name,
-    singer: data.songs.ar.map(v => { return v.name }).join('/'),
-    url: data[0].url,
-    time: data[0].time
-  }
-  if (playStore.songQueue) {
-    if (!playStore.songQueue.some(v => v.id === mergeObj.id)) {
-      playStore.songQueue.unshift(mergeObj)
-      localStorage.setItem('song_queue', JSON.stringify(playStore.songQueue))
-      localStorage.setItem('play_setting', JSON.stringify(Object.assign(JSON.parse(localStorage.getItem('play_setting')), { index: 0 })))
-      playStore.actionUpdateCurrentSong()
-    }
-  } else {
-    localStorage.setItem('song_queue', JSON.stringify([mergeObj]))
-    playStore.actionUpdateCurrentSong()
-  }
-}
+const play = async (o, type) => { playStore.actionAddSong(o, type) }
 
 const _input = e => {
   // console.log(e)
@@ -418,12 +395,6 @@ let like = async (cid, liked, index) => {
       : data.value.songComment.hotComments[index].likedCount -= 1
   }
 }
-
-onMounted(() => { getData(route.params.id) })
-
-onUnmounted(() => {
-  input = null; onChoose = null; handleComment = null; addAite = null; like = null
-})
 
 </script>
 
@@ -564,7 +535,7 @@ onUnmounted(() => {
         }
         .lrc-wrap {
           .lrc-content {
-            height: 310px;
+            max-height: v-bind(maxHeight);
             overflow: hidden;
             .per-line {
               margin-bottom: 10px;

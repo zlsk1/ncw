@@ -6,7 +6,6 @@
     <aside class="aside">
       <SongAside />
     </aside>
-    <PlayBar />
   </div>
 </template>
 

@@ -11,7 +11,6 @@
         <HomeSide />
       </div>
     </div>
-    <PlayBar />
   </div>
 </template>
 

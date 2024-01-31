@@ -3,6 +3,7 @@
     <LayoutHeader />
     <router-view />
     <LayoutFooter />
+    <PlayBar />
   </div>
 </template>
 

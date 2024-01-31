@@ -5,6 +5,7 @@
         ref="audio"
         :src="`https://music.163.com/song/media/outer/url?id=${store.currentSong?.id}.mp3`"
         :loop="store.setting?.mode === 2"
+        :autoplay="!isPaused"
         @loadedmetadata="loadedmetadata"
         @timeupdate="timeupdate"
         @ended="ended"
@@ -29,13 +30,13 @@
               <i class="next" title="下一首(ctrl+→)" @click="next" />
             </div>
             <div class="progressBar">
-              <router-link class="img-container" :to="`/song/${store?.currentSong.id}`">
+              <router-link class="img-container" :to="`/song/${store?.currentSong?.id}`">
                 <i class="img-wrap" />
                 <img :src="store.currentSong ? store.currentSong?.picUrl : 'https://s4.music.126.net/style/web2/img/default/default_album.jpg'">
               </router-link>
               <div class="bar-wrap">
                 <div class="info">
-                  <router-link class="track-name ellipsis-1" :to="`/song/${store?.currentSong.id}`" :title="store.currentSong?.name">
+                  <router-link class="track-name ellipsis-1" :to="`/song/${store?.currentSong?.id}`" :title="store.currentSong?.name">
                     {{ store.currentSong?.name }}
                   </router-link>
                   <div class="singer-name">
@@ -99,7 +100,7 @@
         </div>
       </div>
     </div>
-    <div v-show="isShow" class="play-queue-wrap w980 fl">
+    <div v-if="isShow" class="play-queue-wrap w980 fl">
       <img :src="store.currentSong?.picUrl" alt="" class="bg-img">
       <div class="play-queue">
         <div class="header fl-sb">
@@ -117,7 +118,7 @@
             </li>
           </ul>
         </div>
-        <div v-if="store.currentSong" class="content">
+        <div v-if="store?.songQueue.length !== 0" class="content">
           <div
             v-for="(item, i) in store.songQueue"
             :key="item.id"
@@ -125,7 +126,7 @@
             @click="chooseSong(item, i, item.id)"
           >
             <div class="play-wrap">
-              <div v-if="item.id === store.currentSong?.id" class="play" />
+              <div v-if="i === store?.index" class="play" />
             </div>
             <p class="name">
               {{ item.name }}
@@ -229,7 +230,10 @@ onBeforeUnmount(() => {
 
 // 监听当前歌曲的变化（解决正在播放时切换其他的歌曲不能正常播放）
 watch(() => store.currentSong, (newVal, oldVal) => {
-  if (newVal.id === oldVal.id) {
+  if (oldVal === undefined) { // 播放列表长度从0变为1时
+    play()
+    return
+  } else if (newVal && newVal.id === oldVal.id) { // newVal&&将删除全部时排除在外
     audio.value.currentTime = 0
     play()
   } else {
@@ -251,12 +255,6 @@ let play = () => {
 let pause = () => {
   audio.value.pause()
   isPaused.value = true
-  setAutoplay()
-}
-
-const setAutoplay = () => {
-  if (!isPaused.value) audio.value.autoplay = true
-  else audio.value.autoplay = false
 }
 
 const timeupdate = e => {

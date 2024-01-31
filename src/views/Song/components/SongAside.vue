@@ -26,8 +26,8 @@
             </div>
           </div>
           <div class="right">
-            <i class="icon-play" />
-            <i class="icon-add" />
+            <i class="icon-play" @click="play({ id: item.id, picUrl: item.album.picUrl, name: item.name, singer:item.artists.map(v => { return v.name }).join('/') })" />
+            <i class="icon-add" @click="play({ id: item.id, picUrl: item.album.picUrl, name: item.name, singer:item.artists.map(v => { return v.name }).join('/') }, 1)" />
           </div>
         </li>
       </ul>
@@ -61,21 +61,30 @@
 
 <script setup>
 import { getSongSimilar } from '@/apis/song'
-import { onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { usePlayStore } from '@/stores/play'
+
+const playStore = usePlayStore()
 
 const route = useRoute()
 
 const simiList = ref(null)
+
+onMounted(() => {
+  getSimi()
+})
+
+onBeforeUnmount(() => {
+  play = null
+})
 
 const getSimi = async () => {
   const res = await getSongSimilar(route.params.id)
   simiList.value = res.data.songs
 }
 
-onMounted(() => {
-  getSimi()
-})
+let play = (o, type) => { playStore.actionAddSong(o, type) }
 </script>
 
 <style lang="scss" scoped>
