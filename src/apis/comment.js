@@ -102,3 +102,15 @@ export const delCommentAPI = ({ t, type, id, commentId }) => {
     }
   })
 }
+
+export const getCommentPlaylistAPI = ({ id, limit, offset, before }) => {
+  return http({
+    url: '/comment/playlist',
+    params: {
+      id,
+      limit,
+      offset,
+      before
+    }
+  })
+}

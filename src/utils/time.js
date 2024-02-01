@@ -39,7 +39,7 @@ export const formatSongDuration = (t, type) => {
 }
 
 /**
- * 时间戳转化为 ‘1月20日 00:00’ 或 '2024年1月20日'
+ * 评论时间戳转化为 ‘1月20日 00:00’ 或 '2024年1月20日'
  * @param {*} stamp
  * @returns
  */
@@ -62,4 +62,15 @@ export const isBeforeYesterday = (stamp) => {
   const d = new Date(stamp).toLocaleString().split(' ')[0].split('/')[2]
   if (nowDay - d < 2) return true
   else return false
+}
+
+/**
+ * 时间戳转化为 例 02日01月
+ * @param {*} stamp
+ * @returns
+ */
+export const formatMonthDay = (stamp) => {
+  const m = (new Date(stamp).getMonth() + 1).toString().padStart(2, '0')
+  const d = new Date(stamp).getDate().toString().padStart(2, '0')
+  return `${m}月${d}日`
 }
