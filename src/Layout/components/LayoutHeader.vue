@@ -116,7 +116,7 @@
             </router-link>
           </li>
           <li>
-            <router-link to="/toplist" :class="route.path.includes('/toplist') ? 'active-category' : ''">
+            <router-link :to="`/toplist/${topStore?.topId[0]?.id}`" :class="route.path.includes('/toplist') ? 'active-category' : ''">
               排行榜
             </router-link>
           </li>
@@ -150,6 +150,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useUserStore } from '@/stores/user'
+import { useTopStore } from '@/stores/top'
 import { storeToRefs } from 'pinia'
 import { Search } from '@element-plus/icons-vue'
 import Login from '@/views/login'
@@ -158,6 +159,7 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 
 const store = useUserStore()
+const topStore = useTopStore()
 const { token } = storeToRefs(store)
 const { avator } = storeToRefs(store)
 

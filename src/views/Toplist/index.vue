@@ -6,10 +6,10 @@
       </h3>
       <ul>
         <li v-for="item in topStore.topId.slice(0, 4)" :key="item.id">
-          <router-link :to="`/toplist/${item.id}`" class="side-items fl">
+          <router-link :to="`/toplist/${item.id}`" class="side-items fl" :class="route.params.id == item.id ? 'side-active' : ''">
             <img :src="`${item.imgUrl}?param=40y40`" alt="" class="side-img">
             <div class="side-info">
-              <p class="side-name" :title="item.name">
+              <p class="side-name ellipsis-1" :title="item.name">
                 {{ item.name }}
               </p>
               <p class="side-update">
@@ -24,10 +24,10 @@
       </h3>
       <ul>
         <li v-for="item in topStore.topId.slice(4, 51)" :key="item.id">
-          <router-link :to="`/toplist/${item.id}`" class="side-items fl">
+          <router-link :to="`/toplist/${item.id}`" class="side-items fl" :class="route.params.id == item.id ? 'side-active' : ''">
             <img :src="`${item.imgUrl}?param=40y40`" alt="" class="side-img">
             <div class="side-info">
-              <p class="side-name" :title="item.name">
+              <p class="side-name ellipsis-1" :title="item.name">
                 {{ item.name }}
               </p>
               <p class="side-update">
@@ -57,11 +57,11 @@
           </div>
           <ul class="btns fl f12">
             <li class="play fl">
-              <i @click="play()">
+              <i @click="addPlaylist(topStore.topId[currentIndex].id)">
                 <em class="icon-play" />
                 播放
               </i>
-              <i class="icon-add" title="添加到播放列表" @click="play()" />
+              <i class="icon-add" title="添加到播放列表" @click="addPlaylist(topStore.topId[currentIndex].id)" />
             </li>
             <li class="like">
               <i class="icon-like">({{ playlist?.subscribedCount }})</i>
@@ -93,7 +93,7 @@
               <th style="border-left:1px solid #d1d1d1">
                 标题
               </th>
-              <th style="width: 90px;border-left:1px solid #d1d1d1">
+              <th style="width: 100px;border-left:1px solid #d1d1d1">
                 时长
               </th>
               <th style="width: 30%;border-left:1px solid #d1d1d1">
@@ -111,7 +111,7 @@
                   <router-link :to="`/song/${item.id}`">
                     <img v-if="index <= 2" :src="item.al.picUrl + '?param=50y50'" alt="">
                   </router-link>
-                  <i class="icon icon-play" />
+                  <i class="icon icon-play" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')})" />
                   <router-link class="name ellipsis-1" :to="`/song/${item.id}`" :title="item.name">
                     {{ item.name }}
                   </router-link>
@@ -120,7 +120,7 @@
               <td class="duration">
                 <span class="time">04:10</span>
                 <div class="fl-sb">
-                  <i class="icon icon-add" />
+                  <i class="icon icon-add" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')}, 1)" />
                   <i class="icon icon-collect" />
                   <i class="icon icon-share" />
                   <i class="icon icon-download" />
@@ -149,6 +149,7 @@
 
 <script setup>
 import { useTopStore } from '@/stores/top'
+import { usePlayStore } from '@/stores/play'
 import { getPlayListDetail } from '@/apis/playList'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
@@ -156,6 +157,7 @@ import { formatMonthDay, getTimestamp } from '@/utils/time'
 import Comment from '@/components/Comment'
 
 const topStore = useTopStore()
+const playStore = usePlayStore()
 
 const route = useRoute()
 
@@ -174,7 +176,7 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
-  play = null; goComment = null
+  play = null; goComment = null; addPlaylist = null
 })
 
 onBeforeRouteUpdate(async (to, from) => {
@@ -187,12 +189,16 @@ const getPlayList = async () => {
   playlist.value = res.data.playlist
 }
 
-let play = () => {
-
-}
-
 let goComment = () => {
   window.scrollTo({ top: document.querySelector('.comment-wrap .header').getBoundingClientRect().top })
+}
+
+let play = (o, type) => {
+  playStore.actionAddSong(o, type)
+}
+
+let addPlaylist = id => {
+  playStore.actionAddSongs(id)
 }
 </script>
 
@@ -312,7 +318,7 @@ table {
   }
 }
 .side-active {
-  background-color: #e6e6e6;
+  background-color: #e6e6e6 !important;
 }
 .toplist-wrap {
   border-right: 1px solid #d3d3d3;

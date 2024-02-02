@@ -235,7 +235,6 @@ onBeforeUnmount(() => {
 })
 
 onBeforeRouteUpdate((to, from) => {
-  console.log(to)
   if (to) getComment(currentId.value, offset.value, limit.value)
 })
 

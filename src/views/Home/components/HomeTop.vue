@@ -7,7 +7,7 @@
         </router-link>
       </div>
       <div class="right">
-        <router-link to="/">
+        <router-link :to="`/toplist/${topStore?.topId[0].id}`">
           更多
         </router-link>
         <i />
@@ -16,11 +16,11 @@
     <div class="top-container">
       <div v-for="(item, index) in topStore.topId.slice(0, 3)" :key="item.name" class="item">
         <div class="header">
-          <router-link to="/">
+          <router-link :to="`/toplist/${item.id}`">
             <Pic :src="`${item.imgUrl}?param=80y80`" mask2 class="img" />
           </router-link>
           <div class="right">
-            <router-link to="/" class="name">
+            <router-link :to="`/toplist/${item.id}`" class="name">
               {{ item.name }}
             </router-link>
             <span class="fl">
@@ -133,6 +133,9 @@ const addPlayList = async id => { playStore.actionAddSongs(id) }
       align-items: center;
       a {
         margin-right: 6px;
+        &:hover {
+          text-decoration: underline;
+        }
       }
       i {
         display: block;

@@ -71,7 +71,7 @@ export const usePlayStore = defineStore('play', () => {
   const actionDelAll = i => {
     localStorage.setItem('song_queue', JSON.stringify([]))
     songQueue.value = []
-    currentSong.value = undefined
+    // currentSong.value = undefined
     actionUpdateIndex(0)
   }
 
