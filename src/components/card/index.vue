@@ -1,7 +1,7 @@
 <template>
   <div class="card-wrap">
     <slot />
-    <p class="card-footer ellipsis-2">
+    <p class="card-footer">
       <slot name="footer" />
     </p>
   </div>

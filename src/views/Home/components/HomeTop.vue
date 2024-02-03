@@ -7,7 +7,7 @@
         </router-link>
       </div>
       <div class="right">
-        <router-link :to="`/toplist/${topStore?.topId[0].id}`">
+        <router-link :to="`/toplist/${topStore?.topId[0]?.id}`">
           更多
         </router-link>
         <i />

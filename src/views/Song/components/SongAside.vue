@@ -18,7 +18,7 @@
               <router-link
                 v-for="(item1, index) in item.artists"
                 :key="item1.id"
-                to="/"
+                :to="`/artist/${item1.id}`"
                 class="singer"
               >
                 {{ index !== item.artists.length - 1 ? `${item1.name}/` : item1.name }}

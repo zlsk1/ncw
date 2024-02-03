@@ -108,8 +108,8 @@
               </td>
               <td>
                 <div class="fl title">
-                  <router-link :to="`/song/${item.id}`">
-                    <img v-if="index <= 2" :src="item.al.picUrl + '?param=50y50'" alt="">
+                  <router-link v-if="index <= 2" :to="`/song/${item.id}`">
+                    <img :src="item.al.picUrl + '?param=50y50'" alt="">
                   </router-link>
                   <i class="icon icon-play" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')})" />
                   <router-link class="name ellipsis-1" :to="`/song/${item.id}`" :title="item.name">
@@ -132,7 +132,7 @@
                     v-for="(singer, index1) in item.ar"
                     :key="singer.id"
                     :title="item.ar.map(v => { return v.name })"
-                    to="/"
+                    :to="`/artist/${item.id}`"
                   >
                     {{ index1 === item.ar.length - 1 ? singer.name : singer.name + '/' }}
                   </router-link>

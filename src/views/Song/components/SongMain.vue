@@ -20,7 +20,7 @@
         </div>
         <div class="info f12">
           <div class="singer">
-            歌手：<router-link v-for="(item, index) in data?.songs?.ar" :key="index" to="/">
+            歌手：<router-link v-for="(item, index) in data?.songs?.ar" :key="index" :to="`/artist/${item.id}`">
               {{ index !== data?.songs.ar.length - 1 ? `${item.name}/` : item.name }}
             </router-link>
           </div>

@@ -37,7 +37,7 @@
                         {{ item1.name }}
                       </p>
                     </router-link>
-                    <router-link to="/">
+                    <router-link :to="`/artist/${item1.artist.id}`">
                       <p class="ellipsis-1 singer" :title="item1.artist.name">
                         {{ item1.artist.name }}
                       </p>
@@ -62,11 +62,11 @@
 <script setup>
 import { getNewAlbum } from '@/apis/home'
 import { ref, onMounted, watch, onUpdated } from 'vue'
-import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
+import { usePlayStore } from '@/stores/play'
 import Card from '@/components/Card'
-import { getPlayListDetail } from '@/apis/playList'
-import { getSongUrl } from '@/apis/song'
-import { ElMessage } from 'element-plus'
+import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
+
+const playStore = usePlayStore()
 
 const albumList = ref([])
 const per = 5
@@ -74,6 +74,20 @@ const content = ref(null)
 const items = ref(0)
 const i = ref(0)
 const isRender = ref(false)
+
+onMounted(() => {
+  getNewAlbumList()
+})
+
+onUpdated(() => {
+  content.value.children.length ? isRender.value = true : ''
+})
+
+watch(isRender, (newVal, oldVal) => {
+  if (!oldVal) {
+    items.value = content.value.children.length - 1
+  }
+})
 
 const getNewAlbumList = async () => {
   const res = await getNewAlbum()
@@ -83,10 +97,12 @@ const getNewAlbumList = async () => {
   }
   albumList.value.push(albumList.value[0])
 }
+
 const goto = () => {
   content.value.style.transition = 'all 1s linear'
   content.value.style.transform = `translateX(calc(-100% * ${i.value}))`
 }
+
 const next = () => {
   if (i.value === items.value) {
     content.value.style.transition = 'none'
@@ -97,6 +113,7 @@ const next = () => {
     goto()
   }
 }
+
 const prev = () => {
   if (i.value === 0) {
     content.value.style.transition = 'none'
@@ -107,27 +124,8 @@ const prev = () => {
     goto()
   }
 }
-const addPlayList = async id => {
-  try {
-    const res = await getPlayListDetail(id)
-    const songs = await getSongUrl(res.data.playlist.id)
-    console.log(songs)
-  } catch {
-    ElMessage.error('sorry,no resource')
-  }
-}
 
-onMounted(() => {
-  getNewAlbumList()
-})
-onUpdated(() => {
-  content.value.children.length ? isRender.value = true : ''
-})
-watch(isRender, (newVal, oldVal) => {
-  if (!oldVal) {
-    items.value = content.value.children.length - 1
-  }
-})
+const addPlayList = async id => { playStore.actionAddSongs(id) }
 </script>
 
 <style lang="scss" scoped>

@@ -16,8 +16,12 @@ const router = createRouter({
           component: () => import('@/views/Song')
         },
         {
-          path: 'toplist/:id?',
+          path: 'toplist/:id',
           component: () => import('@/views/Toplist')
+        },
+        {
+          path: 'artist/:id',
+          component: () => import('@/views/Artist')
         }
       ]
     }

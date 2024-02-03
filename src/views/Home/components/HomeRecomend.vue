@@ -60,7 +60,7 @@
           <i class="play" title="播放" @click="addPlayList(item.id)" />
         </div>
         <template #footer>
-          <router-link to="/" class="desc" :title="item.name">
+          <router-link to="/" class="desc ellipsis-2" :title="item.name">
             {{ item.name }}
           </router-link>
         </template>

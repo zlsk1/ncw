@@ -5,6 +5,7 @@
     <i v-if="props.mask2" class="mask2" />
     <i v-if="props.mask3" class="mask3" />
     <i v-if="props.album" class="album" />
+    <i v-if="props.album1" class="album1" />
     <img v-lazy="props.src" alt="">
   </div>
 </template>
@@ -13,6 +14,7 @@
 const props = defineProps({
   src: { type: String, default: '' },
   album: { type: Boolean, default: false },
+  album1: { type: Boolean, default: false },
   crown: { type: Boolean, default: false },
   mask1: { type: Boolean, default: false },
   mask2: { type: Boolean, default: false },
@@ -61,6 +63,13 @@ const props = defineProps({
     width: 118px;
     height: 100px;
     background: url('@/assets/icons/coverall.png') 0 -570px no-repeat;
+  }
+  .album1 {
+    top: 0;
+    left: 0;
+    width: 145px;
+    height: 120px;
+    background: url('@/assets/icons/coverall.png') -170px -850px no-repeat;
   }
 }
 </style>

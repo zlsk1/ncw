@@ -67,7 +67,7 @@
       </div>
       <ul class="content">
         <li v-for="item in singerList" :key="item.id">
-          <router-link to="/">
+          <router-link :to="`/artist/${item.id}`">
             <img v-lazy="`${item.picUrl}?param=62y62`" alt="">
             <div>
               <p class="name">
