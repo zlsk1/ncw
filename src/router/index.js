@@ -22,6 +22,16 @@ const router = createRouter({
         {
           path: 'artist/:id',
           component: () => import('@/views/Artist')
+        },
+        {
+          path: 'user',
+          component: () => import('@/views/User'),
+          children: [
+            {
+              path: 'home/:id',
+              component: () => import('@/views/User/components/UserHome')
+            }
+          ]
         }
       ]
     }

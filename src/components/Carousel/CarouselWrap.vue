@@ -28,12 +28,13 @@
 
 <script setup>
 import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
-import { onMounted, ref, computed, watch, onUpdated } from 'vue'
+import { ref, computed, watch, onUpdated, onBeforeUnmount } from 'vue'
+import { debounce } from '@/utils/index'
 
 const props = defineProps({
   height: { type: String, default: '120px' },
   autoplay: { type: Boolean, default: true },
-  interval: { type: String, default: '4000' }
+  interval: { type: String, default: '6000' }
 })
 
 const items = ref(null)
@@ -46,12 +47,30 @@ const _i = computed(() => {
   return i.value === items.value ? 0 : i.value
 })
 
+watch(isRender, (newVal, oldVal) => {
+  if (!oldVal) {
+    items.value = content.value.children.length
+    const first = content.value.children[0].cloneNode(true)
+    content.value.append(first)
+    props.autoplay ? handleAutoplay() : ''
+  }
+})
+
+onBeforeUnmount(() => {
+  next = null; prev = null; indicator = null; mouseover = null; mouseleave = null
+  clearInterval(timer)
+})
+
+onUpdated(() => {
+  content.value.children.length ? isRender.value = true : ''
+})
+
 const goto = () => {
   content.value ? content.value.style.transition = 'all .3s linear' : ''
   content.value ? content.value.style.transform = `translateX(calc(-100% * ${i.value}))` : ''
 }
 
-const next = () => {
+const _next = () => {
   if (i.value < items.value) {
     i.value++
     goto()
@@ -61,7 +80,8 @@ const next = () => {
     setTimeout(() => { i.value = 1; goto() }, 0)
   }
 }
-const prev = () => {
+
+const _prev = () => {
   if (i.value > 0) {
     i.value--
     goto()
@@ -71,28 +91,23 @@ const prev = () => {
     setTimeout(() => { i.value = items.value - 1; goto() }, 0)
   }
 }
-const indicator = index => {
+
+const _indicator = index => {
   index > i.value ? content.value.style.transform = `translateX(calc(-100% * ${index}))` : content.value.style.transform = `translateX(calc(-100% * ${index}))`
   i.value = index
 }
+
+let indicator = debounce(_indicator, 300)
+let prev = debounce(_prev, 300)
+let next = debounce(_next, 300)
+
 const handleAutoplay = () => {
   timer = setInterval(() => { next() }, props.interval)
 }
-const mouseover = () => { clearInterval(timer); timer = null }
-const mouseleave = () => { handleAutoplay() }
-onMounted(async () => {
-})
-onUpdated(() => {
-  content.value.children.length ? isRender.value = true : ''
-})
-watch(isRender, (newVal, oldVal) => {
-  if (!oldVal) {
-    items.value = content.value.children.length
-    const first = content.value.children[0].cloneNode(true)
-    content.value.append(first)
-    props.autoplay ? handleAutoplay() : ''
-  }
-})
+
+let mouseover = () => { clearInterval(timer); timer = null }
+
+let mouseleave = () => { handleAutoplay() }
 </script>
 
 <style lang="scss" scoped>

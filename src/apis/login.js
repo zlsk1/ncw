@@ -77,3 +77,17 @@ export const testNickname = (nickname) => {
     }
   })
 }
+
+// 刷新登录
+export const loginRefreshAPI = () => {
+  return http({
+    url: '/login/refresh'
+  })
+}
+
+// 获取登录状态
+export const getLoginStatusAPI = () => {
+  return http({
+    url: '/login/status'
+  })
+}

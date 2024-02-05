@@ -2,7 +2,7 @@
   <div class="side-wrap">
     <div v-if="avator" class="userInfo-wrap">
       <div class="top">
-        <router-link to="/" class="img-wrap">
+        <router-link :to="`/user/home/${userId}`" class="img-wrap">
           <img :src="`${avator}?param=80y80`" alt="">
         </router-link>
         <div>
@@ -116,6 +116,8 @@ import Login from '@/views/Login'
 const store = useUserStore()
 const { avator } = storeToRefs(store)
 const { nickname } = storeToRefs(store)
+
+const userId = JSON.parse(localStorage.getItem('userInfo')).profile.userId
 
 const singerList = ref([])
 const djList = ref([])

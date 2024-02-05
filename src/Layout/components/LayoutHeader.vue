@@ -1,6 +1,6 @@
 <template>
   <header class="header-wrap">
-    <div class="w1100 fl-sb">
+    <div class="w1100 fl-sb header">
       <div class="logo">
         <h1>
           <a href="/">网易云音乐</a>
@@ -8,7 +8,7 @@
       </div>
       <ul class="nav fl">
         <li>
-          <router-link to="/" class="active-nav">
+          <router-link to="/" :class="!route.path.includes('/home') ? 'active-nav' : ''">
             发现音乐
           </router-link>
         </li>
@@ -69,7 +69,7 @@
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item>
-              <router-link to="/">
+              <router-link :to="`/user/home/${userId}`">
                 <span>我的主页</span>
               </router-link>
             </el-dropdown-item>
@@ -107,61 +107,31 @@
         </template>
       </el-dropdown>
     </div>
-    <div class="category-wrap">
-      <div class="w1100">
-        <ul>
-          <li>
-            <router-link to="/" :class="route.path === '/' ? 'active-category' : ''">
-              推荐
-            </router-link>
-          </li>
-          <li>
-            <router-link :to="`/toplist/${topStore?.topId[0]?.id}`" :class="route.path.includes('/toplist') ? 'active-category' : ''">
-              排行榜
-            </router-link>
-          </li>
-          <li>
-            <router-link to="/">
-              歌单
-            </router-link>
-          </li>
-          <li>
-            <router-link to="/">
-              主播电台
-            </router-link>
-          </li>
-          <li>
-            <router-link to="/">
-              歌手
-            </router-link>
-          </li>
-          <li>
-            <router-link to="/">
-              新碟上架
-            </router-link>
-          </li>
-        </ul>
-      </div>
-    </div>
+    <LayoutCategory v-if="!route.path.includes('/home')" />
+    <template v-else>
+      <div class="bg-bar" />
+    </template>
+    <!-- <LayoutCategory /> -->
     <Login :is-show="isShow" @close="e => isShow = e" />
   </header>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { useTopStore } from '@/stores/top'
 import { storeToRefs } from 'pinia'
 import { Search } from '@element-plus/icons-vue'
 import Login from '@/views/login'
-import { useRoute } from 'vue-router'
+import LayoutCategory from './LayoutCategory'
 
 const route = useRoute()
 
 const store = useUserStore()
-const topStore = useTopStore()
 const { token } = storeToRefs(store)
 const { avator } = storeToRefs(store)
+
+const userId = JSON.parse(localStorage.getItem('userInfo')).profile.userId
 
 const searchValue = ref('')
 const isShow = ref(false)
@@ -177,90 +147,72 @@ const logout = () => {
 
 <style lang="scss" scoped>
   .header-wrap {
-    height: 100px;
-    line-height: 70px;
     color: #fff;
     background: $bg_deep;
-    .logo {
-      width: 158px;
+    .header {
       height: 70px;
-      background: url('@/assets/icons/topbar.png') no-repeat;
-      cursor: pointer;
-      h1 {
-        width: 100%;
-        height: 100%;
-        a {
-          display: block;
+      line-height: 70px;
+      .logo {
+        width: 158px;
+        height: 70px;
+        background: url('@/assets/icons/topbar.png') no-repeat;
+        cursor: pointer;
+        h1 {
           width: 100%;
           height: 100%;
-          opacity: 0;
-        }
-      }
-    }
-    .creator {
-      width: 90px;
-      height: 30px;
-      text-align: center;
-      line-height: 30px;
-      font-size: 12px;
-      color: #fff;
-      border: 1px solid #666;
-      border-radius: 20px;
-      &:hover {
-        border: 1px solid #ccc;
-      }
-    }
-    .avator {
-      img {
-        border-radius: 50%;
-      }
-    }
-    .nav {
-      li {
-        a {
-          position: relative;
-          display: block;
-          height: 70px;
-          padding: 0 18px;
-          color: #fff;
-          &:hover {
-            background-color: #000;
+          a {
+            display: block;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
           }
         }
       }
-    }
-    .login {
-      color: #787878;
-      &:hover {
-        text-decoration: underline;
-        color: #aaa;
+      .creator {
+        width: 90px;
+        height: 30px;
+        text-align: center;
+        line-height: 30px;
+        font-size: 12px;
+        color: #fff;
+        border: 1px solid #666;
+        border-radius: 20px;
+        &:hover {
+          border: 1px solid #ccc;
+        }
+      }
+      .avator {
+        img {
+          border-radius: 50%;
+        }
+      }
+      .nav {
+        li {
+          a {
+            position: relative;
+            display: block;
+            height: 70px;
+            padding: 0 18px;
+            color: #fff;
+            &:hover {
+              background-color: #000;
+            }
+          }
+        }
+      }
+      .login {
+        color: #787878;
+        &:hover {
+          text-decoration: underline;
+          color: #aaa;
+        }
       }
     }
-    .category-wrap {
+    .bg-bar {
       width: 100%;
-      height: 30px;
-      line-height: 30px;
+      height: 5px;
       background: $themeColor;
-      ul {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 500px;
-        margin-left: 204px;
-        a {
-          padding: 3px 12px;
-          font-size: 12px;
-          color: #fff;
-          border-radius: 20px;
-          &:hover {
-            background-color: #9b0909;
-          }
-        }
-      }
     }
-  }
-  .active-category {
-    background-color: #9b0909;
   }
   .active-nav {
     background-color: #000;
