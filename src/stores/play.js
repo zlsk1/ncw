@@ -16,26 +16,32 @@ export const usePlayStore = defineStore('play', () => {
     try {
       const { data: { playlist: { tracks }}} = await getPlayListDetail(id)
       const idsStr = tracks.map(v => { return v.id }).join(',')
-      const songs = await getSongUrl(idsStr)
-      if (songs.data.code === -460) ElMessage.error(songs.data.message)
-      else {
-        const { data: { data }} = songs
-        const arr = idsStr.split(',').map((v, i) => {
-          const index = data.findIndex(v1 => Number(v) === v1.id)
-          return {
-            id: data[index].id,
-            url: data[index].url,
-            time: data[index].time,
-            name: tracks[i].al.name,
-            singer: tracks[i].ar.length === 1 ? tracks[i].ar[0].name : tracks[i].ar.map(v => { return v.name }).join('/'),
-            picUrl: tracks[i].al.picUrl
-          }
-        })
-        localStorage.setItem('song_queue', JSON.stringify(arr))
-        songQueue.value = arr
-      }
+      actionGetSongs(idsStr, tracks)
     } catch {
       ElMessage.warning('抱歉，暂无资源')
+    }
+  }
+
+  // 可处理播放歌手热门歌曲
+  const actionGetSongs = async (ids, detail) => {
+    const songs = await getSongUrl(ids.split(','))
+    if (songs.data.code === -460) ElMessage.error(songs.data.message)
+    else {
+      const { data: { data }} = songs
+      const arr = ids.split(',').map((v, i) => {
+        const index = data.findIndex(v1 => Number(v) === v1.id)
+        return {
+          id: data[index].id,
+          url: data[index].url,
+          time: data[index].time,
+          name: detail[i].al.name,
+          singer: detail[i].ar.length === 1 ? detail[i].ar[0].name : detail[i].ar.map(v => { return v.name }).join('/'),
+          picUrl: detail[i].al.picUrl
+        }
+      })
+      localStorage.setItem('song_queue', JSON.stringify(arr))
+      songQueue.value = arr
+      actionUpdateCurrentSong()
     }
   }
 
@@ -75,7 +81,7 @@ export const usePlayStore = defineStore('play', () => {
   const actionDelAll = i => {
     localStorage.setItem('song_queue', JSON.stringify([]))
     songQueue.value = []
-    // currentSong.value = undefined
+    currentSong.value = undefined
     actionUpdateIndex(0)
   }
 
@@ -115,6 +121,7 @@ export const usePlayStore = defineStore('play', () => {
     index,
     setting,
     actionAddSongs,
+    actionGetSongs,
     actionAddSong,
     actionDelAll,
     actionDelSong,

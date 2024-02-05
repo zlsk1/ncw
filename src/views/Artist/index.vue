@@ -2,14 +2,14 @@
   <div class="artist-wrap w980 fl">
     <div class="main">
       <h2 class="artist-name">
-        <span>{{ artistData?.artist?.name }}</span>
+        <span>{{ artistData?.artist?.name }}</span><span class="alias">{{ artistData?.artist?.alias.map(v => {return v}).join(',') }}</span>
       </h2>
       <div class="artist-bg">
         <img :src="`${artistData?.artist?.cover}?param=640y300`" alt="">
         <router-link to="/" class="icon-home" />
         <router-link to="/" class="icon-collect" />
       </div>
-      <el-tabs type="border-card" class="tabs" @tab-click="tabIndex = $event.index">
+      <el-tabs type="border-card" class="tabs" @tab-click="tabIndex = Number($event.index)">
         <el-tab-pane
           v-for="item in componentList"
           :key="item.label"
@@ -18,7 +18,7 @@
       </el-tabs>
       <Transition name="fade" mode="out-in">
         <keep-alive>
-          <component :is="componentList[tabIndex]?.name" />
+          <component :is="componentList[tabIndex]?.name" :name="artistData?.artist?.name" />
         </keep-alive>
       </Transition>
     </div>
@@ -80,6 +80,12 @@ $imgHeight: 300px;
     .artist-name {
       margin-bottom: 10px;
       font-weight: normal;
+      .alias {
+        margin-left: 10px;
+        text-align: end;
+        color: #999;
+        font-size: 12px;
+      }
     }
     .artist-bg {
       position: relative;
@@ -111,18 +117,17 @@ $imgHeight: 300px;
     }
   }
   .aside {
-    flex: 1;
+    flex: 1.2;
   }
 }
 .main :deep(.el-tabs--border-card) {
   border: none;
 }
 .main :deep(.el-tabs--border-card>.el-tabs__content) {
-  padding: 20px 0;
+  padding: 10px 0;
 }
 .main :deep(.el-tabs--border-card>.el-tabs__header) {
   background: linear-gradient(#f9f9f9,#f8f8f8,#f7f7f7,#f6f6f6);
-  box-shadow: 0 1px 2px #ccc;
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
 }

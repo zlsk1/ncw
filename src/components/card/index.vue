@@ -1,9 +1,9 @@
 <template>
   <div class="card-wrap">
     <slot />
-    <p class="card-footer">
+    <div class="card-footer">
       <slot name="footer" />
-    </p>
+    </div>
   </div>
 </template>
 

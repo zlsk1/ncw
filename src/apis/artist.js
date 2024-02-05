@@ -37,3 +37,21 @@ export const getArtistTopSongAPI = id => {
     }
   })
 }
+
+export const getArtistProduceAPI = id => {
+  return http({
+    url: '/artist/desc',
+    params: {
+      id
+    }
+  })
+}
+
+export const getArtistMVAPI = id => {
+  return http({
+    url: '/artist/mv',
+    params: {
+      id
+    }
+  })
+}

@@ -16,7 +16,7 @@
               </p>
             </router-link>
             <p class="ellipsis-1 time">
-              {{ item.publishTime }}
+              {{ new Date(item.publishTime).toLocaleString().split(' ')[0].replaceAll('/', '.') }}
             </p>
           </template>
         </Card>

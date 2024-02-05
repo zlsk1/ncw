@@ -58,7 +58,7 @@
           <ul class="btns fl f12">
             <li class="play fl">
               <i @click="addPlaylist(topStore.topId[currentIndex].id)">
-                <em class="icon-play" />
+                <i class="icon-play" />
                 播放
               </i>
               <i class="icon-add" title="添加到播放列表" @click="addPlaylist(topStore.topId[currentIndex].id)" />
@@ -118,12 +118,12 @@
                 </div>
               </td>
               <td class="duration">
-                <span class="time">04:10</span>
+                <span class="time">{{ formatSongDuration(item.dt, 0) }}</span>
                 <div class="fl-sb">
-                  <i class="icon icon-add" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')}, 1)" />
-                  <i class="icon icon-collect" />
-                  <i class="icon icon-share" />
-                  <i class="icon icon-download" />
+                  <i class="icon icon-add" title="添加到播放列表" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')}, 1)" />
+                  <i class="icon icon-collect" title="收藏" />
+                  <i class="icon icon-share" title="分享" />
+                  <i class="icon icon-download" title="下载" />
                 </div>
               </td>
               <td>
@@ -155,6 +155,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { formatMonthDay, getTimestamp } from '@/utils/time'
 import Comment from '@/components/Comment'
+import { formatSongDuration } from '@/utils/time'
 
 const topStore = useTopStore()
 const playStore = usePlayStore()
@@ -358,6 +359,7 @@ table {
   .toplist-main {
     flex: 3.2;
     padding: 35px 30px;
+    word-break: break-all;
     .main-header {
       .cover-pic {
         margin-right: 30px;
@@ -405,6 +407,7 @@ table {
           color: #fff;
           background-position: right -428px;
           i {
+            display: flex;
             height: 31px;
             padding: 0 7px 0 8px;
             line-height: 31px;
