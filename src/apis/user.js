@@ -16,13 +16,22 @@ export const getUserDetail = uid => {
  * @param {*} offset 偏移数量 默认0
  * @returns
  */
-export const getUserPlaylist = (uid, limit, offset) => {
+export const getUserPlaylistAPI = ({ uid, limit, offset }) => {
   return http({
     url: '/user/playlist',
     params: {
       uid,
       limit,
       offset
+    }
+  })
+}
+
+export const getVipLevelAPI = uid => {
+  return http({
+    url: '/vip/info',
+    params: {
+      uid
     }
   })
 }

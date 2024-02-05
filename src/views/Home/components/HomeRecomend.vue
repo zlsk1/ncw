@@ -45,7 +45,6 @@
         v-for="item in personalizedList"
         :key="item.id"
         class="card"
-        :play-count="formatPlayCount(item.playCount)"
       >
         <router-link to="/">
           <Pic
@@ -72,25 +71,29 @@
 <script setup>
 import Card from '@/components/Card'
 import { getPersonalized } from '@/apis/home'
-import { onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { formatPlayCount } from '@/utils/index'
 import { usePlayStore } from '@/stores/play'
 const store = usePlayStore()
 
 const personalizedList = ref([])
 
+onMounted(() => {
+  getPersonalizedList()
+})
+
+onBeforeUnmount(() => {
+  addPlayList = null
+})
+
 const getPersonalizedList = async () => {
   const res = await getPersonalized(8)
   personalizedList.value = res.data.result
 }
 
-const addPlayList = async id => {
+let addPlayList = async id => {
   store.actionAddSongs(id)
 }
-
-onMounted(() => {
-  getPersonalizedList()
-})
 
 </script>
 

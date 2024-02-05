@@ -9,7 +9,6 @@
 
 <script setup>
 defineProps({
-  playCount: { type: String, default: '0' },
   imgUrl: { type: String, default: '' },
   imgHeight: { type: String, default: '140px' }
 })

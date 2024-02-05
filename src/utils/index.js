@@ -1,4 +1,5 @@
 export const formatPlayCount = count => {
+  if (count < 10000) return count
   const a = [10000, 10000 * 10000, 10000 * 100000, 10000 * 1000000]
   const b = ['万', '百万', '千万', '亿']
   let n = 0

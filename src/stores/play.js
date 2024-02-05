@@ -34,7 +34,7 @@ export const usePlayStore = defineStore('play', () => {
           id: data[index].id,
           url: data[index].url,
           time: data[index].time,
-          name: detail[i].al.name,
+          name: detail[i].name,
           singer: detail[i].ar.length === 1 ? detail[i].ar[0].name : detail[i].ar.map(v => { return v.name }).join('/'),
           picUrl: detail[i].al.picUrl
         }
