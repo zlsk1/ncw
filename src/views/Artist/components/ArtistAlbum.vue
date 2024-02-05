@@ -10,7 +10,7 @@
             <i class="icon-play" @click="play(item.id)" />
           </div>
           <template #footer>
-            <router-link :to="`/song/${item.id}`" :title="item.name" class="name">
+            <router-link to="/" :title="item.name" class="name">
               <p class="ellipsis-2">
                 {{ item.name }}
               </p>

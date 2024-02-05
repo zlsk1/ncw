@@ -27,7 +27,7 @@
 <script setup>
 import { getArtistProduceAPI } from '@/apis/artist'
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 
 const props = defineProps({
   name: { type: String, default: '' }
@@ -39,6 +39,12 @@ const data = ref([])
 
 onMounted(() => {
   getProduce(route.params.id)
+})
+
+onBeforeRouteUpdate((to) => {
+  if (to) {
+    getProduce(to.params.id)
+  }
 })
 
 const getProduce = async id => {

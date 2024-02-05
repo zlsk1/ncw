@@ -21,7 +21,7 @@
 <script setup>
 import { getArtistMVAPI } from '@/apis/artist'
 import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import Card from '@/components/Card'
 
 const route = useRoute()
@@ -29,14 +29,20 @@ const route = useRoute()
 const MVlist = ref([])
 // const loading = ref(false)
 
+onMounted(() => {
+  getMV(route.params.id)
+})
+
+onBeforeRouteUpdate((to) => {
+  if (to) {
+    getMV(to.params.id)
+  }
+})
+
 const getMV = async id => {
   const res = await getArtistMVAPI(id)
   MVlist.value = res.data.mvs
 }
-
-onMounted(() => {
-  getMV(route.params.id)
-})
 </script>
 
 <style lang="scss" scoped>

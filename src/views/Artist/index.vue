@@ -23,24 +23,44 @@
       </Transition>
     </div>
     <div class="aside">
-      aside
+      <div>
+        <div class="header">
+          热门歌手
+        </div>
+        <ul class="hotSinger">
+          <li v-for="item in hotSinger" :key="item.id" class="hot-items">
+            <router-link :to="`/artist/${item.id}`">
+              <img :src="item.picUrl + '?param=50y50'" alt="">
+            </router-link>
+            <router-link :to="`/artist/${item.id}`">
+              <p class="f12 ellipsis-1" :title="item.name">
+                {{ item.name }}
+              </p>
+            </router-link>
+          </li>
+        </ul>
+      </div>
+      <DownLoadSide />
     </div>
   </div>
 </template>
 
 <script setup>
 import { getArtistDetailAPI } from '@/apis/artist'
+import { getHotSinger } from '@/apis/singer'
 import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import ArtistProduce from './components/ArtistProduce.vue'
 import ArtistAlbum from './components/ArtistAlbum.vue'
 import HotWork from './components/HotWork.vue'
 import RelativeMV from './components/RelativeMV.vue'
+import DownLoadSide from '@/components/DownLoadSide'
 
 const route = useRoute()
 
 const artistData = ref(null)
 const tabIndex = ref(0)
+const hotSinger = ref([])
 
 const componentList = [
   { label: '热门作品', name: HotWork },
@@ -51,11 +71,24 @@ const componentList = [
 
 onMounted(() => {
   getArtistDetail(route.params.id)
+  getHSinger()
+})
+
+onBeforeRouteUpdate((to) => {
+  if (to) {
+    getArtistDetail(to.params.id)
+    getHSinger()
+  }
 })
 
 const getArtistDetail = async id => {
   const res = await getArtistDetailAPI(id)
   artistData.value = res.data.data
+}
+
+const getHSinger = async () => {
+  const res = await getHotSinger(6)
+  hotSinger.value = res.data.artists
 }
 </script>
 
@@ -118,6 +151,34 @@ $imgHeight: 300px;
   }
   .aside {
     flex: 1.2;
+    padding: 30px 40px 30px 30px;
+    border-right: 1px solid #d3d3d3;
+    .header {
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      font-weight: 700;
+      font-size: 12px;
+      border-bottom: 1px solid #ccc;
+    }
+    .hotSinger {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      .hot-items {
+        width: 32%;
+        text-align: center;
+        &:nth-child(-n+3) {
+          margin-bottom: 10px;
+        }
+        p {
+          margin-top: 6px;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
   }
 }
 .main :deep(.el-tabs--border-card) {
