@@ -1,26 +1,7 @@
 <template>
   <div class="w980 update-wrap">
     <div v-show="!updateImg">
-      <h2 class="title">
-        个人设置
-      </h2>
-      <ul class="tabs">
-        <li :class="route.path.includes('/update') ? 'active-tabs' : ''" style="border-left: 0px">
-          <router-link to="/user/update">
-            基本设置
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/">
-            绑定设置
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/">
-            隐私设置
-          </router-link>
-        </li>
-      </ul>
+      <UserHeader />
       <div class="content">
         <el-form
           ref="form"
@@ -159,6 +140,7 @@ import { testNickname } from '@/apis/login'
 import { updateUserInfoAPI, getUserDetail, updateUserAvatarAPI } from '@/apis/user'
 import { ElMessage, ElLoading } from 'element-plus'
 import { UploadFilled } from '@element-plus/icons-vue'
+import UserHeader from './UserHeader'
 
 const userStore = useUserStore()
 
@@ -298,61 +280,6 @@ let updateAvatar = async () => {
   padding: 40px 30px;
   border-left: 1px solid #d3d3d3;
   border-right: 1px solid #d3d3d3;
-  .title {
-    margin-bottom: 10px;
-    font-size: 24px;
-    font-weight: normal;
-  }
-  .tabs {
-    display: flex;
-    width: 100%;
-    margin-bottom: 30px;
-    background: linear-gradient(#f9f9f9, #f8f8f8, #f7f7f7, #f6f6f6);
-    border-left: 1px solid #ccc;
-    border-right: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    border-top: 2px solid #ccc;
-    li {
-      position: relative;
-      &:hover::after {
-        content: '';
-        position: absolute;
-        top: -2px;
-        right: 2px;
-        width: calc(100% + 2px);
-        height: 2px;
-        background-color: $themeColor;
-      }
-      a {
-        display: block;
-        padding: 10px 40px;
-      }
-    }
-    .active-tabs {
-      position: relative;
-      background: linear-gradient(#fafafa, #fbfbfb, #fcfcfc, #fdfdfd, #fefefe);
-      border-left: 1px solid #ccc;
-      border-right: 1px solid #ccc;
-      &::after {
-        content: '';
-        position: absolute;
-        top: -2px;
-        left: -1px;
-        width: calc(100% + 2px);
-        height: 2px;
-        background-color: $themeColor;
-      }
-      &::before {
-        content: '';
-        position: absolute;
-        bottom: -1px;
-        left: 0;
-        width: 100%;
-        height: 1px;
-        background-color: #fff;
-      }
-    }
-  }
   .content {
     .form {
       float: left;

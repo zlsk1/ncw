@@ -34,6 +34,10 @@ const router = createRouter({
             {
               path: 'update/:id?',
               component: () => import('@/views/User/components/UserUpdate')
+            },
+            {
+              path: 'binding/:id?',
+              component: () => import('@/views/User/components/UserBinding')
             }
           ]
         }
