@@ -1,7 +1,12 @@
 <template>
   <div class="w980 home-wrap">
     <div class="home-header">
-      <img :src="userStore?.avator + '?param=180y180'" alt="" class="avatar">
+      <div class="avatar">
+        <img :src="userStore?.avator + '?param=180y180'" alt="">
+        <router-link to="/">
+          更换头像
+        </router-link>
+      </div>
       <div class="header-right">
         <div class="name">
           <div class="fl-sb">
@@ -53,7 +58,7 @@
           </ul>
         </div>
         <div class="f12 city">
-          所在地区：{{}}
+          所在地区：{{ getArea() }}
         </div>
         <div class="f12 social">
           社交网络{{}}
@@ -92,6 +97,7 @@ import { getVipLevelAPI, getUserPlaylistAPI } from '@/apis/user'
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import Card from '@/components/Card'
 import { formatPlayCount } from '@/utils/index'
+import { provinceAndCityData } from 'element-china-area-data'
 
 const userStore = useUserStore()
 const playStore = usePlayStore()
@@ -127,6 +133,16 @@ const getUserPlaylist = async (uid, limit, offset) => {
 let addPlayList = async id => {
   playStore.actionAddSongs(id)
 }
+
+const getArea = () => {
+  for (let i = 0; i < provinceAndCityData.length; i++) {
+    if (profile.province.toString().slice(0, 2) === provinceAndCityData[i].value) {
+      const province = provinceAndCityData[i].label
+      const { label } = provinceAndCityData[i].children.find(v => v.value === profile.city || v.value === profile.city.toString().slice(0, 4))
+      return province + ' - ' + label
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -136,11 +152,33 @@ let addPlayList = async id => {
     display: flex;
     margin-bottom: 40px;
     .avatar {
-      width: 188px;
-      height: 188px;
-      margin-right: 40px;
-      padding: 3px;
-      border: 1px solid #d5d5d5;
+      position: relative;
+      img {
+        width: 188px;
+        height: 188px;
+        margin-right: 40px;
+        padding: 3px;
+        border: 1px solid #d5d5d5;
+      }
+      a {
+        display: none;
+      }
+      &:hover a {
+        display: block;
+        position: absolute;
+        bottom: 0;
+        left: 4px;
+        width: 180px;
+        height: 25px;
+        line-height: 25px;
+        text-align: center;
+        font-size: 12px;
+        color: #fff;
+        background-color: #8e8e8e;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
     }
     .header-right {
       width: 100%;
