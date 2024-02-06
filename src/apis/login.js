@@ -70,7 +70,7 @@ export const createNickname = () => {
 
 export const testNickname = (nickname) => {
   return http({
-    url: '/nickname/check',
+    url: `/nickname/check?${getTimestamp()}`,
     method: 'POST',
     data: {
       nickname
@@ -78,7 +78,7 @@ export const testNickname = (nickname) => {
   })
 }
 
-// 刷新登录
+// 刷新登录状态
 export const loginRefreshAPI = () => {
   return http({
     url: '/login/refresh'
@@ -88,6 +88,6 @@ export const loginRefreshAPI = () => {
 // 获取登录状态
 export const getLoginStatusAPI = () => {
   return http({
-    url: '/login/status'
+    url: `/login/status?${getTimestamp()}`
   })
 }

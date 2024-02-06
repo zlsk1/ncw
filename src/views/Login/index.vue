@@ -146,8 +146,8 @@ const validPasswordConfirm = async (rule, value, callback) => {
 }
 const validNickname = async (rule, value, callback) => {
   if (!value) return callback(new Error('请输入昵称'))
-  const res = await testNickname()
-  if (!res.duplicated) return callback(new Error('昵称已存在'))
+  const res = await testNickname(value.trim())
+  if (res.data.duplicated) return callback(new Error(`昵称已存在 推荐昵称：${res.data.candidateNicknames[Math.ceil(Math.random() * 10)]}`))
 }
 const loginFormRules = ref({
   phone: [
@@ -158,7 +158,7 @@ const loginFormRules = ref({
     { required: true, message: '请输入密码', trigger: 'change' },
     { pattern: /^\S*(?=\S{6,})(?=\S*\d)(?=\S*[A-Z])(?=\S*[a-z])\S*$/, message: '密码必须包含大写字母、小写字母和数字', trigger: 'blur' }
   ],
-  nick: { validator: validNickname, trigger: 'change' },
+  nick: { validator: validNickname, trigger: 'blur' },
   passwordConfirm: { validator: validPasswordConfirm, trigger: 'change' },
   captcha: { validator: validCaptcha, trigger: 'blur' }
 })

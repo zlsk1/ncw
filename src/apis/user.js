@@ -1,8 +1,9 @@
 import http from '@/utils/http'
+import { getTimestamp } from '@/utils/time'
 
 export const getUserDetail = uid => {
   return http({
-    url: '/user/detail',
+    url: `/user/detail?${getTimestamp()}`,
     params: {
       uid
     }
@@ -32,6 +33,47 @@ export const getVipLevelAPI = uid => {
     url: '/vip/info',
     params: {
       uid
+    }
+  })
+}
+
+/**
+ *
+ * @param {Number} province 补零到6位
+ * @param {Number} city 补零到6位
+ * @returns
+ */
+export const updateUserInfoAPI = ({ gender, birthday, nickname, province, city, signature }) => {
+  return http({
+    url: '/user/update',
+    params: {
+      gender,
+      birthday,
+      nickname,
+      province,
+      city,
+      signature
+    }
+  })
+}
+
+/**
+ *
+ * @param {*} imgSize 图片尺寸,默认为 300
+ * @param {*} imgX 水平裁剪偏移,方形图片可不传,默认为 0
+ * @param {*} imgY 垂直裁剪偏移,方形图片可不传,默认为 0
+ * @returns
+ */
+export const updateUserAvatar = ({ imgSize, imgX, imgY }) => {
+  return http({
+    url: '/avatar/upload',
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    params: {
+      imgSize,
+      imgX,
+      imgY
     }
   })
 }

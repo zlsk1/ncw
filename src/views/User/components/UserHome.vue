@@ -19,7 +19,7 @@
             <i v-if="profile?.gender" class="boy" />
             <i v-else class="girl" />
           </div>
-          <div to="/" class="edit-info">
+          <div class="edit-info" @click="toEdit">
             <button>编辑个人资料</button>
           </div>
         </div>
@@ -95,9 +95,12 @@ import { useUserStore } from '@/stores/user'
 import { usePlayStore } from '@/stores/play'
 import { getVipLevelAPI, getUserPlaylistAPI } from '@/apis/user'
 import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'
 import Card from '@/components/Card'
 import { formatPlayCount } from '@/utils/index'
 import { provinceAndCityData } from 'element-china-area-data'
+
+const router = useRouter()
 
 const userStore = useUserStore()
 const playStore = usePlayStore()
@@ -114,7 +117,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  addPlayList = null
+  addPlayList = null; toEdit = null
 })
 
 const getVip = async () => {
@@ -143,6 +146,8 @@ const getArea = () => {
     }
   }
 }
+
+let toEdit = () => { router.push(`/user/update/${profile.userId}`) }
 </script>
 
 <style lang="scss" scoped>

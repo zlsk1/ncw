@@ -117,7 +117,7 @@ const store = useUserStore()
 const { avator } = storeToRefs(store)
 const { nickname } = storeToRefs(store)
 
-const userId = JSON.parse(localStorage.getItem('userInfo')).profile.userId
+const userId = JSON.parse(localStorage.getItem('userInfo'))?.profile.userId
 
 const singerList = ref([])
 const djList = ref([])

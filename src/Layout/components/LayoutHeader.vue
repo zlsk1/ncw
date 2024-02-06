@@ -131,7 +131,7 @@ const store = useUserStore()
 const { token } = storeToRefs(store)
 const { avator } = storeToRefs(store)
 
-const userId = JSON.parse(localStorage.getItem('userInfo')).profile.userId
+const userId = JSON.parse(localStorage.getItem('userInfo'))?.profile.userId
 
 const searchValue = ref('')
 const isShow = ref(false)

@@ -30,6 +30,10 @@ const router = createRouter({
             {
               path: 'home/:id',
               component: () => import('@/views/User/components/UserHome')
+            },
+            {
+              path: 'update/:id?',
+              component: () => import('@/views/User/components/UserUpdate')
             }
           ]
         }
