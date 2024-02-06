@@ -1,6 +1,6 @@
 <template>
   <div class="w980 update-wrap">
-    <template v-if="!updateImg">
+    <div v-show="!updateImg">
       <h2 class="title">
         个人设置
       </h2>
@@ -77,8 +77,8 @@
           <span @click="switchUpdate">更换头像</span>
         </div>
       </div>
-    </template>
-    <template v-else>
+    </div>
+    <div v-show="updateImg">
       <div class="breadcrumb f16">
         <span @click="switchUpdate">
           个人设置
@@ -87,7 +87,7 @@
         <span>更换头像</span>
       </div>
       <div class="upload-btn">
-        <el-button type="primary">
+        <el-button type="primary" @click="clickUpload">
           上传头像
         </el-button> <span>支持jpg、png、bmp格式的图片，且文件小于5M</span>
       </div>
@@ -104,6 +104,14 @@
             src=""
             class="controlImg"
           >
+          <!-- <img
+            v-if="file"
+            src=""
+            class="opacity"
+          > -->
+          <div class="choose">
+            <div class="expand" />
+          </div>
           <UploadFilled style="width: 6em;height: 6em" />
         </div>
         <div class="preview">
@@ -126,19 +134,19 @@
           <p>小尺寸头像（40×40像素）</p>
         </div>
       </div>
-      <el-button :disabled="!file">
+      <el-button :disabled="!file" @click="updateAvatar">
         保存
       </el-button>
-      <el-button :disabled="!file" @click="cancelImg">
+      <el-button @click="cancelImg">
         取消
       </el-button>
-    </template>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { useUserStore } from '@/stores/user'
-import { onMounted, ref, nextTick, onBeforeUnmount, computed } from 'vue'
+import { onMounted, ref, nextTick, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 import {
   provinceAndCityData
@@ -148,7 +156,7 @@ import {
   // codeToText
 } from 'element-china-area-data'
 import { testNickname } from '@/apis/login'
-import { updateUserInfoAPI, getUserDetail } from '@/apis/user'
+import { updateUserInfoAPI, getUserDetail, updateUserAvatarAPI } from '@/apis/user'
 import { ElMessage, ElLoading } from 'element-plus'
 import { UploadFilled } from '@element-plus/icons-vue'
 
@@ -188,7 +196,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  submit = null; switchUpdate = null; changeFile = null; clickUpload = null; cancelImg = null
+  submit = null; switchUpdate = null; changeFile = null; clickUpload = null; cancelImg = null; updateAvatar = null
 })
 
 let submit = async () => {
@@ -261,14 +269,27 @@ let clickUpload = () => {
 }
 
 let cancelImg = () => {
+  if (!file.value) updateImg.value = !updateImg.value
+  else setImg(userStore.avator)
   file.value = null
-  setImg(userStore.avator, userStore.avator)
 }
 
 const setImg = url => {
   document.querySelector('.small img').src = url
   document.querySelector('.big img').src = url
   document.querySelector('.upload .controlImg').src = url
+  // document.querySelector('.upload .opacity').src = url
+}
+
+let updateAvatar = async () => {
+  const formData = new FormData()
+  formData.append('imgFile', file.value)
+  try {
+    await updateUserAvatarAPI(formData)
+    userStore.actiongetUserDetail(profile.value.userId)
+  } catch (err) {
+    ElMessage.warning(err.response.data.message)
+  }
 }
 </script>
 
@@ -401,6 +422,7 @@ const setImg = url => {
     }
   }
   .upload {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -408,17 +430,25 @@ const setImg = url => {
     height: 300px;
     margin-right: 35px;
     border: 1px dashed #d3d3d3;
-    cursor: pointer;
     input[type="file"] {
       display: none;
     }
     .controlImg {
+      position: absolute;
+      right: 0;
+      left: 0;
       width: 100%;
       height: 100%;
+    }
+    .opacity {
+      width: 100%;
+      height: 100%;
+      opacity: .5;
     }
   }
   .hover-upload {
     border-radius: 10px;
+    cursor: pointer;
     &:hover {
       border: 1px dashed #409eff
     };
@@ -453,6 +483,11 @@ const setImg = url => {
     }
     p:nth-child(n+2) {
       color: #999;
+    }
+    .choose {
+      width: 180px;
+      height: 180px;
+      border: 1px solid #fff;
     }
   }
 }

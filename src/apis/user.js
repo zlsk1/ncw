@@ -59,21 +59,19 @@ export const updateUserInfoAPI = ({ gender, birthday, nickname, province, city, 
 
 /**
  *
+ * @param {*} formData 表单数据名为imgFile
  * @param {*} imgSize 图片尺寸,默认为 300
  * @param {*} imgX 水平裁剪偏移,方形图片可不传,默认为 0
  * @param {*} imgY 垂直裁剪偏移,方形图片可不传,默认为 0
  * @returns
  */
-export const updateUserAvatar = ({ imgSize, imgX, imgY }) => {
+export const updateUserAvatarAPI = (imgFile, imgSize = 300, imgX = 0, imgY = 0) => {
   return http({
-    url: '/avatar/upload',
+    url: `/avatar/upload?stamp=${getTimestamp()}&imgSize=${imgSize}&imgX=${imgX}&imgY=${imgY}`,
     headers: {
       'Content-Type': 'multipart/form-data'
     },
-    params: {
-      imgSize,
-      imgX,
-      imgY
-    }
+    method: 'POST',
+    data: imgFile
   })
 }
