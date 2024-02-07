@@ -6,7 +6,7 @@
       </h2>
       <div class="artist-bg">
         <img :src="`${artistData?.artist?.cover}?param=640y300`" alt="">
-        <router-link to="/" class="icon-home" />
+        <router-link v-if="artistData?.user" :to="`/user/home/${artistData?.user.userId}`" class="icon-home" />
         <router-link to="/" class="icon-collect" />
       </div>
       <el-tabs type="border-card" class="tabs" @tab-click="tabIndex = Number($event.index)">
@@ -98,7 +98,7 @@ $imgHeight: 300px;
 // 组件过渡css
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s ease;
+  transition: opacity .5s ease;
 }
 
 .fade-enter-from,

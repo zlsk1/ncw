@@ -333,7 +333,6 @@ onUnmounted(() => {
     border: 1px solid #a6a6a6;
     border-radius: 4px;
   }
-
   .emj-content {
     display: flex;
     justify-content: space-between;

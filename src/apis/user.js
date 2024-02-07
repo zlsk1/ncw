@@ -75,3 +75,37 @@ export const updateUserAvatarAPI = (imgFile, imgSize = 300, imgX = 0, imgY = 0) 
     data: imgFile
   })
 }
+
+/**
+ *
+ * @param {*} id 用户id
+ * @param {*} t 1为关注,其他为取消关注
+ * @returns
+ */
+export const followUserAPI = ({ id, t }) => {
+  return http({
+    url: '/follow',
+    method: 'PUT',
+    data: {
+      id,
+      t
+    }
+  })
+}
+
+/**
+ * 发送私信
+ * @param {*} user_ids 用户 id,多个需用逗号隔开
+ * @param {*} msg 要发送的信息
+ * @returns
+ */
+export const sendTextAPI = ({ user_ids, msg }) => {
+  return http({
+    url: '/send/text',
+    method: 'POST',
+    params: {
+      user_ids,
+      msg
+    }
+  })
+}

@@ -2,25 +2,54 @@
   <div class="w980 home-wrap">
     <div class="home-header">
       <div class="avatar">
-        <img :src="userStore?.avator + '?param=180y180'" alt="">
-        <router-link to="/">
+        <img :src="profile?.avatarUrl + '?param=180y180'" alt="">
+        <router-link v-if="!isArtist" to="/">
           更换头像
         </router-link>
       </div>
       <div class="header-right">
         <div class="name">
           <div class="fl-sb">
-            <h2>{{ userStore.nickname }}</h2>
-            <img :src="vip?.icon + '?param=60y36'" alt="" class="vipLevel">
-            <span class="level-wrap">
-              {{ level }}
-              <i class="level" />
-            </span>
-            <i v-if="profile?.gender" class="boy" />
-            <i v-else class="girl" />
+            <div class="fl-sb">
+              <h2>{{ profile?.nickname }}</h2>
+              <img
+                v-if="!isArtist"
+                :src="vip?.icon + '?param=60y36'"
+                alt=""
+                class="vipLevel"
+              >
+              <span class="level-wrap">
+                {{ level }}
+                <i class="level" />
+              </span>
+              <i v-if="profile?.gender === 1" class="boy" />
+              <i v-else class="girl" />
+              <template v-if="isArtist">
+                <el-button :icon="Message" @click="openSendDialog">
+                  发私信
+                </el-button>
+                <el-button v-if="profile?.followed" :icon="Select" @click="follow(0)">
+                  已关注
+                </el-button>
+                <el-button v-else :icon="Plus" @click="follow(1)">
+                  关注
+                </el-button>
+              </template>
+            </div>
+            <div class="edit-info" @click="toEdit">
+              <button v-if="!isArtist">
+                编辑个人资料
+              </button>
+              <button v-else>
+                <router-link :to="`/artist/${profile?.artistId}`">
+                  查看歌手页
+                </router-link>
+              </button>
+            </div>
           </div>
-          <div class="edit-info" @click="toEdit">
-            <button>编辑个人资料</button>
+          <div v-if="isArtist" class="identify">
+            <img class="icon-identify" :src="isArtist.imageUrl">
+            <span>{{ profile?.description }}</span>
           </div>
         </div>
         <div class="event">
@@ -57,17 +86,20 @@
             </li>
           </ul>
         </div>
+        <div v-if="profile?.signature" class="f12 city">
+          个人签名：{{ profile?.signature }}
+        </div>
         <div class="f12 city">
           所在地区：{{ getArea() }}
         </div>
-        <div class="f12 social">
+        <!-- <div class="f12 social">
           社交网络{{}}
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="my-playlist">
       <h3 class="title">
-        我创建的歌单（{{ playlist?.length }}）
+        <span>{{ `${isArtist ? profile?.nickname : '我'}创建的歌单（${playlist?.length}` }}）</span>
       </h3>
       <div class="content">
         <Card v-for="item in playlist" :key="item.id">
@@ -87,45 +119,122 @@
         </Card>
       </div>
     </div>
+    <el-dialog v-model="isShowSendDialog" width="30%">
+      <template #header>
+        发新私信
+      </template>
+      <div class="fl tags">
+        <el-tag
+          v-for="(item, index) in dynamicTags"
+          :key="index"
+          closable
+          class="items"
+          type="info"
+          @close="handleClose(item)"
+        >
+          {{ item }}
+        </el-tag>
+        <el-input
+          v-if="inputVisible"
+          ref="inputRef"
+          v-model="inputValue"
+          size="small"
+          style="max-width: 80px"
+          @keyup.enter="handleInputConfirm"
+          @blur="handleInputConfirm"
+        />
+        <el-button
+          v-else
+          class="button-new-tag"
+          size="small"
+          @click="showInput"
+        >
+          + New Tag
+        </el-button>
+      </div>
+      <el-input
+        v-model="sendText"
+        type="textarea"
+        maxlength="200"
+        show-word-limit
+        class="sendText"
+      />
+      <div class="bottom fl-sb">
+        <Emj @choose="chooseEmj">
+          <div class="emj">
+            <i class="icon-emj" />
+          </div>
+        </Emj>
+        <el-button @click="handleSendText">
+          发送
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { useUserStore } from '@/stores/user'
 import { usePlayStore } from '@/stores/play'
-import { getVipLevelAPI, getUserPlaylistAPI } from '@/apis/user'
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { useRouter } from 'vue-router'
+import { getVipLevelAPI, getUserPlaylistAPI, getUserDetail, followUserAPI, sendTextAPI } from '@/apis/user'
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
 import Card from '@/components/Card'
 import { formatPlayCount } from '@/utils/index'
 import { provinceAndCityData } from 'element-china-area-data'
+import { Message, Plus, Select } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import Emj from '@/components/Emj'
 
 const router = useRouter()
+const route = useRoute()
 
-const userStore = useUserStore()
 const playStore = usePlayStore()
 
-const profile = JSON.parse(localStorage.getItem('userInfo')).profile
-const level = JSON.parse(localStorage.getItem('userInfo')).level
+let level = ''
+let isArtist = ''
 
 const vip = ref(null)
 const playlist = ref(null)
+const profile = ref(null)
+const isShowSendDialog = ref(false)
+const inputVisible = ref(false)
+const inputValue = ref('')
+const dynamicTags = ref([])
+const inputRef = ref(null)
+const sendText = ref('')
 
-onMounted(() => {
-  getVip()
-  getUserPlaylist(profile.userId)
+onMounted(async () => {
+  await getDetail(route.params.id)
+  getVip(profile.value.userId)
+  getUserPlaylist(profile.value.userId)
+  dynamicTags.value.push(profile.value?.nickname)
 })
 
 onBeforeUnmount(() => {
-  addPlayList = null; toEdit = null
+  addPlayList = null; toEdit = null; follow = null; openSendDialog = null; handleInputConfirm = null; showInput = null; handleClose = null
 })
 
-const getVip = async () => {
-  const res = await getVipLevelAPI(profile.userId)
+onBeforeRouteUpdate(async (to, from) => {
+  if (to) {
+    await getDetail(to.params.id)
+    getVip(to.params.id)
+    getUserPlaylist(to.params.id)
+  }
+})
+
+const getVip = async id => {
+  const res = await getVipLevelAPI(id)
   vip.value = {
     level: res.data.data.redVipLevel,
     icon: res.data.data.redVipLevelIcon
   }
+}
+
+const getDetail = async id => {
+  const res = await getUserDetail(id)
+  profile.value = res.data.profile
+  level = res.data.level
+  isArtist = res.data.identify ? res.data.identify : null
 }
 
 const getUserPlaylist = async (uid, limit, offset) => {
@@ -139,15 +248,63 @@ let addPlayList = async id => {
 
 const getArea = () => {
   for (let i = 0; i < provinceAndCityData.length; i++) {
-    if (profile.province.toString().slice(0, 2) === provinceAndCityData[i].value) {
+    if (profile.value?.province.toString().slice(0, 2) === provinceAndCityData[i].value) {
       const province = provinceAndCityData[i].label
-      const { label } = provinceAndCityData[i].children.find(v => v.value === profile.city || v.value === profile.city.toString().slice(0, 4))
+      const { label } = provinceAndCityData[i].children.find(v => v.value === profile.value?.city.toString() || v.value === profile.value?.city.toString().slice(0, 4))
       return province + ' - ' + label
     }
   }
 }
 
-let toEdit = () => { router.push(`/user/update/${profile.userId}`) }
+let toEdit = () => { router.push(`/user/update/${profile.value.userId}`) }
+
+let follow = async t => {
+  if (t !== 1) {
+    ElMessageBox.alert('请使用手机登录网易云音乐APP扫码完成验证，登录账号要和当前账号一致', '请完成短信验证', {
+      showConfirmButton: false,
+      showCancelButton: false
+    })
+  } else {
+    await followUserAPI({ id: route.params.id, t })
+  }
+}
+
+let openSendDialog = () => {
+  isShowSendDialog.value = !isShowSendDialog.value
+}
+
+let handleInputConfirm = () => {
+  if (inputValue.value) {
+    dynamicTags.value.push(inputValue.value)
+  }
+  inputVisible.value = false
+  inputValue.value = ''
+}
+
+let showInput = () => {
+  inputVisible.value = true
+  nextTick(() => {
+    inputRef.value.focus()
+  })
+}
+
+let handleClose = tag => {
+  dynamicTags.value.splice(dynamicTags.value.indexOf(tag), 1)
+}
+
+const chooseEmj = e => {
+  sendText.value += `[${e}]`
+}
+
+const handleSendText = async () => {
+  if (!dynamicTags.value.length || !sendText.value) {
+    ElMessage.warning('输入点内容再发送吧')
+  } else {
+    const res = await sendTextAPI({ user_ids: profile.value.userId, msg: sendText.value.trim() })
+    if (res.data.code === 200) ElMessage.success('发送成功！')
+  }
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -188,9 +345,7 @@ let toEdit = () => { router.push(`/user/update/${profile.userId}`) }
     .header-right {
       width: 100%;
       .name {
-        display: flex;
-        justify-content: space-between;
-        padding-bottom: 20px;
+        padding-bottom: 10px;
         border-bottom: 1px solid #dddddd;
         h2 {
           margin-right: 10px;
@@ -225,12 +380,14 @@ let toEdit = () => { router.push(`/user/update/${profile.userId}`) }
           display: block;
           width: 20px;
           height: 20px;
+          margin-right: 10px;
           background: url('@/assets/icons/icon.png') -41px -57px no-repeat;
         }
         .girl {
           display: block;
           width: 20px;
           height: 20px;
+          margin-right: 10px;
           background: url('@/assets/icons/icon.png') -41px -27px no-repeat;
         }
         .edit-info {
@@ -246,6 +403,15 @@ let toEdit = () => { router.push(`/user/update/${profile.userId}`) }
           button {
             background-color: #fff;
             cursor: pointer;
+          }
+        }
+        .identify {
+          margin-top: 10px;
+          .icon-identify {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            display: inline-block;
           }
         }
       }
@@ -286,8 +452,7 @@ let toEdit = () => { router.push(`/user/update/${profile.userId}`) }
         padding: 10px 40px 0 20px;
       }
       a {
-
-        transition: .3s;
+        transition: .2s;
       }
       .event-count {
         font-size: 22px;
@@ -359,6 +524,25 @@ let toEdit = () => { router.push(`/user/update/${profile.userId}`) }
           }
         }
       }
+    }
+  }
+  .tags {
+    margin-bottom: 10px;
+    .items {
+      margin-right: 10px;
+    }
+  }
+  .sendText {
+    margin-bottom: 10px ;
+  }
+  .emj {
+    margin-right: 10px;
+    .icon-emj {
+      display: block;
+      width: 18px;
+      height: 18px;
+      background: url('@/assets/icons/icon.png') -40px -490px no-repeat;
+      cursor: pointer;
     }
   }
 }

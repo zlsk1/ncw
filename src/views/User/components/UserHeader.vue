@@ -5,7 +5,7 @@
     </h2>
     <ul class="tabs">
       <li :class="route.path.includes('/update') ? 'active-tabs' : ''" style="border-left: 0px">
-        <router-link to="/user/update">
+        <router-link :to="`/user/update/${userId}`">
           基本设置
         </router-link>
       </li>
