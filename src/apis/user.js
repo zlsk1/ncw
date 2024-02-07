@@ -3,7 +3,7 @@ import { getTimestamp } from '@/utils/time'
 
 export const getUserDetail = uid => {
   return http({
-    url: `/user/detail?${getTimestamp()}`,
+    url: `/user/detail?stamp=${getTimestamp()}`,
     params: {
       uid
     }
@@ -106,6 +106,50 @@ export const sendTextAPI = ({ user_ids, msg }) => {
     params: {
       user_ids,
       msg
+    }
+  })
+}
+
+/**
+ * 登录后调用此接口,可获取私信和通知数量信息
+ * @returns
+ */
+export const getPlCountAPI = () => {
+  return http({
+    url: `/pl/count?stamp=${getTimestamp()}`
+  })
+}
+
+/**
+ * 登录后调用此接口 ,可获取私信
+ * @param {*} limit 返回数量 , 默认为 30
+ * @param {*} offset 偏移数量
+ * @returns
+ */
+export const getMsgAPI = (limit, offset) => {
+  return http({
+    url: `/msg/private?stamp=${getTimestamp()}`,
+    params: {
+      limit,
+      offset
+    }
+  })
+}
+
+/**
+ * 登录后调用此接口 ,可获取私信内容
+ * @param {*} uid 用户id
+ * @param {*} limit 返回数量 , 默认为 30
+ * @param {*} offset 偏移数量
+ * @returns
+ */
+export const getMsgContentAPI = ({ uid, limit, before }) => {
+  return http({
+    url: `/msg/private/history?stamp=${getTimestamp()}`,
+    params: {
+      uid,
+      limit,
+      before
     }
   })
 }

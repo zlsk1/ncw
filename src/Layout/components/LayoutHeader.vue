@@ -60,12 +60,14 @@
       <el-dropdown
         v-else
         class="avator"
+        :teleported="false"
         @visible-change="dropdownChange"
         @command="logout"
       >
-        <el-badge :value="12" :hidden="!isShowBadge">
+        <el-badge v-if="pl?.msg" :value="pl?.msg" :hidden="!isShowBadge">
           <img :src="avator + '?param=30y30'" alt="">
         </el-badge>
+        <img v-else :src="avator + '?param=30y30'" alt="">
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item>
@@ -74,8 +76,8 @@
               </router-link>
             </el-dropdown-item>
             <el-dropdown-item>
-              <router-link to="/">
-                <span>我的消息</span> <span class="message">{{ 12 }}</span>
+              <router-link to="/msg/private">
+                <span>我的消息</span> <span v-if="pl?.msg" class="message">{{ pl?.msg }}</span>
               </router-link>
             </el-dropdown-item>
             <el-dropdown-item>
@@ -117,13 +119,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import { Search } from '@element-plus/icons-vue'
 import Login from '@/views/login'
 import LayoutCategory from './LayoutCategory'
+import { getPlCountAPI } from '@/apis/user'
 
 const route = useRoute()
 
@@ -136,12 +139,22 @@ const userId = JSON.parse(localStorage.getItem('userInfo'))?.profile.userId
 const searchValue = ref('')
 const isShow = ref(false)
 const isShowBadge = ref(true)
+const pl = ref(null)
+
+onMounted(() => {
+  getPlCount()
+})
 
 const dropdownChange = e => {
   isShowBadge.value = !e
 }
 const logout = () => {
   store.logoutAction()
+}
+
+const getPlCount = async () => {
+  const res = await getPlCountAPI()
+  pl.value = res.data
 }
 </script>
 

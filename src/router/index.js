@@ -46,6 +46,29 @@ const router = createRouter({
               component: () => import('@/views/User/components/UserBinding')
             }
           ]
+        },
+        {
+          path: 'msg',
+          component: () => import('@/views/Msg'),
+          meta: { hasCate: false },
+          children: [
+            {
+              path: 'at',
+              component: () => import('@/views/Msg/components/MsgAt')
+            },
+            {
+              path: 'private',
+              component: () => import('@/views/Msg/components/MsgPrivate')
+            },
+            {
+              path: 'comment',
+              component: () => import('@/views/Msg/components/MsgComment')
+            },
+            {
+              path: 'notify',
+              component: () => import('@/views/Msg/components/MsgNotify')
+            }
+          ]
         }
       ]
     }

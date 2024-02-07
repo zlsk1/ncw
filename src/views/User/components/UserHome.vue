@@ -463,6 +463,7 @@ const handleSendText = async () => {
       }
     }
     .city, .social {
+      line-height: 20px;
       margin-bottom: 10px;
       color: #666;
     }
@@ -479,13 +480,11 @@ const handleSendText = async () => {
       .card-wrap:nth-child(5n) {
         margin-right: 0;
       }
-      .card-wrap:nth-child(-n+5) {
-        margin-bottom: 40px;
-      }
       .card-wrap {
         width: 140px;
         height: 140px;
         margin-right: calc((100% - 700px) / 4);
+        margin-bottom: 40px;
         .card-play {
           position: absolute;
           width: 140px;
