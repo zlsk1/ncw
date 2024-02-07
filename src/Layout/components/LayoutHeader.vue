@@ -8,7 +8,7 @@
       </div>
       <ul class="nav fl">
         <li>
-          <router-link to="/" :class="!route.path.includes('/home') ? 'active-nav' : ''">
+          <router-link to="/" :class="route.meta.hasCate ? 'active-nav' : ''">
             发现音乐
           </router-link>
         </li>
@@ -107,7 +107,7 @@
         </template>
       </el-dropdown>
     </div>
-    <LayoutCategory v-if="!route.path.includes('/home')" />
+    <LayoutCategory v-if="route.meta.hasCate" />
     <template v-else>
       <div class="bg-bar" />
     </template>
