@@ -74,3 +74,16 @@ export const formatMonthDay = (stamp) => {
   const d = new Date(stamp).getDate().toString().padStart(2, '0')
   return `${m}月${d}日`
 }
+
+/**
+ *
+ * @param {*} stamp
+ * @returns 23-06-06 15:27
+ */
+export const formatMsgTime = stamp => {
+  const t = new Date(stamp).toLocaleString()
+  const front = t.split(' ')[0].split('/')
+  const end = t.split(' ')[1].slice(0, 5)
+  const year_ = front[0].slice(-2) + '-' + front[1].padStart(2, '0') + '-' + front[1].padStart(2, '0')
+  return year_ + ' ' + end
+}

@@ -67,6 +67,10 @@ const router = createRouter({
             {
               path: 'notify',
               component: () => import('@/views/Msg/components/MsgNotify')
+            },
+            {
+              path: 'private_detail',
+              component: () => import('@/views/Msg/components/PrivateDetail')
             }
           ]
         }

@@ -8,7 +8,12 @@
     </div>
     <div class="private-content">
       <ul>
-        <li v-for="item in msgData?.msgs" :key="item.lastMsgId" class="items">
+        <li
+          v-for="item in msgData?.msgs"
+          :key="item.lastMsgId"
+          class="items"
+          @click="toDetail(item.fromUser.userId, item.fromUser.nickname)"
+        >
           <router-link :to="`/user/home/${item.fromUser.userId}`" class="avatar">
             <img v-if="item.newMsgCount === 0" :src="item.fromUser.avatarUrl + '?param=50y50'" alt="">
             <el-badge v-else :value="item.newMsgCount" class="item">
@@ -48,10 +53,13 @@
 
 <script setup>
 import { getMsgAPI } from '@/apis/user'
-import { onMounted, ref, watch, nextTick } from 'vue'
+import { onMounted, ref, watch, nextTick, onBeforeUnmount } from 'vue'
 import { formatTimeStamp } from '@/utils/time'
 import { useElementVisibility } from '@vueuse/core'
 import { ElLoading } from 'element-plus'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const msgData = ref(null)
 const bar = ref(null)
@@ -80,6 +88,8 @@ onMounted(() => {
   getMsg(limit, _offset)
 })
 
+onBeforeUnmount(() => { toDetail = null })
+
 const getMsg = async (limit, offset) => {
   const res = await getMsgAPI(limit, offset)
   if (offset === 0) msgData.value = res.data
@@ -90,6 +100,10 @@ const getMsg = async (limit, offset) => {
   }
   _offset += 20
   loading.value = false
+}
+
+let toDetail = (id, name) => {
+  router.push({ path: 'private_detail', query: { id, name }})
 }
 </script>
 

@@ -140,7 +140,7 @@ export const getMsgAPI = (limit, offset) => {
  * 登录后调用此接口 ,可获取私信内容
  * @param {*} uid 用户id
  * @param {*} limit 返回数量 , 默认为 30
- * @param {*} offset 偏移数量
+ * @param {*} before 分页参数,取上一页最后一项的 time 获取下一页数据
  * @returns
  */
 export const getMsgContentAPI = ({ uid, limit, before }) => {

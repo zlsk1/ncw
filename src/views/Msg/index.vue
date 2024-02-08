@@ -9,7 +9,7 @@
             <span>我的</span>
           </router-link>
         </div>
-        <div :class="['tabs-item', route.path === '/msg/private' ? 'active-tabs-item' : '']">
+        <div :class="['tabs-item', route.path === '/msg/private' || route.path.includes('/private_detail') ? 'active-tabs-item' : '']">
           <router-link to="/msg/private">
             <i class="icon-private" />
             <span>私信</span>
@@ -29,7 +29,7 @@
           </router-link>
         </div>
       </div>
-      <el-button size="small" class="btn">
+      <el-button size="small" class="btn" :disabled="!msgCount">
         一键已读
       </el-button>
     </div>

@@ -1,3 +1,8 @@
 <template>
-  <div>MsgAt</div>
+  <div>
+    msgat
+  </div>
 </template>
+
+<script setup>
+</script>

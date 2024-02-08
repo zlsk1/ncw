@@ -20,6 +20,9 @@
       <template #reference>
         <slot />
       </template>
+      <div class="emj">
+        <i class="icon-emj" />
+      </div>
       <div class="emj-content">
         <span
           v-for="item in emjArr.slice(page.pageSize * (page.currentPage - 1), page.pageSize * page.currentPage)"
