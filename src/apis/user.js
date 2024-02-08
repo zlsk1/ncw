@@ -153,3 +153,19 @@ export const getMsgContentAPI = ({ uid, limit, before }) => {
     }
   })
 }
+
+/**
+ * 登录后调用此接口 ,可获取通知
+ * @param {*} limit 返回数量 , 默认为 30
+ * @param {*} lasttime 传入上一次返回结果的 time,将会返回下一页的数据
+ * @returns
+ */
+export const getNoticesAPI = ({ limit, lasttime }) => {
+  return http({
+    url: `/msg/notices?stamp=${getTimestamp()}`,
+    params: {
+      limit,
+      lasttime
+    }
+  })
+}

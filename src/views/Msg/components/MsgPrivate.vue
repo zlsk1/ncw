@@ -71,7 +71,7 @@ let _offset = 0
 const limit = 20
 
 watch(targetIsVisible, async val => {
-  console.log(val)
+  // console.log(val)
   if (val && msgData.value?.more) {
     const loadingInstance = ElLoading.service({
       target: '.bar',
@@ -84,8 +84,8 @@ watch(targetIsVisible, async val => {
   }
 })
 
-onMounted(() => {
-  getMsg(limit, _offset)
+onMounted(async () => {
+  await getMsg(limit, _offset)
 })
 
 onBeforeUnmount(() => { toDetail = null })

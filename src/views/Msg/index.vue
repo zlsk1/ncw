@@ -61,7 +61,7 @@ const getMsg = async () => {
   border-left: 1px solid #d3d3d3;
   .left {
     flex: 1;
-    padding-top: 40px;
+    padding: 40px 0 20px 0;
     background-color: #fcfcfc;
     h2 {
       padding-left: 30px;

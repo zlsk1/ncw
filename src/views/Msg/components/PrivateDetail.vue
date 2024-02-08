@@ -160,7 +160,7 @@ const getMsgContent = async (uid, limit, before) => {
   }
   _before = historyData.value.msgs[0].time
   loadingInstance.close()
-  console.log(JSON.parse(historyData.value.msgs[5].msg))
+  // console.log(JSON.parse(historyData.value.msgs[5].msg))
 }
 
 const chooseEmj = e => {
@@ -177,8 +177,8 @@ const scroll = async ({ scrollTop }) => {
 }
 
 let sendText = async () => {
-  const res = await sendTextAPI({ user_ids: route.query.id, msg: textValue.value })
-  console.log(res)
+  await sendTextAPI({ user_ids: route.query.id, msg: textValue.value })
+  getMsgContent(route.query.id, 10)
 }
 </script>
 
