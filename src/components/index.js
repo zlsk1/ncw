@@ -1,7 +1,9 @@
 import Pic from './Pic'
+import Card from './Card'
 
 const components = [
-  Pic
+  Pic,
+  Card
 ]
 
 export default {

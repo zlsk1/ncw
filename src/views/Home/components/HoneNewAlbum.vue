@@ -63,7 +63,6 @@
 import { getNewAlbum } from '@/apis/home'
 import { ref, onMounted, watch, onUpdated } from 'vue'
 import { usePlayStore } from '@/stores/play'
-import Card from '@/components/Card'
 import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
 
 const playStore = usePlayStore()

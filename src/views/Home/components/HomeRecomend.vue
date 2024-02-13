@@ -69,7 +69,6 @@
 </template>
 
 <script setup>
-import Card from '@/components/Card'
 import { getPersonalized } from '@/apis/home'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { formatPlayCount } from '@/utils/index'
