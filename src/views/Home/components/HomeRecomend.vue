@@ -46,7 +46,7 @@
         :key="item.id"
         class="card"
       >
-        <router-link to="/">
+        <router-link :to="`/playlist/${item.id}`">
           <Pic
             :src="`${item.picUrl}?param=140y140`"
             crown

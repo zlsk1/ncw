@@ -5,6 +5,7 @@
     <i v-if="props.mask2" class="mask2" />
     <i v-if="props.mask3" class="mask3" />
     <i v-if="props.mask4" class="mask4" />
+    <i v-if="props.mask5" class="mask5" />
     <i v-if="props.album" class="album" />
     <i v-if="props.album1" class="album1" />
     <i v-if="props.play" class="play" />
@@ -22,6 +23,7 @@ const props = defineProps({
   mask2: { type: Boolean, default: false },
   mask3: { type: Boolean, default: false },
   mask4: { type: Boolean, default: false },
+  mask5: { type: Boolean, default: false },
   play: { type: Boolean, default: false }
 })
 </script>
@@ -67,6 +69,13 @@ const props = defineProps({
     width: 100%;
     height: 100%;
     background: url('@/assets/icons/coverall.png') 0 -1170px no-repeat;
+  }
+  .mask5 {
+    top: -4px;
+    left: -4px;
+    width: 208px;
+    height: 208px;
+    background: url('@/assets/icons/coverall.png') 0 -1285px no-repeat;
   }
   .album {
     top: 0;

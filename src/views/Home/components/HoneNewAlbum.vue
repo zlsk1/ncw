@@ -23,7 +23,7 @@
           <ul class="fl-sb">
             <li v-for="item1 in item" :key="item1.id">
               <Card>
-                <router-link to="/">
+                <router-link :to="`/playlist/${item1.id}`">
                   <Pic
                     album
                     :src="`${item1.picUrl}?param=100y100`"

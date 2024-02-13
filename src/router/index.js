@@ -73,6 +73,11 @@ const router = createRouter({
               component: () => import('@/views/Msg/components/PrivateDetail')
             }
           ]
+        },
+        {
+          path: 'playlist/:id',
+          component: () => import('@/views/Playlist'),
+          meta: { hasCate: true }
         }
       ]
     }

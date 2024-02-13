@@ -4,7 +4,7 @@
       <li v-for="item in albumList?.hotAlbums" :key="item.name" class="items">
         <Card>
           <div class="album-img">
-            <router-link to="/">
+            <router-link :to="`/playlist/${item.id}`">
               <Pic album1 :src="item.picUrl + '?param=120y120'" />
             </router-link>
             <i class="icon-play" @click="play(item.id)" />
@@ -85,7 +85,7 @@ const play = async id => { playStore.actionAddSongs(id) }
       .album-img {
         &:hover .icon-play {
           position: absolute;
-          bottom: 50px;
+          top: 85px;
           right: 28px;
           width: 28px;
           height: 28px;
