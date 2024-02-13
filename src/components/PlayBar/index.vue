@@ -233,7 +233,7 @@ watch(() => store.currentSong, (newVal, oldVal) => {
   if (oldVal === undefined) { // 播放列表长度从0变为1时
     play()
     return
-  } else if (newVal && newVal.id === oldVal.id) { // newVal&&将删除全部时排除在外
+  } else if (newVal && oldVal && newVal.id === oldVal.id) { // newVal&&将删除全部时排除在外
     audio.value.currentTime = 0
     play()
   } else {
