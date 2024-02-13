@@ -6,7 +6,7 @@
     </div>
     <div class="content">
       <div class="my-comment fl">
-        <img v-lazy="avator + '?param=50y50'" alt="">
+        <img v-lazy="userStore?.avator + '?param=50y50'" alt="">
         <div class="input">
           <textarea
             ref="textarea"
@@ -200,11 +200,10 @@ const emit = defineEmits(['getTotal'])
 
 const userStore = useUserStore()
 const topStore = useTopStore()
-const { avator } = storeToRefs(userStore)
 
 const route = useRoute()
 
-const myId = JSON.parse(localStorage.getItem('userInfo')).profile.userId
+const myId = JSON.parse(localStorage.getItem('userInfo'))?.profile.userId
 
 const addAiteRef = ref(null)
 const replyTextarea = ref(null)

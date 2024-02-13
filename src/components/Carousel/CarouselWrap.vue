@@ -105,7 +105,7 @@ const handleAutoplay = () => {
   timer = setInterval(() => { next() }, props.interval)
 }
 
-let mouseover = () => { clearInterval(timer); timer = null }
+let mouseover = () => { clearInterval(timer) }
 
 let mouseleave = () => { handleAutoplay() }
 </script>
