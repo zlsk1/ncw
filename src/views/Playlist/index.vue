@@ -42,7 +42,7 @@
       </div>
     </div>
     <div class="playlist-right">
-      <DownLoadside />
+      <DownLoadSide />
     </div>
   </div>
 </template>
@@ -51,7 +51,7 @@
 import { getPlayListDetail } from '@/apis/playList'
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import DownLoadside from '@/components/DownLoadside'
+import DownLoadSide from '@/components/DownLoadSide'
 
 const route = useRoute()
 
