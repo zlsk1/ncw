@@ -124,7 +124,7 @@ import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import { Search } from '@element-plus/icons-vue'
-import Login from '@/views/login'
+import Login from '@/views/Login'
 import LayoutCategory from './LayoutCategory'
 import { getPlCountAPI } from '@/apis/user'
 
