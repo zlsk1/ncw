@@ -29,7 +29,7 @@ export const useUserStore = defineStore('user', () => {
   }
   const actiongetUserDetail = async uid => {
     const res = await getUserDetail(uid)
-    localStorage.setItem('userInfo', JSON.stringify(res.data))
+    // localStorage.setItem('userInfo', JSON.stringify(res.data))
     avator.value = res.data.profile.avatarUrl
     nickname.value = res.data.profile.nickname
   }

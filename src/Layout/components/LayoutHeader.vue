@@ -52,7 +52,7 @@
         <span>创作者中心</span>
       </router-link>
       <span
-        v-if="!token"
+        v-if="!token && !avator"
         href=""
         class="f12 login thumb"
         @click="isShow = !isShow"
@@ -131,8 +131,7 @@ import { getPlCountAPI } from '@/apis/user'
 const route = useRoute()
 
 const store = useUserStore()
-const { token } = storeToRefs(store)
-const { avator } = storeToRefs(store)
+const { token, avator } = storeToRefs(store)
 
 const userId = JSON.parse(localStorage.getItem('userInfo'))?.profile.userId
 

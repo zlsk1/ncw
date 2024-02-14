@@ -78,16 +78,63 @@ export const testNickname = (nickname) => {
   })
 }
 
-// 刷新登录状态
+/**
+ * 刷新登录状态
+ * @returns
+ */
 export const loginRefreshAPI = () => {
   return http({
     url: '/login/refresh'
   })
 }
 
-// 获取登录状态
+/**
+ * 获取登录状态
+ * @returns
+ */
 export const getLoginStatusAPI = () => {
   return http({
     url: `/login/status?${getTimestamp()}`
+  })
+}
+
+/**
+ * 调用此接口可生成一个二维码key
+ * @returns
+ */
+export const getQrKeyAPI = () => {
+  return http({
+    url: `/login/qr/key?stamp=${getTimestamp()}`
+  })
+}
+
+/**
+ * 生成二维码
+ * @param {*} key
+ * @param {*} qrimg
+ * @returns
+ */
+export const createQrCodeAPI = ({ key, qrimg = 1 }) => {
+  return http({
+    url: `/login/qr/create?stamp=${getTimestamp()}&`,
+    params: {
+      key,
+      qrimg
+    }
+  })
+}
+
+/**
+ * 生成二维码状态检测
+ * @param {*} key
+ * @param {*} qrimg
+ * @returns
+ */
+export const checkQrCodeAPI = (key) => {
+  return http({
+    url: `/login/qr/check?stamp=${getTimestamp()}`,
+    params: {
+      key
+    }
   })
 }

@@ -169,3 +169,9 @@ export const getNoticesAPI = ({ limit, lasttime }) => {
     }
   })
 }
+
+export const getUserAccountAPI = () => {
+  return http({
+    url: '/user/account'
+  })
+}

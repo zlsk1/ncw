@@ -108,14 +108,13 @@
 <script setup>
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { getHotSinger } from '@/apis/singer'
 import { getHotDj } from '@/apis/dj'
 import Login from '@/views/Login'
 
 const store = useUserStore()
-const { avator } = storeToRefs(store)
-const { nickname } = storeToRefs(store)
+const { avator, nickname } = storeToRefs(store)
 
 const userId = JSON.parse(localStorage.getItem('userInfo'))?.profile.userId
 
@@ -123,6 +122,16 @@ const singerList = ref([])
 const djList = ref([])
 const info = ref(null)
 const isShow = ref(false)
+
+onMounted(() => {
+  avator.value ? getDetail() : ''
+  getSinger(5)
+  getDj(5)
+})
+
+watch(() => avator.value, val => {
+  if (val) getDetail()
+})
 
 const getDetail = () => {
   store.actiongetUserDetail(JSON.parse(localStorage.getItem('userInfo'))?.profile.userId)
@@ -144,12 +153,6 @@ const getDj = async limit => {
   const res = await getHotDj(limit)
   djList.value = res.data.data.list
 }
-
-onMounted(() => {
-  avator.value ? getDetail() : ''
-  getSinger(5)
-  getDj(5)
-})
 </script>
 
 <style lang="scss" scoped>
