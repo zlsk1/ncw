@@ -2,10 +2,14 @@
   <div class="banner-wrap">
     <CarouselWrap class="w980" height="285px">
       <CarouselItem v-for="item in bannerList" :key="item.targetId">
-        <router-link class="fl download-wrap" to="/">
+        <router-link class="fl download-wrap" :to="`/song/${item.targetId}`" v-if="item.targetId">
           <img :src="item.imageUrl" alt="" style="width: 75%">
           <a href="" class="download" />
         </router-link>
+        <a :href="item.url" v-else target="_blank" class="fl download-wrap" >
+          <img :src="item.imageUrl" alt="" style="width: 75%">
+          <a href="" class="download" />
+        </a>
       </CarouselItem>
     </CarouselWrap>
   </div>
