@@ -43,11 +43,12 @@
                     <router-link
                       v-for="(item, i) in store.currentSong?.singer?.split('/')"
                       :key="i"
-                      class="ellipsis-1"
                       to="/"
                       :title="store.currentSong.singer"
                     >
-                      {{ store.currentSong?.singer.split('/').length === 1 ? item : i === store.currentSong?.singer.split('/').length - 1 ? item : `${item}/` }}
+                      <p class="ellipsis-1">
+                        {{ store.currentSong?.singer.split('/').length === 1 ? item : i === store.currentSong?.singer.split('/').length - 1 ? item : `${item}/` }}
+                      </p>
                     </router-link>
                   </div>
                   <router-link to="/">
