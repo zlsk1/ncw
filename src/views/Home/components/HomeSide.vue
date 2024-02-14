@@ -129,7 +129,7 @@ onMounted(() => {
   getDj(5)
 })
 
-watch(() => avator.value, val => {
+watch(avator, val => {
   if (val) getDetail()
 })
 
