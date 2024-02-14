@@ -35,7 +35,7 @@
         </div>
       </div>
       <div class="others-comment">
-        <div v-if="offset <= limit && !isTopUrl" class="others-comment-header">
+        <div v-if="offset <= limit && !isPlaylistUrl" class="others-comment-header">
           精彩评论
         </div>
         <ul class="hot-comment-content">
@@ -140,10 +140,10 @@
                     <span v-if="item.likedCount > 0" class="like-count">({{ item.likedCount }})</span>
                     <span v-else class="like-count-zero" />
                   </span>
-                  <span class="reply" @click="openReply(i = !isTopUrl ? offset <= limit ? i + commentObj?.hotComments.length : i : i , item.user.nickname)">回复</span>
+                  <span class="reply" @click="openReply(i = !isPlaylistUrl ? offset <= limit ? i + commentObj?.hotComments.length : i : i , item.user.nickname)">回复</span>
                 </div>
               </div>
-              <div v-if="!isTopUrl ? offset <= limit ? DOMIndex === i + 15 : DOMIndex === i : DOMIndex === i" class="reply-textarea">
+              <div v-if="!isPlaylistUrl ? offset <= limit ? DOMIndex === i + 15 : DOMIndex === i : DOMIndex === i" class="reply-textarea">
                 <textarea ref="replyTextarea" v-model="reply" />
                 <div class="utils fl-sb">
                   <div class="fl">
@@ -194,7 +194,6 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { likeComment, sendCommentAPI, delCommentAPI, getSongComment, getCommentPlaylistAPI } from '@/apis/comment'
 import { useUserStore } from '@/stores/user'
 import { useTopStore } from '@/stores/top'
-import { storeToRefs } from 'pinia'
 
 const emit = defineEmits(['getTotal'])
 
@@ -217,12 +216,12 @@ const currentId = computed(() => {
   return route.params?.id ? route.params?.id : topStore.topId[0]?.id
 })
 
-const isTopUrl = computed(() => {
-  return route.path.includes('/toplist')
+const isPlaylistUrl = computed(() => {
+  return route.path.includes('/toplist') || route.path.includes('/playlist')
 })
 
 const limit = computed(() => {
-  return isTopUrl.value ? 30 : 20
+  return isPlaylistUrl.value ? 30 : 20
 })
 
 onMounted(() => {
@@ -238,7 +237,7 @@ onBeforeRouteUpdate((to, from) => {
 })
 
 const getComment = async (id, offset, limit) => {
-  if (isTopUrl.value) {
+  if (isPlaylistUrl.value) {
     const res = await getCommentPlaylistAPI({ id, offset, limit })
     commentObj.value = res.data
   } else {

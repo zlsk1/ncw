@@ -3,7 +3,7 @@
     <div class="home-header">
       <div class="avatar">
         <img :src="profile?.avatarUrl + '?param=180y180'" alt="">
-        <router-link v-if="!isArtist" to="/">
+        <router-link v-if="isMe" to="/">
           更换头像
         </router-link>
       </div>
@@ -13,7 +13,7 @@
             <div class="fl-sb">
               <h2>{{ profile?.nickname }}</h2>
               <img
-                v-if="!isArtist"
+                v-if="isMe"
                 :src="vip?.icon + '?param=60y36'"
                 alt=""
                 class="vipLevel"
@@ -24,7 +24,7 @@
               </span>
               <i v-if="profile?.gender === 1" class="boy" />
               <i v-else class="girl" />
-              <template v-if="isArtist">
+              <template v-if="!isMe">
                 <el-button :icon="Message" @click="openSendDialog">
                   发私信
                 </el-button>
@@ -36,11 +36,13 @@
                 </el-button>
               </template>
             </div>
-            <div class="edit-info" @click="toEdit">
-              <button v-if="!isArtist">
+            <div v-if="isMe" class="edit-info" @click="toEdit">
+              <button>
                 编辑个人资料
               </button>
-              <button v-else>
+            </div>
+            <div v-else-if="isArtist" class="edit-info" @click="toEdit">
+              <button>
                 <router-link :to="`/artist/${profile?.artistId}`">
                   查看歌手页
                 </router-link>
@@ -99,7 +101,7 @@
     </div>
     <div class="my-playlist">
       <h3 class="title">
-        <span>{{ `${isArtist ? profile?.nickname : '我'}创建的歌单（${playlist?.length}` }}）</span>
+        <span>{{ `${isMe ? profile?.nickname : '我'}创建的歌单（${playlist?.length}` }}）</span>
       </h3>
       <div class="content">
         <Card v-for="item in playlist" :key="item.id">
@@ -176,7 +178,7 @@
 <script setup>
 import { usePlayStore } from '@/stores/play'
 import { getVipLevelAPI, getUserPlaylistAPI, getUserDetail, followUserAPI, sendTextAPI } from '@/apis/user'
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, onMounted, onBeforeUnmount, nextTick, computed } from 'vue'
 import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { formatPlayCount } from '@/utils/index'
 import { provinceAndCityData } from 'element-china-area-data'
@@ -219,6 +221,10 @@ onBeforeRouteUpdate(async (to, from) => {
     getVip(to.params.id)
     getUserPlaylist(to.params.id)
   }
+})
+
+const isMe = computed(() => {
+  return route.params.id === JSON.parse(localStorage.getItem('userInfo')).profile.userId
 })
 
 const getVip = async id => {

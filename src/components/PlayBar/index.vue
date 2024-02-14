@@ -39,18 +39,18 @@
                   <router-link class="track-name ellipsis-1" :to="`/song/${store?.currentSong?.id}`" :title="store.currentSong?.name">
                     {{ store.currentSong?.name }}
                   </router-link>
-                  <div class="singer-name">
+                  <p class="singer-name ellipsis-1">
                     <router-link
                       v-for="(item, i) in store.currentSong?.singer?.split('/')"
                       :key="i"
                       to="/"
                       :title="store.currentSong.singer"
                     >
-                      <p class="ellipsis-1">
+                      <p>
                         {{ store.currentSong?.singer.split('/').length === 1 ? item : i === store.currentSong?.singer.split('/').length - 1 ? item : `${item}/` }}
                       </p>
                     </router-link>
-                  </div>
+                  </p>
                   <router-link to="/">
                     <i v-if="store.currentSong && store.currentSong.name" class="from" title="来自歌单" />
                   </router-link>
@@ -129,7 +129,7 @@
             <div class="play-wrap">
               <div v-if="i === store?.index" class="play" />
             </div>
-            <p class="name">
+            <p class="name ellipsis-1">
               {{ item.name }}
             </p>
             <div>
@@ -555,6 +555,7 @@ const onelength = () => { if (store.songQueue.length === 1) return }
           max-width: 220px;
           margin-right: 10px;
           a {
+            display: inline-block;
             font-size: 12px;
             color: #666;
             &:hover {
@@ -922,6 +923,8 @@ const onelength = () => { if (store.songQueue.length === 1) return }
         }
         .name {
           flex: 5;
+          width: 180px;
+          padding-right: 20px;
         }
         div {
           display: flex;
