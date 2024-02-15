@@ -47,7 +47,80 @@
         v-model="searchValue"
         :prefix-icon="Search"
         placeholder="音乐/视频/电台/用户"
+        @input="handleSearch"
+        @focus="handleFocus"
+        @blur="handleBlur"
       />
+      <div v-if="isFocus && searchValue.trim()" class="search-suggest">
+        <div class="search-header">
+          <router-link to="/">
+            搜“{{ searchValue }}”相关用户
+            <span><ArrowRight style="width: 1em; height: 1em" />  </span>
+          </router-link>
+        </div>
+        <div class="search-content">
+          <dl v-if="searchSuggset?.songs" class="fl">
+            <dt class="left">
+              <i />
+              <span>单曲</span>
+            </dt>
+            <div class="right">
+              <dd v-for="item in searchSuggset?.songs" :key="item.id">
+                <router-link :to="`/song/${item.id}`">
+                  <p class="ellipsis-1">
+                    {{ `${item.name}-${item.artists.map(v => v.name).join('/')}` }}
+                  </p>
+                </router-link>
+              </dd>
+            </div>
+          </dl>
+          <dl v-if="searchSuggset?.artists" class="fl">
+            <dt class="left">
+              <i />
+              <span>歌手</span>
+            </dt>
+            <div class="right">
+              <dd v-for="item in searchSuggset?.artists" :key="item.id">
+                <router-link :to="`/artist/${item.id}`">
+                  <p class="ellipsis-1">
+                    {{ item.name }}
+                  </p>
+                </router-link>
+              </dd>
+            </div>
+          </dl>
+          <dl v-if="searchSuggset?.albums" class="fl">
+            <dt class="left">
+              <i />
+              <span>专辑</span>
+            </dt>
+            <div class="right">
+              <dd v-for="item in searchSuggset?.albums" :key="item.id">
+                <router-link :to="`/playlist/${item.id}`">
+                  <p class="ellipsis-1">
+                    {{ `${item.name}-${item.artist.name}` }}
+                  </p>
+                </router-link>
+              </dd>
+            </div>
+          </dl>
+          <dl v-if="searchSuggset?.playlists" class="fl">
+            <dt class="left">
+              <i />
+              <span>歌单</span>
+            </dt>
+            <div class="right">
+              <dd v-for="item in searchSuggset?.playlists" :key="item.id">
+                <router-link :to="`/playlist/${item.id}`">
+                  <p class="ellipsis-1">
+                    {{ item.name }}
+                  </p>
+                </router-link>
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
       <router-link to="/" class="creator">
         <span>创作者中心</span>
       </router-link>
@@ -119,14 +192,16 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
-import { Search } from '@element-plus/icons-vue'
+import { Search, ArrowRight } from '@element-plus/icons-vue'
 import Login from '@/views/Login'
 import LayoutCategory from './LayoutCategory'
 import { getPlCountAPI } from '@/apis/user'
+import { getSearchSuggest } from '@/apis/search'
+import { debounce } from '@/utils/index'
 
 const route = useRoute()
 
@@ -139,14 +214,21 @@ const searchValue = ref('')
 const isShow = ref(false)
 const isShowBadge = ref(true)
 const pl = ref(null)
+const searchSuggset = ref(null)
+const isFocus = ref(false)
 
 onMounted(() => {
   getPlCount()
 })
 
+onBeforeUnmount(() => {
+  handleSearch = null; handleFocus = null; handleBlur = null
+})
+
 const dropdownChange = e => {
   isShowBadge.value = !e
 }
+
 const logout = () => {
   store.logoutAction()
 }
@@ -155,6 +237,21 @@ const getPlCount = async () => {
   const res = await getPlCountAPI()
   pl.value = res.data
 }
+
+const _handleSearch = async e => {
+  if (e.trim()) {
+    const res = await getSearchSuggest(searchValue.value)
+    searchSuggset.value = res.data.result
+  } else {
+    searchSuggset.value = null
+  }
+}
+
+let handleSearch = debounce(_handleSearch, 20)
+
+let handleFocus = () => { isFocus.value = !isFocus.value }
+
+let handleBlur = () => { isFocus.value = !isFocus.value }
 </script>
 
 <style lang="scss" scoped>
@@ -217,6 +314,59 @@ const getPlCount = async () => {
         &:hover {
           text-decoration: underline;
           color: #aaa;
+        }
+      }
+      .search-suggest {
+        position: absolute;
+        top: 60px;
+        right: 60px;
+        width: 260px;
+        line-height: 30px;
+        font-size: 12px;
+        color: #000;
+        background-color: #fff;
+        border-radius: 4px;
+        box-shadow: 0 1px 4px #ccc;
+        z-index: 1000;
+        .search-header {
+          height: 40px;
+          padding: 0 10px;
+          line-height: 40px;
+          border-bottom: 1px solid #e2e2e2;
+          span {
+            vertical-align: middle;
+          }
+        }
+        .search-content {
+          .left {
+            padding: 0 10px;
+            dt {
+              flex: 1;
+            }
+          }
+          dl {
+            &:last-child div {
+              border-bottom: none;
+            }
+            div {
+              border-bottom: 1px solid #e3e5e7;
+            }
+            .right {
+              flex: 2.5;
+              border-left: 1px solid #e2e2e2;
+              dd {
+                // height: 20px;
+                // line-height: 20px;
+                &:hover {
+                  background-color: #e3e5e7;
+                }
+                p {
+                  max-width: 200px;
+                  padding: 0 10px;
+                }
+              }
+            }
+          }
         }
       }
     }
