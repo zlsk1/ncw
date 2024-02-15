@@ -23,8 +23,7 @@
       </li>
     </ul>
     <el-pagination
-      class="page"
-      :total="albumList?.artist?.albumSize"
+      :page-count="Math.ceil(albumList?.artist?.albumSize / limit)"
       :page-size="12"
       layout="prev, pager, next"
       next-text="下一页"
@@ -54,7 +53,7 @@ const limit = 12
 onMounted(() => { getArtistAlbum({ id: route.params.id, limit, offset: offset.value }) })
 
 onBeforeUnmount(() => {
-  changePage = null
+  play = null
 })
 
 const getArtistAlbum = async ({ id, limit, offset }) => {
@@ -62,12 +61,12 @@ const getArtistAlbum = async ({ id, limit, offset }) => {
   albumList.value = res.data
 }
 
-let changePage = e => {
+const changePage = e => {
   offset.value = e === 1 ? 0 : (e - 1) * limit
   getArtistAlbum({ id: route.params.id, limit, offset: offset.value })
 }
 
-const play = async id => { playStore.actionAddSongs(id) }
+let play = id => { playStore.actionAddSongs(id) }
 </script>
 
 <style lang="scss" scoped>
@@ -108,9 +107,6 @@ const play = async id => { playStore.actionAddSongs(id) }
         color: #666;
       }
     }
-  }
-  .page {
-    justify-content: center;
   }
 }
 </style>

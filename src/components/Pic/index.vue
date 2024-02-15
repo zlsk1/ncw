@@ -6,8 +6,10 @@
     <i v-if="props.mask3" class="mask3" />
     <i v-if="props.mask4" class="mask4" />
     <i v-if="props.mask5" class="mask5" />
+    <i v-if="props.mask6" class="mask6" />
     <i v-if="props.album" class="album" />
     <i v-if="props.album1" class="album1" />
+    <i v-if="props.album2" class="album2" />
     <i v-if="props.play" class="play" />
     <img v-lazy="props.src" alt="">
   </div>
@@ -18,12 +20,14 @@ const props = defineProps({
   src: { type: String, default: '' },
   album: { type: Boolean, default: false },
   album1: { type: Boolean, default: false },
+  album2: { type: Boolean, default: false },
   crown: { type: Boolean, default: false },
   mask1: { type: Boolean, default: false },
   mask2: { type: Boolean, default: false },
   mask3: { type: Boolean, default: false },
   mask4: { type: Boolean, default: false },
   mask5: { type: Boolean, default: false },
+  mask6: { type: Boolean, default: false },
   play: { type: Boolean, default: false }
 })
 </script>
@@ -77,6 +81,13 @@ const props = defineProps({
     height: 208px;
     background: url('@/assets/icons/coverall.png') 0 -1285px no-repeat;
   }
+  .mask6 {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('@/assets/icons/coverall.png') 0 -680px no-repeat;
+  }
   .album {
     top: 0;
     left: 0;
@@ -90,6 +101,13 @@ const props = defineProps({
     width: 145px;
     height: 120px;
     background: url('@/assets/icons/coverall.png') -170px -850px no-repeat;
+  }
+  .album2 {
+    top: 0;
+    left: 0;
+    width: 153px;
+    height: 130px;
+    background: url('@/assets/icons/coverall.png') 0 -845px no-repeat;
   }
   .play {
     top: calc(50% - 22px);

@@ -172,11 +172,10 @@
           small
           background
           :page-size="20"
-          :total="commentObj?.total"
+          :page-count="Math.ceil(commentObj?.total / limit)"
           layout="prev, pager, next"
           prev-text="上一页"
           next-text="下一页"
-          class="paginationn"
           @change="changePage"
         />
       </div>
@@ -519,9 +518,6 @@ const delComment = async () => {
             }
           }
         }
-      }
-      .paginationn {
-        justify-content: center;
       }
     }
   }

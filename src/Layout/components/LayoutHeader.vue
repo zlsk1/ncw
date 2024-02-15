@@ -53,9 +53,9 @@
       />
       <div v-if="isFocus && searchValue.trim()" class="search-suggest">
         <div class="search-header">
-          <router-link to="/">
+          <router-link :to="`/search/${searchValue}/1002`" @mousedown="router.push(`/search/${searchValue}/1002`)">
             搜“{{ searchValue }}”相关用户
-            <span><ArrowRight style="width: 1em; height: 1em" />  </span>
+            <span><ArrowRight style="width: 1em; height: 1em" /></span>
           </router-link>
         </div>
         <div class="search-content">
@@ -193,7 +193,7 @@
 
 <script setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import { Search, ArrowRight } from '@element-plus/icons-vue'
@@ -204,6 +204,7 @@ import { getSearchSuggest } from '@/apis/search'
 import { debounce } from '@/utils/index'
 
 const route = useRoute()
+const router = useRouter()
 
 const store = useUserStore()
 const { token, avator } = storeToRefs(store)

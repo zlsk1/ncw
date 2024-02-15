@@ -78,6 +78,11 @@ const router = createRouter({
           path: 'playlist/:id',
           component: () => import('@/views/Playlist'),
           meta: { hasCate: true }
+        },
+        {
+          path: 'search/:k/:type',
+          component: () => import('@/views/Search'),
+          meta: { hasCate: false }
         }
       ]
     }
