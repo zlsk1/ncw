@@ -59,7 +59,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { handleSearchAPI } from '@/apis/search'
-import { useRoute } from 'vue-router'
+import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { formatPlayCount } from '@/utils/index'
 import { formatSongDuration } from '@/utils/time'
 
@@ -75,6 +75,10 @@ const isLoad = ref(true)
 
 onMounted(() => {
   handleSearch(route.params.k, limit, offset, route.params.type)
+})
+
+onBeforeRouteUpdate(to => {
+  if (to) handleSearch(to.params.k, limit, offset, to.params.type)
 })
 
 const handleSearch = async (keywords, limit, offset, type) => {

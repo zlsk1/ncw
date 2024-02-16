@@ -42,7 +42,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { handleSearchAPI } from '@/apis/search'
-import { useRoute } from 'vue-router'
+import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { usePlayStore } from '@/stores/play'
 
 const emit = defineEmits(['getTotal'])
@@ -63,6 +63,10 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   play = null
+})
+
+onBeforeRouteUpdate(to => {
+  if (to) handleSearch(to.params.k, limit, offset, to.params.type)
 })
 
 const handleSearch = async (keywords, limit, offset, type) => {
