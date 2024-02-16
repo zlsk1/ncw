@@ -114,3 +114,23 @@ export const getCommentPlaylistAPI = ({ id, limit, offset, before }) => {
     }
   })
 }
+
+/**
+ * 专辑评论
+ * @param {*} id 歌曲id
+ * @param {*} limit 获取长度
+ * @param {*} offset 偏移
+ * @param {*} before
+ * * @returns
+ */
+export const getCommentAlbumAPI = ({ id, limit, offset, before }) => {
+  return http({
+    url: '/comment/album',
+    params: {
+      id,
+      limit,
+      offset,
+      before
+    }
+  })
+}

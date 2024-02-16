@@ -190,7 +190,7 @@ import { debounce } from '@/utils/index'
 import { nextTick, onBeforeUnmount, onMounted, ref, computed } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { likeComment, sendCommentAPI, delCommentAPI, getSongComment, getCommentPlaylistAPI } from '@/apis/comment'
+import { likeComment, sendCommentAPI, delCommentAPI, getSongComment, getCommentPlaylistAPI, getCommentAlbumAPI } from '@/apis/comment'
 import { useUserStore } from '@/stores/user'
 import { useTopStore } from '@/stores/top'
 
@@ -239,10 +239,13 @@ const getComment = async (id, offset, limit) => {
   if (isPlaylistUrl.value) {
     const res = await getCommentPlaylistAPI({ id, offset, limit })
     commentObj.value = res.data
-  } else {
+  } else if (route.path.includes('/song')) {
     const res = await getSongComment({ id, offset, limit })
     commentObj.value = res.data
     emit('getTotal', commentObj.value.total)
+  } else if (route.path.includes('/album')) {
+    const res = await getCommentAlbumAPI({ id, offset, limit })
+    commentObj.value = res.data
   }
 }
 

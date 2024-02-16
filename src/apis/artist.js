@@ -9,6 +9,13 @@ export const getArtistDetailAPI = id => {
   })
 }
 
+/**
+ * 获取歌手专辑
+ * @param {*} id 歌手 id
+ * @param {*} limit 取出数量 , 默认为 30
+ * @param {*} offset 偏移数量 默认 为 0
+ * @returns
+ */
 export const getArtistAlbumAPI = (id, limit, offset) => {
   return http({
     url: '/artist/album',

@@ -10,6 +10,7 @@
     <i v-if="props.album" class="album" />
     <i v-if="props.album1" class="album1" />
     <i v-if="props.album2" class="album2" />
+    <i v-if="props.album3" class="album3" />
     <i v-if="props.play" class="play" />
     <img v-lazy="props.src" alt="">
   </div>
@@ -21,6 +22,7 @@ const props = defineProps({
   album: { type: Boolean, default: false },
   album1: { type: Boolean, default: false },
   album2: { type: Boolean, default: false },
+  album3: { type: Boolean, default: false },
   crown: { type: Boolean, default: false },
   mask1: { type: Boolean, default: false },
   mask2: { type: Boolean, default: false },
@@ -108,6 +110,13 @@ const props = defineProps({
     width: 153px;
     height: 130px;
     background: url('@/assets/icons/coverall.png') 0 -845px no-repeat;
+  }
+  .album3 {
+    top: 0;
+    left: 0;
+    width: 209px;
+    height: 177px;
+    background: url('@/assets/icons/coverall.png') 0 -986px no-repeat;
   }
   .play {
     top: calc(50% - 22px);
