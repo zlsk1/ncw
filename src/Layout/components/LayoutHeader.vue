@@ -154,7 +154,7 @@
               </router-link>
             </el-dropdown-item>
             <el-dropdown-item>
-              <router-link to="/">
+              <router-link to="/user/level">
                 <span>我的等级</span>
               </router-link>
             </el-dropdown-item>

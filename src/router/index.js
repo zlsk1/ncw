@@ -44,6 +44,10 @@ const router = createRouter({
             {
               path: 'binding/:id?',
               component: () => import('@/views/User/components/UserBinding')
+            },
+            {
+              path: 'level',
+              component: () => import('@/views/User/components/UserLevel')
             }
           ]
         },
