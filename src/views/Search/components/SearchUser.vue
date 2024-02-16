@@ -43,7 +43,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeRouteUpdate } from 'vue'
+import { ref, onMounted } from 'vue'
 import { handleSearchAPI } from '@/apis/search'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { Plus } from '@element-plus/icons-vue'

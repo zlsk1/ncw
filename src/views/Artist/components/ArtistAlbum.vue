@@ -4,13 +4,13 @@
       <li v-for="item in albumList?.hotAlbums" :key="item.name" class="items">
         <Card>
           <div class="album-img">
-            <router-link :to="`/playlist/${item.id}`">
+            <router-link :to="`/album/${item.id}`">
               <Pic album1 :src="item.picUrl + '?param=120y120'" />
             </router-link>
             <i class="icon-play" @click="play(item.id)" />
           </div>
           <template #footer>
-            <router-link to="/" :title="item.name" class="name">
+            <router-link :to="`/album/${item.id}`" :title="item.name" class="name">
               <p class="ellipsis-2">
                 {{ item.name }}
               </p>

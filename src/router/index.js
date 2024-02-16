@@ -83,6 +83,11 @@ const router = createRouter({
           path: 'search/:k/:type',
           component: () => import('@/views/Search'),
           meta: { hasCate: false }
+        },
+        {
+          path: 'album/:id',
+          component: () => import('@/views/Album'),
+          meta: { hasCate: true }
         }
       ]
     }

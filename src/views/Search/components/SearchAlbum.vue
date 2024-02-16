@@ -8,13 +8,13 @@
       >
         <Card>
           <div class="img">
-            <router-link to="/">
+            <router-link :to="`/album/${item.id}`">
               <Pic :src="item.picUrl + '?param=130y130'" album2 />
             </router-link>
             <i class="icon-play" @click="play(item.id)" />
           </div>
           <template #footer>
-            <router-link to="/">
+            <router-link :to="`/album/${item.id}`">
               <p class="ellipsis-1 album" :title="item.name">
                 {{ item.name }}
               </p>

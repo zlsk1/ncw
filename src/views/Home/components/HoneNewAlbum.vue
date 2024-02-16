@@ -23,7 +23,7 @@
           <ul class="fl-sb">
             <li v-for="item1 in item" :key="item1.id">
               <Card>
-                <router-link :to="`/playlist/${item1.id}`">
+                <router-link :to="`/album/${item1.id}`">
                   <Pic
                     album
                     :src="`${item1.picUrl}?param=100y100`"
@@ -32,7 +32,7 @@
                 <i class="hoverPlay" title="播放" @click="addPlayList(item1.id)" />
                 <template #footer>
                   <div class="desc">
-                    <router-link to="/">
+                    <router-link :to="`/album/${item1.id}`">
                       <p class="ellipsis-1 song" :title="item1.name">
                         {{ item1.name }}
                       </p>
