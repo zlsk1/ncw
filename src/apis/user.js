@@ -175,3 +175,13 @@ export const getUserAccountAPI = () => {
     url: '/user/account'
   })
 }
+
+/**
+ * 可以获取用户等级信息,包含当前登录天数,听歌次数,下一等级需要的登录天数和听歌次数,当前等级进度
+ * @returns
+ */
+export const getUserLevelInfoAPI = () => {
+  return http({
+    url: '/user/level'
+  })
+}
