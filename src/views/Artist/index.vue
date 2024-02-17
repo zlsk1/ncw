@@ -20,10 +20,9 @@
           :key="item.label"
           :label="item.label"
           :name="item.str"
-        >
-          <component :is="current.com" :name="artistData?.artist?.name" />
-        </el-tab-pane>
+        />
       </el-tabs>
+      <component :is="current.com" :name="artistData?.artist?.name" />
     </div>
     <div class="aside">
       <div>

@@ -1,32 +1,41 @@
 <template>
   <div class="produce-wrap">
-    <div v-for="(item, index) in data?.introduction" :key="item.ti" class="items">
-      <template v-if="index === 0">
-        <h4 class="bar">
-          {{ props.name }}简介
-        </h4>
-        <p class="indent">
-          {{ data?.briefDesc }}
-        </p>
-      </template>
-      <template v-else>
-        <h4>{{ item.ti }}</h4>
-        <template v-if="item.txt.includes('\n')">
-          <p v-for="(item1, index1) in item.txt.split('\n')" :key="index1">
-            {{ item1 }}
+    <template v-if="isEmpyt">
+      <div
+        v-for="(item, index) in data?.introduction"
+        :key="item.ti"
+        class="items"
+      >
+        <template v-if="index === 0">
+          <h4 class="bar">
+            {{ props.name }}简介
+          </h4>
+          <p class="indent">
+            {{ data?.briefDesc }}
           </p>
         </template>
         <template v-else>
-          {{ item.txt }}
+          <h4>{{ item.ti }}</h4>
+          <template v-if="item.txt.includes('\n')">
+            <p v-for="(item1, index1) in item.txt.split('\n')" :key="index1">
+              {{ item1 }}
+            </p>
+          </template>
+          <template v-else>
+            {{ item.txt }}
+          </template>
         </template>
-      </template>
-    </div>
+      </div>
+    </template>
+    <template v-else>
+      <el-empty description="暂无介绍~" />
+    </template>
   </div>
 </template>
 
 <script setup>
 import { getArtistProduceAPI } from '@/apis/artist'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 
 const props = defineProps({
@@ -36,6 +45,10 @@ const props = defineProps({
 const route = useRoute()
 
 const data = ref([])
+
+const isEmpyt = computed(() => {
+  return data.value?.briefDesc && data.value?.introduction && data.value?.topicData
+})
 
 onMounted(() => {
   getProduce(route.params.id)

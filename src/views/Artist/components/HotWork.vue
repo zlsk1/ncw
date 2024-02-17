@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="isLoad">
     <ul class="btns fl f12">
       <li class="play fl">
         <i @click="addPlaylist()">
@@ -63,6 +63,7 @@ const route = useRoute()
 const playStore = usePlayStore()
 
 const topSongList = ref([])
+const isLoad = ref(true)
 
 onMounted(() => {
   getTopSong(route.params.id)
@@ -81,6 +82,7 @@ onBeforeRouteUpdate((to) => {
 const getTopSong = async id => {
   const res = await getArtistTopSongAPI(id)
   topSongList.value = res.data.songs
+  isLoad.value = false
 }
 
 let play = (o, type) => { playStore.actionAddSong(o, type) }

@@ -35,7 +35,7 @@ onMounted(() => {
 })
 
 onBeforeRouteUpdate(to => {
-  if (to) handleSearch(to.params.k, limit, offset, to.params.type)
+  if (to.params.k !== route.params.k) handleSearch(to.params.k, limit, offset, to.params.type)
 })
 
 const handleSearch = async (keywords, limit, offset, type) => {

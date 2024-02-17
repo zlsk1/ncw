@@ -1,5 +1,5 @@
 <template>
-  <div class="album-wrap">
+  <div v-loading="isLoad" class="album-wrap">
     <ul class="album-content">
       <li v-for="item in albumList?.hotAlbums" :key="item.name" class="items">
         <Card>
@@ -38,7 +38,7 @@
 <script setup>
 import { getArtistAlbumAPI } from '@/apis/artist'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { usePlayStore } from '@/stores/play'
 import Card from '@/components/Card'
 
@@ -48,6 +48,8 @@ const playStore = usePlayStore()
 
 const albumList = ref([])
 const offset = ref(0)
+const isLoad = ref(true)
+
 const limit = 12
 
 onMounted(() => { getArtistAlbum({ id: route.params.id, limit, offset: offset.value }) })
@@ -56,9 +58,15 @@ onBeforeUnmount(() => {
   play = null
 })
 
+onBeforeRouteUpdate(to => {
+  getArtistAlbum({ id: to.params.id, limit, offset: offset.value })
+})
+
 const getArtistAlbum = async ({ id, limit, offset }) => {
+  isLoad.value = true
   const res = await getArtistAlbumAPI(id, limit, offset)
   albumList.value = res.data
+  isLoad.value = false
 }
 
 const changePage = e => {
@@ -93,6 +101,10 @@ let play = id => { playStore.actionAddSongs(id) }
           &:hover {
             background-position: 0 -170px;
           }
+        }
+        .pic-wrap {
+          width: 120px;
+          height: 120px;
         }
       }
       .name {

@@ -132,7 +132,7 @@
             class="fl items"
           >
             <router-link :to="`/album/${item.id}`">
-              <img :src="item.picUrl + '?param=50y50'" alt="">
+              <img :src="item.picUrl + '?param=50y50'" alt="" class="hot-img">
             </router-link>
             <div>
               <router-link :to="`/album/${item.id}`" class="ellipsis-1 name">
@@ -203,6 +203,8 @@ let play = (o, type) => {
     border: 1px solid #ccc;
     .header {
       .pic {
+        width: 177px;
+        height: 177px;
         margin-right: 40px;
       }
       .info {
@@ -413,6 +415,10 @@ let play = (o, type) => {
           color: #999;
         }
       }
+    }
+    .hot-img {
+      width: 50px;
+      height: 50px;
     }
   }
 }

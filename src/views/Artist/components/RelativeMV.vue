@@ -1,17 +1,22 @@
 <template>
-  <div class="mv-wrap">
-    <Card v-for="item in MVlist" :key="item.id">
-      <router-link to="/">
-        <Pic :src="item.imgurl + '?param=120y100'" play mask4 />
-      </router-link>
-      <template #footer>
-        <router-link to="/" :title="item.name">
-          <p class="ellipsis-1">
-            {{ item.name }}
-          </p>
+  <div v-loading="isLoad" class="mv-wrap" :style="{justifyContent: MVlist.length ? '' : 'center'}">
+    <template v-if="MVlist.length">
+      <Card v-for="item in MVlist" :key="item.id">
+        <router-link to="/">
+          <Pic :src="item.imgurl + '?param=120y100'" play mask4 />
         </router-link>
-      </template>
-    </Card>
+        <template #footer>
+          <router-link to="/" :title="item.name">
+            <p class="ellipsis-1">
+              {{ item.name }}
+            </p>
+          </router-link>
+        </template>
+      </Card>
+    </template>
+    <template v-else>
+      <el-empty description="暂无数据" />
+    </template>
     <!-- <el-button type="primary" :loading="loading">
       查看更多
     </el-button> -->
@@ -27,7 +32,7 @@ import Card from '@/components/Card'
 const route = useRoute()
 
 const MVlist = ref([])
-// const loading = ref(false)
+const isLoad = ref(true)
 
 onMounted(() => {
   getMV(route.params.id)
@@ -42,6 +47,7 @@ onBeforeRouteUpdate((to) => {
 const getMV = async id => {
   const res = await getArtistMVAPI(id)
   MVlist.value = res.data.mvs
+  isLoad.value = false
 }
 </script>
 
