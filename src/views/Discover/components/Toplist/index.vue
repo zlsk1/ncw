@@ -56,7 +56,7 @@
             <span>（{{ topStore?.topId[currentIndex]?.updateFrequency }}）</span>
           </div>
           <Btns
-            :id="topStore.topId[currentIndex].id"
+            :id="topStore?.topId[currentIndex]?.id"
             :dynamic="{
               bookedCount: playlist?.subscribedCount,
               shareCount: playlist?.shareCount,

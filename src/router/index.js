@@ -132,7 +132,12 @@ const router = createRouter({
           children: [
             {
               path: 'toplist/:id?',
-              component: () => import('@/views/Toplist'),
+              component: () => import('@/views/Discover/components/Toplist'),
+              meta: { hasCate: true }
+            },
+            {
+              path: 'artist',
+              component: () => import('@/views/Discover/components/Artist'),
               meta: { hasCate: true }
             }
           ]
