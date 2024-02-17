@@ -51,6 +51,7 @@
             :src="`${item.picUrl}?param=140y140`"
             crown
             mask1
+            class="pic"
           />
         </router-link>
         <div class="card-play fl-sb">
@@ -162,6 +163,10 @@ let addPlayList = async id => {
       width: calc((100% - 120px) / 4);
       &:nth-child(-n+4) {
         margin-bottom: 40px;
+      }
+      .pic {
+        width: 140px;
+        height: 140px;
       }
       .card-play {
         position: absolute;

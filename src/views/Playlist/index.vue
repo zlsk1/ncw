@@ -8,6 +8,7 @@
             :src="playlist?.playlist?.coverImgUrl + '?param=200y200'"
             crown
             mask5
+            class="pic"
           />
         </div>
         <div class="right">
@@ -236,10 +237,7 @@ table {
       }
       .title {
         align-items: center;
-        img {
-          margin: 10px 10px 10px 0;
-        }
-        .name {
+          .name {
           max-width: 84%;
           margin-left: 10px;
         }
@@ -328,6 +326,10 @@ table {
       .left {
         flex: 1;
         margin-right: 30px;
+        .pic {
+          width: 200px;
+          height: 200px;
+        }
       }
       .right {
         flex: 4;
@@ -357,6 +359,10 @@ table {
           }
           .time {
             color: #999;
+          }
+          img {
+            width: 35px;
+            height: 35px;
           }
         }
         .tags {
@@ -426,6 +432,10 @@ table {
             margin-bottom: 10px;
           }
         }
+      }
+      img {
+        width: 40px;
+        height: 40px;
       }
     }
   }

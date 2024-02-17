@@ -209,6 +209,10 @@ $imgHeight: 300px;
             text-decoration: underline;
           }
         }
+        img {
+          width: 50px;
+          height: 50px;
+        }
       }
     }
   }

@@ -167,6 +167,9 @@ const getDj = async limit => {
       display: flex;
       margin-bottom: 20px;
       .img-wrap {
+        display: block;
+        width: 100%;
+        height: 100%;
         margin-right: 10px;
         padding: 2px;
         border: 1px solid #dadada;
