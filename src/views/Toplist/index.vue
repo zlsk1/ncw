@@ -6,7 +6,7 @@
       </h3>
       <ul>
         <li v-for="item in topStore.topId.slice(0, 4)" :key="item.id">
-          <router-link :to="`/toplist/${item.id}`" class="side-items fl" :class="route.params.id == item.id ? 'side-active' : ''">
+          <router-link :to="`/discover/toplist/${item.id}`" class="side-items fl" :class="route.params.id == item.id ? 'side-active' : ''">
             <img :src="`${item.imgUrl}?param=40y40`" alt="" class="side-img">
             <div class="side-info">
               <p class="side-name ellipsis-1" :title="item.name">
@@ -24,7 +24,7 @@
       </h3>
       <ul>
         <li v-for="item in topStore.topId.slice(4, 51)" :key="item.id">
-          <router-link :to="`/toplist/${item.id}`" class="side-items fl" :class="route.params.id == item.id ? 'side-active' : ''">
+          <router-link :to="`/discover/toplist/${item.id}`" class="side-items fl" :class="route.params.id == item.id ? 'side-active' : ''">
             <img :src="`${item.imgUrl}?param=40y40`" alt="" class="side-img">
             <div class="side-info">
               <p class="side-name ellipsis-1" :title="item.name">
@@ -63,27 +63,6 @@
               commentCount: playlist?.commentCount
             }"
           />
-          <!-- <ul class="btns fl f12">
-            <li class="play fl">
-              <i @click="addPlaylist(topStore.topId[currentIndex].id)">
-                <i class="icon-play" />
-                播放
-              </i>
-              <i class="icon-add" title="添加到播放列表" @click="addPlaylist(topStore.topId[currentIndex].id)" />
-            </li>
-            <li class="like">
-              <i class="icon-like">({{ playlist?.subscribedCount }})</i>
-            </li>
-            <li class="share">
-              <i class="icon-share">({{ playlist?.shareCount }})</i>
-            </li>
-            <li class="download">
-              <i class="icon-download">下载</i>
-            </li>
-            <li class="comment" @click="goComment">
-              <i class="icon-comment">({{ playlist?.commentCount }})</i>
-            </li>
-          </ul> -->
         </div>
       </div>
       <div class="main-playlist">
@@ -240,6 +219,8 @@ table {
       .title {
         align-items: center;
         img {
+          width: 50px;
+          height: 50px;
           margin: 10px 10px 10px 0;
         }
         .name {

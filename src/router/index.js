@@ -20,11 +20,6 @@ const router = createRouter({
           meta: { hasCate: true }
         },
         {
-          path: 'toplist/:id?',
-          component: () => import('@/views/Toplist'),
-          meta: { hasCate: true }
-        },
-        {
           path: 'artist',
           component: () => import('@/views/Artist'),
           meta: { hasCate: true },
@@ -129,6 +124,18 @@ const router = createRouter({
           path: 'myMusic',
           component: () => import('@/views/MyMusic'),
           meta: { hasCate: false, requireLogin: true }
+        },
+        {
+          path: 'discover',
+          component: () => import('@/views/Discover'),
+          meta: { hasCate: true },
+          children: [
+            {
+              path: 'toplist/:id?',
+              component: () => import('@/views/Toplist'),
+              meta: { hasCate: true }
+            }
+          ]
         }
       ]
     }

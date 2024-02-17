@@ -8,7 +8,7 @@
           </router-link>
         </li>
         <li>
-          <router-link :to="`/toplist/${topStore?.firstId}`" :class="route.path.includes('/toplist') ? 'active-category' : ''">
+          <router-link :to="`/discover/toplist/${topStore?.firstId}`" :class="route.path.includes('/toplist') ? 'active-category' : ''">
             排行榜
           </router-link>
         </li>
