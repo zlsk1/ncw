@@ -185,3 +185,17 @@ export const getUserLevelInfoAPI = () => {
     url: '/user/level'
   })
 }
+
+/**
+ * 首页签到
+ * @param {*} type 其中 0 为安卓端签到 ,1 为 web/PC 签到 默认为1
+ * @returns
+ */
+export const handleSigninAPI = (type = 1) => {
+  return http({
+    url: '/daily_signin',
+    params: {
+      type
+    }
+  })
+}

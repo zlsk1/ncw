@@ -16,9 +16,12 @@
             {{ info?.level }}
             <i />
           </router-link>
-          <button class="signin is-check">
+          <!-- <el-button class="signin is-check" disabled>
             已签到
-          </button>
+          </el-button> -->
+          <el-button type="primary" class="signin" @click="handleSignin">
+            签到
+          </el-button>
         </div>
       </div>
       <ul class="fl-sb bottom">
@@ -108,10 +111,12 @@
 <script setup>
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
-import { onMounted, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { getHotSinger } from '@/apis/singer'
 import { getHotDj } from '@/apis/dj'
+import { handleSigninAPI } from '@/apis/user'
 import Login from '@/views/Login'
+import { ElMessage } from 'element-plus'
 
 const store = useUserStore()
 const { avator, nickname } = storeToRefs(store)
@@ -127,6 +132,10 @@ onMounted(() => {
   avator.value ? getDetail() : ''
   getSinger(5)
   getDj(5)
+})
+
+onBeforeUnmount(() => {
+  handleSignin = null
 })
 
 watch(avator, val => {
@@ -152,6 +161,11 @@ const getSinger = async (limit) => {
 const getDj = async limit => {
   const res = await getHotDj(limit)
   djList.value = res.data.data.list
+}
+
+let handleSignin = async () => {
+  const res = await handleSigninAPI()
+  ElMessage.warning(res.data.msg)
 }
 </script>
 
