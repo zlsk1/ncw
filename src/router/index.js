@@ -19,7 +19,7 @@ const router = createRouter({
           meta: { hasCate: true }
         },
         {
-          path: 'toplist/:id',
+          path: 'toplist/:id?',
           component: () => import('@/views/Toplist'),
           meta: { hasCate: true }
         },

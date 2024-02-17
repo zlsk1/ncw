@@ -8,7 +8,10 @@
           </router-link>
         </li>
         <li>
-          <router-link :to="`/toplist/${topStore?.topId[0]?.id}`" :class="route.path.includes('/toplist') ? 'active-category' : ''">
+          <router-link v-if="topStore?.topId[0]?.id" :to="`/toplist/${topStore?.topId[0]?.id}`" :class="route.path.includes('/toplist') ? 'active-category' : ''">
+            排行榜
+          </router-link>
+          <router-link v-else to="/toplist" :class="route.path.includes('/toplist') ? 'active-category' : ''">
             排行榜
           </router-link>
         </li>

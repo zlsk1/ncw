@@ -172,8 +172,8 @@ const currentIndex = computed(() => {
   return topStore?.topId.findIndex(v => v.id === Number(currentId.value))
 })
 
-onMounted(async () => {
-  await getPlayList()
+onMounted(() => {
+  getPlayList()
 })
 
 onBeforeUnmount(() => {
@@ -185,7 +185,7 @@ onBeforeRouteUpdate(async (to, from) => {
 })
 
 const getPlayList = async () => {
-  topStore.topId ? await topStore.actionTopId() : ''
+  topStore.topId.length === 0 ? await topStore.actionTopId() : ''
   const res = await getPlayListDetail(currentId.value)
   playlist.value = res.data.playlist
 }
