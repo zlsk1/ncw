@@ -212,7 +212,7 @@ const offset = ref(0)
 const commentObj = ref(null)
 
 const currentId = computed(() => {
-  return route.params?.id ? route.params?.id : topStore.topId[0]?.id
+  return route.params?.id ? route.params?.id : topStore.firstId
 })
 
 const isPlaylistUrl = computed(() => {

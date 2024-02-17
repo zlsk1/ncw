@@ -165,7 +165,7 @@ const route = useRoute()
 const playlist = ref(null)
 
 const currentId = computed(() => {
-  return route.params?.id ? route.params?.id : topStore.topId[0]?.id
+  return route.params?.id ? route.params?.id : topStore.firstId
 })
 
 const currentIndex = computed(() => {
@@ -180,7 +180,7 @@ onBeforeUnmount(() => {
   play = null; goComment = null; addPlaylist = null
 })
 
-onBeforeRouteUpdate(async (to, from) => {
+onBeforeRouteUpdate(async to => {
   if (to) await getPlayList()
 })
 
@@ -194,13 +194,9 @@ let goComment = () => {
   window.scrollTo({ top: document.querySelector('.comment-wrap .header').getBoundingClientRect().top })
 }
 
-let play = (o, type) => {
-  playStore.actionAddSong(o, type)
-}
+let play = (o, type) => { playStore.actionAddSong(o, type) }
 
-let addPlaylist = id => {
-  playStore.actionAddSongs(id)
-}
+let addPlaylist = id => { playStore.actionAddSongs(id) }
 </script>
 
 <style lang="scss" scoped>

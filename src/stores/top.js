@@ -5,6 +5,7 @@ import { getTop } from '@/apis/home'
 export const useTopStore = defineStore('top', () => {
   const topId = ref([])
   const topList = ref([])
+  const firstId = ref(topId.value[0]?.id || 19723756)
 
   const actionTopId = async () => {
     const res = await getTop()
@@ -16,6 +17,7 @@ export const useTopStore = defineStore('top', () => {
   return {
     topId,
     topList,
+    firstId,
     actionTopId
   }
 })
