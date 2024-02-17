@@ -119,7 +119,7 @@
     <div class="right">
       <div class="header fl-sb">
         <p>Ta的其他热门专辑</p>
-        <router-link :to="`/  ${albumInfo?.album?.artist.id}`" class="fl-sb">
+        <router-link :to="`/artist/album/${albumInfo?.album?.artist.id}`" class="fl-sb">
           全部
           <ArrowRight style="width: 1em; height: 1em" />
         </router-link>

@@ -25,9 +25,28 @@ const router = createRouter({
           meta: { hasCate: true }
         },
         {
-          path: 'artist/:id',
+          path: 'artist',
           component: () => import('@/views/Artist'),
-          meta: { hasCate: true }
+          meta: { hasCate: true },
+          children: [
+            {
+              path: ':id',
+              component: () => import('@/views/Artist'),
+              meta: { hasCate: true }
+            },
+            {
+              path: 'album/:id',
+              component: () => import('@/views/Artist/components/ArtistAlbum')
+            },
+            {
+              path: 'mv/:id',
+              component: () => import('@/views/Artist/components/RelativeMV')
+            },
+            {
+              path: 'desc/:id',
+              component: () => import('@/views/Artist/components/ArtistProduce')
+            }
+          ]
         },
         {
           path: 'user',

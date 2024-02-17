@@ -9,18 +9,21 @@
         <router-link v-if="artistData?.user" :to="`/user/home/${artistData?.user.userId}`" class="icon-home" />
         <router-link to="/" class="icon-collect" />
       </div>
-      <el-tabs type="border-card" class="tabs" @tab-click="tabIndex = Number($event.index)">
+      <el-tabs
+        v-model="current.str"
+        type="border-card"
+        class="tabs"
+        @tab-click="changeTab"
+      >
         <el-tab-pane
           v-for="item in componentList"
           :key="item.label"
           :label="item.label"
-        />
+          :name="item.str"
+        >
+          <component :is="current.com" :name="artistData?.artist?.name" />
+        </el-tab-pane>
       </el-tabs>
-      <Transition name="fade" mode="out-in">
-        <keep-alive>
-          <component :is="componentList[tabIndex]?.name" :name="artistData?.artist?.name" />
-        </keep-alive>
-      </Transition>
     </div>
     <div class="aside">
       <div>
@@ -48,8 +51,8 @@
 <script setup>
 import { getArtistDetailAPI } from '@/apis/artist'
 import { getHotSinger } from '@/apis/singer'
-import { onMounted, ref } from 'vue'
-import { useRoute, onBeforeRouteUpdate } from 'vue-router'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import ArtistProduce from './components/ArtistProduce.vue'
 import ArtistAlbum from './components/ArtistAlbum.vue'
 import HotWork from './components/HotWork.vue'
@@ -57,21 +60,30 @@ import RelativeMV from './components/RelativeMV.vue'
 import DownLoadSide from '@/components/DownLoadSide'
 
 const route = useRoute()
+const router = useRouter()
 
 const artistData = ref(null)
 const tabIndex = ref(0)
 const hotSinger = ref([])
 
 const componentList = [
-  { label: '热门作品', name: HotWork },
-  { label: '所有专辑', name: ArtistAlbum },
-  { label: '相关MV', name: RelativeMV },
-  { label: '艺人介绍', name: ArtistProduce }
+  { label: '热门作品', name: HotWork, str: 'HotWork' },
+  { label: '所有专辑', name: ArtistAlbum, str: 'ArtistAlbum' },
+  { label: '相关MV', name: RelativeMV, str: 'RelativeMV' },
+  { label: '艺人介绍', name: ArtistProduce, str: 'ArtistProduce' }
 ]
+
+const current = computed(() => {
+  return {
+    com: componentList[tabIndex.value]?.name,
+    str: componentList[tabIndex.value]?.str
+  }
+})
 
 onMounted(() => {
   getArtistDetail(route.params.id)
   getHSinger()
+  refreshIndex()
 })
 
 onBeforeRouteUpdate((to) => {
@@ -90,21 +102,41 @@ const getHSinger = async () => {
   const res = await getHotSinger(6)
   hotSinger.value = res.data.artists
 }
+
+const changeTab = e => {
+  tabIndex.value = Number(e.index)
+  switch (Number(e.index)) {
+    case 0:
+      router.push({ path: `/artist/${route.params.id}` })
+      break
+    case 1:
+      router.push({ path: `/artist/album/${route.params.id}` })
+      break
+    case 2:
+      router.push({ path: `/artist/mv/${route.params.id}` })
+      break
+    case 3:
+      router.push({ path: `/artist/desc/${route.params.id}` })
+      break
+  }
+}
+
+const refreshIndex = () => {
+  if (route.fullPath.includes('album')) {
+    tabIndex.value = 1
+  } else if (route.fullPath.includes('mv')) {
+    tabIndex.value = 2
+  } else if (route.fullPath.includes('desc')) {
+    tabIndex.value = 3
+  } else {
+    tabIndex.value = 0
+  }
+}
 </script>
 
 <style lang="scss" scoped>
 $mainWidth: 640px;
 $imgHeight: 300px;
-// 组件过渡css
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity .5s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
 .artist-wrap {
   .main {
     flex: 3;
