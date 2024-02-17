@@ -6,7 +6,18 @@
     </div>
     <div class="content">
       <div class="my-comment fl">
-        <img v-lazy="userStore?.avator + '?param=50y50'" alt="">
+        <img
+          v-if="hasProfile()"
+          v-lazy="userStore?.avator + '?param=50y50'"
+          alt=""
+          class="comment-avatar"
+        >
+        <img
+          v-else
+          v-lazy="'http://s4.music.126.net/style/web2/img/default/default_avatar.jpg?param=50y50'"
+          alt=""
+          class="comment-avatar"
+        >
         <div class="input">
           <textarea
             ref="textarea"
@@ -14,6 +25,7 @@
             maxlength="140"
             placeholder="评论"
             @input="input"
+            @focus="showLogin"
           />
           <div class="utils fl-sb">
             <div class="fl">
@@ -180,19 +192,27 @@
         />
       </div>
     </div>
+    <Login :is-show="isShow" @close="e => isShow = e" />
   </div>
 </template>
 
 <script setup>
 import Emj from '@/components/Emj'
 import { formatTimeStamp, isBeforeYesterday } from '@/utils/time'
-import { debounce } from '@/utils/index'
+import { debounce, hasProfile } from '@/utils/index'
 import { nextTick, onBeforeUnmount, onMounted, ref, computed } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { likeComment, sendCommentAPI, delCommentAPI, getSongComment, getCommentPlaylistAPI, getCommentAlbumAPI } from '@/apis/comment'
+import { likeComment,
+  sendCommentAPI,
+  delCommentAPI,
+  getSongComment,
+  getCommentPlaylistAPI,
+  getCommentAlbumAPI
+} from '@/apis/comment'
 import { useUserStore } from '@/stores/user'
 import { useTopStore } from '@/stores/top'
+import Login from '@/views/Login'
 
 const emit = defineEmits(['getTotal'])
 
@@ -210,6 +230,7 @@ const reply = ref('')
 const DOMIndex = ref('')
 const offset = ref(0)
 const commentObj = ref(null)
+const isShow = ref(false)
 
 const currentId = computed(() => {
   return route.params?.id ? route.params?.id : topStore.firstId
@@ -228,7 +249,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  input = null; onChoose = null; handleComment = null; addAite = null; like = null; changePage = null
+  input = null; onChoose = null; handleComment = null; addAite = null; like = null; changePage = null; showLogin = null
 })
 
 onBeforeRouteUpdate((to, from) => {
@@ -277,6 +298,10 @@ let addAite = (type) => {
 }
 
 const openReply = (i, nickname) => {
+  if (!hasProfile()) {
+    isShow.value = !isShow.value
+    return
+  }
   if (i === DOMIndex.value) DOMIndex.value = ''
   else {
     DOMIndex.value = i
@@ -322,6 +347,10 @@ const delComment = async () => {
       if (res.status === 200) ElMessage.success('删除成功！')
     })
 }
+
+let showLogin = () => {
+  if (!hasProfile()) isShow.value = !isShow.value
+}
 </script>
 
 <style lang="scss" scoped>
@@ -344,7 +373,8 @@ const delComment = async () => {
   .content {
     .my-comment {
       margin-bottom: 10px;
-      img {
+      .comment-avatar {
+        width: 50px;
         height: 50px;
         margin-right: 10px;
       }

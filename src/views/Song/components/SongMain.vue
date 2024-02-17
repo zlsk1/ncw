@@ -145,8 +145,10 @@ const play = async (o, type) => { playStore.actionAddSong(o, type) }
           }
           img {
             position: absolute;
-            left: 67px;
-            top: 68px;
+            left: 69px;
+            top: 69px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%
           }
         }
