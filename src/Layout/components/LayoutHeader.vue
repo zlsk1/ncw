@@ -13,7 +13,7 @@
           </router-link>
         </li>
         <li>
-          <router-link to="/">
+          <router-link to="/myMusic">
             我的音乐
           </router-link>
         </li>

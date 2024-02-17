@@ -124,6 +124,11 @@ const router = createRouter({
           path: 'login',
           component: () => import('@/views/Login/LoginQrcode.vue'),
           meta: { hasCate: false }
+        },
+        {
+          path: 'myMusic',
+          component: () => import('@/views/MyMusic'),
+          meta: { hasCate: false, requireLogin: true }
         }
       ]
     }
