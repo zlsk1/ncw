@@ -55,7 +55,15 @@
             <span>最近更新：{{ formatMonthDay(playlist?.updateTime) }}</span>
             <span>（{{ topStore?.topId[currentIndex]?.updateFrequency }}）</span>
           </div>
-          <ul class="btns fl f12">
+          <Btns
+            :id="topStore.topId[currentIndex].id"
+            :dynamic="{
+              bookedCount: playlist?.subscribedCount,
+              shareCount: playlist?.shareCount,
+              commentCount: playlist?.commentCount
+            }"
+          />
+          <!-- <ul class="btns fl f12">
             <li class="play fl">
               <i @click="addPlaylist(topStore.topId[currentIndex].id)">
                 <i class="icon-play" />
@@ -75,7 +83,7 @@
             <li class="comment" @click="goComment">
               <i class="icon-comment">({{ playlist?.commentCount }})</i>
             </li>
-          </ul>
+          </ul> -->
         </div>
       </div>
       <div class="main-playlist">
@@ -153,9 +161,9 @@ import { usePlayStore } from '@/stores/play'
 import { getPlayListDetail } from '@/apis/playList'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
-import { formatMonthDay, getTimestamp } from '@/utils/time'
+import { formatMonthDay, getTimestamp, formatSongDuration } from '@/utils/time'
 import Comment from '@/components/Comment'
-import { formatSongDuration } from '@/utils/time'
+import Btns from '@/components/Btns'
 
 const topStore = useTopStore()
 const playStore = usePlayStore()
@@ -177,7 +185,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  play = null; goComment = null; addPlaylist = null
+  play = null
 })
 
 onBeforeRouteUpdate(async to => {
@@ -190,13 +198,8 @@ const getPlayList = async () => {
   playlist.value = res.data.playlist
 }
 
-let goComment = () => {
-  window.scrollTo({ top: document.querySelector('.comment-wrap .header').getBoundingClientRect().top })
-}
-
 let play = (o, type) => { playStore.actionAddSong(o, type) }
 
-let addPlaylist = id => { playStore.actionAddSongs(id) }
 </script>
 
 <style lang="scss" scoped>
@@ -369,6 +372,7 @@ table {
         font-weight: normal;
       }
       .update-info {
+        margin-bottom: 20px;
         font-size: 12px;
         color: #666;
         .icon-clock {

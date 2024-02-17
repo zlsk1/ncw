@@ -334,6 +334,7 @@ table {
         font-size: 12px;
         .title {
           display: flex;
+          margin-bottom: 10px;
           h2 {
             font-weight: normal;
             font-size: 20px;

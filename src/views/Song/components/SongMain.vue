@@ -33,7 +33,7 @@
         <ul class="btns fl f12">
           <li class="play fl">
             <i @click="play({id:data?.songs.id, picUrl: data?.songs?.al.picUrl, name: data?.songs?.al.name, singer: data?.songs?.ar.map(v=>{return v.name}).join('/') })">
-              <em class="icon-play" />
+              <i class="icon-play" />
               播放
             </i>
             <i class="icon-add" title="添加到播放列表" @click="play({id:data?.songs.id, picUrl: data?.songs?.al.picUrl, name: data?.songs?.al.name, singer: data?.songs?.ar.map(v=>{return v.name}).join('/') }, 1)" />

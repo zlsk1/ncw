@@ -9,18 +9,18 @@
         <i class="icon-add" title="添加到播放列表" @click="addPlaylist(props.id)" />
       </li>
       <li class="like">
-        <i v-if="!props.dynamic.bookedCount" class="icon-like">收藏</i>
+        <i v-if="!props?.dynamic?.bookedCount" class="icon-like">收藏</i>
         <i v-else class="icon-like">({{ formatPlayCount(dynamic.bookedCount) }})</i>
       </li>
       <li class="share">
-        <i v-if="!props.dynamic.shareCount" class="icon-share">分享</i>
+        <i v-if="!props?.dynamic?.shareCount" class="icon-share">分享</i>
         <i v-else class="icon-share">({{ dynamic.shareCount }})</i>
       </li>
       <li class="download">
         <i class="icon-download">下载</i>
       </li>
       <li class="comment" @click="goComment">
-        <i v-if="!props.dynamic.commentCount" class="icon-comment">评论</i>
+        <i v-if="!props?.dynamic?.commentCount" class="icon-comment">评论</i>
         <i v-else class="icon-comment">({{ dynamic.commentCount }})</i>
       </li>
     </ul>
