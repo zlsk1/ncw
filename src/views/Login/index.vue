@@ -12,13 +12,31 @@
         <span class="header">手机号登录</span>
       </template>
       <template v-if="isShow && isQrCode">
-        <div class="fl-sb">
+        <div v-loading="isLoad" class="fl-sb code-wrap ">
           <img class="desc" src="https://p5.music.126.net/obj/wo3DlcOGw6DClTvDisK1/9643571155/525c/faac/2dc6/fe695c03c7c358ddaa4651736b26a55f.png" alt="">
-          <div class="code-wrap f12">
+          <div class="f12">
             <p class="title f20 ">
               扫码登陆
             </p>
-            <img :src="qrCodeUrl" alt="" class="qrcode">
+            <img
+              v-if="qrCodeUrl"
+              :src="qrCodeUrl"
+              alt=""
+              class="qrcode"
+            >
+            <div v-else class="error">
+              <el-image class="qrcode">
+                <template #error>
+                  <div class="image-slot">
+                    <Picture />
+                  </div>
+                </template>
+              </el-image>
+              <p>二维码已过期</p>
+              <el-button size="small" @click="createQrCode">
+                点击刷新
+              </el-button>
+            </div>
             <p>使用<a href="https://music.163.com/#/download" target="_blank" class="tar">网易云音乐app</a>扫码登录</p>
           </div>
         </div>
@@ -139,17 +157,18 @@ import { loginByCaptcha,
   checkQrCodeAPI
 } from '@/apis/login'
 import { getUserAccountAPI } from '@/apis/user'
-import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { onUnmounted, ref, watch } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { getTimestamp } from '@/utils/time'
 import { ElMessage } from 'element-plus'
-import { ArrowLeft } from '@element-plus/icons-vue'
+import { ArrowLeft, Picture } from '@element-plus/icons-vue'
 
 const userStore = useUserStore()
 
 const props = defineProps({
   isShow: { type: Boolean, default: false }
 })
+
 const emit = defineEmits(['close'])
 
 const loginForm = ref(null)
@@ -158,6 +177,7 @@ const isPhone = ref(false)
 const isLoginByPassword = ref(false)
 const isRegister = ref(false)
 const isQrCode = ref(true)
+const isLoad = ref(true)
 const qrCodeUrl = ref('')
 const captchaCountdown = ref(30)
 const reg = new RegExp(/^(?:(?:\+|00)86)?1\d{10}$/)
@@ -172,11 +192,9 @@ const loginFormData = ref({
   nickname: ''
 })
 
-onMounted(async () => {
-})
-
 onUnmounted(() => {
-  handleLogin = null; getCaptcha = null; switchLoginWay = null; closeDialog = null; timer = null; chooseOtherWay = null; isQrCode.value = null
+  handleLogin = null; getCaptcha = null; switchLoginWay = null; closeDialog = null; chooseOtherWay = null; createQrCode = null
+  isQrCode.value = null; timer = null
 })
 
 watch(
@@ -193,9 +211,12 @@ watch(
 )
 
 watch(
-  () => props.isShow, async val => {
+  () => props.isShow, val => {
     if (val) {
       createQrCode()
+    } else {
+      clearInterval(timer)
+      timer = null
     }
   }
 )
@@ -298,10 +319,12 @@ const backtoQrLogin = () => {
   isQrCode.value = true
 }
 
-const createQrCode = async () => {
+let createQrCode = async () => {
+  isLoad.value = true
   const res = await getQrKeyAPI()
   const qr = await createQrCodeAPI({ key: res.data.data.unikey })
   qrCodeUrl.value = qr.data.data.qrimg
+  isLoad.value = false
   timer = setInterval(async () => {
     const status = await checkQrCodeAPI(res.data.data.unikey)
     if (status.data.code === 803) {
@@ -312,12 +335,17 @@ const createQrCode = async () => {
       userStore.avator = data.profile.avatarUrl
       emit('close', false)
       ElMessage.success('登录成功！')
+    } else if (status.data.code === 800 && status.data.message === '二维码不存在或已过期') {
+      qrCodeUrl.value = ''
+      clearInterval(timer)
+      timer = null
     }
   }, 3000)
 }
 </script>
 
 <style lang="scss" scoped>
+@import './qrcode.scss';
 .login-wrap{
   .header {
     padding: 60px 0 0 0 ;
@@ -344,21 +372,6 @@ const createQrCode = async () => {
   .switchTpye {
     margin-bottom: 20px;
     line-height: 0;
-  }
-  .desc {
-    width: 125px;
-    height: 220px;
-  }
-  .qrcode {
-    width: 128px;
-    height: 128px;
-    margin: 10px 0;
-  }
-  .code-wrap {
-    text-align: center;
-    .tar {
-      color: #409eff;
-    }
   }
   .switchButton {
     display: block;

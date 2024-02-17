@@ -91,7 +91,7 @@
         <div v-if="profile?.signature" class="f12 city">
           个人签名：{{ profile?.signature }}
         </div>
-        <div class="f12 city">
+        <div v-if="getArea()" class="f12 city">
           所在地区：{{ getArea() }}
         </div>
         <!-- <div class="f12 social">
@@ -172,6 +172,7 @@
         </el-button>
       </div>
     </el-dialog>
+    <Login :is-show="isShow" @close="e => isShow = e" />
   </div>
 </template>
 
@@ -180,11 +181,12 @@ import { usePlayStore } from '@/stores/play'
 import { getVipLevelAPI, getUserPlaylistAPI, getUserDetail, followUserAPI, sendTextAPI } from '@/apis/user'
 import { ref, onMounted, onBeforeUnmount, nextTick, computed } from 'vue'
 import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
-import { formatPlayCount } from '@/utils/index'
+import { formatPlayCount, hasProfile } from '@/utils/index'
 import { provinceAndCityData } from 'element-china-area-data'
 import { Message, Plus, Select } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import Emj from '@/components/Emj'
+import Login from '@/views/Login'
 
 const router = useRouter()
 const route = useRoute()
@@ -203,6 +205,11 @@ const inputValue = ref('')
 const dynamicTags = ref([])
 const inputRef = ref(null)
 const sendText = ref('')
+const isShow = ref(false)
+
+const isMe = computed(() => {
+  return hasProfile() ? route.params.id === JSON.parse(localStorage.getItem('userInfo')).profile.userId : false
+})
 
 onMounted(async () => {
   await getDetail(route.params.id)
@@ -221,10 +228,6 @@ onBeforeRouteUpdate(async (to, from) => {
     getVip(to.params.id)
     getUserPlaylist(to.params.id)
   }
-})
-
-const isMe = computed(() => {
-  return route.params.id === JSON.parse(localStorage.getItem('userInfo')).profile.userId
 })
 
 const getVip = async id => {
@@ -264,18 +267,23 @@ const getArea = () => {
 let toEdit = () => { router.push(`/user/update/${profile.value.userId}`) }
 
 let follow = async t => {
-  if (t !== 1) {
-    ElMessageBox.alert('请使用手机登录网易云音乐APP扫码完成验证，登录账号要和当前账号一致', '请完成短信验证', {
-      showConfirmButton: false,
-      showCancelButton: false
-    })
-  } else {
-    await followUserAPI({ id: route.params.id, t })
-  }
+  if (hasProfile()) {
+    if (t !== 1) {
+      ElMessageBox.alert('请使用手机登录网易云音乐APP扫码完成验证，登录账号要和当前账号一致', '请完成短信验证', {
+        showConfirmButton: false,
+        showCancelButton: false
+      })
+    } else {
+      await followUserAPI({ id: route.params.id, t })
+      getDetail(route.params.id)
+    }
+  } else isShow.value = !isShow.value
 }
 
 let openSendDialog = () => {
-  isShowSendDialog.value = !isShowSendDialog.value
+  hasProfile()
+    ? isShowSendDialog.value = !isShowSendDialog.value
+    : isShow.value = !isShow.value
 }
 
 let handleInputConfirm = () => {

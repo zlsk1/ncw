@@ -201,6 +201,7 @@ import Login from '@/views/Login'
 import LayoutCategory from './LayoutCategory'
 import { getPlCountAPI } from '@/apis/user'
 import { getSearchSuggest } from '@/apis/search'
+import { getLoginStatusAPI } from '@/apis/login'
 import { debounce } from '@/utils/index'
 
 const route = useRoute()
@@ -220,6 +221,7 @@ const isFocus = ref(false)
 
 onMounted(() => {
   getPlCount()
+  getLoginStatusAPI()
 })
 
 onBeforeUnmount(() => {
