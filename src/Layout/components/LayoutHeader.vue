@@ -51,7 +51,7 @@
         @focus="handleFocus"
         @blur="handleBlur"
       />
-      <div v-if="isFocus && searchValue.trim()" class="search-suggest">
+      <div v-if="isFocus && searchSuggset" class="search-suggest">
         <div class="search-header">
           <router-link :to="`/search/${searchValue}/1002`" @mousedown="router.push(`/search/${searchValue}/1002`)">
             搜“{{ searchValue }}”相关用户

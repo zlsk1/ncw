@@ -11,7 +11,7 @@
         <el-button :icon="Search" title="搜索" @click="pushRoute" />
       </template>
     </el-input>
-    <div v-if="isFocus && searchVal.trim()" class="search-suggest">
+    <div v-if="isFocus && searchSuggset" class="search-suggest">
       <div class="search-header">
         <router-link :to="`/search/${searchVal}/1002`" @mousedown="router.push(`/search/${searchVal}/1002`)">
           搜“{{ searchVal }}”相关用户
