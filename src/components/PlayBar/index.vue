@@ -251,11 +251,13 @@ const loadedmetadata = e => {
 let play = () => {
   audio.value.play()
   isPaused.value = false
+  store.status = 1
 }
 
 let pause = () => {
   audio.value.pause()
   isPaused.value = true
+  store.status = 0
 }
 
 const timeupdate = e => {

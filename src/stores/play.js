@@ -11,6 +11,7 @@ export const usePlayStore = defineStore('play', () => {
   const currentSong = ref(getCurrentSong())
   const index = ref(getSongIndex())
   const setting = ref(getSetting())
+  const status = ref(0)
 
   const actionAddSongs = async id => {
     try {
@@ -109,10 +110,15 @@ export const usePlayStore = defineStore('play', () => {
 
   watch(index, () => {
     actionUpdateCurrentSong()
+    document.title = status.value ? currentSong.value.name : '音乐'
   })
 
   watch(setting, val => {
     if (!val) localStorage.setItem('play_setting', JSON.stringify(defaultSetting))
+  })
+
+  watch(status, val => {
+    document.title = val ? currentSong.value.name : '音乐'
   })
 
   return {
@@ -120,6 +126,7 @@ export const usePlayStore = defineStore('play', () => {
     currentSong,
     index,
     setting,
+    status,
     actionAddSongs,
     actionGetSongs,
     actionAddSong,
