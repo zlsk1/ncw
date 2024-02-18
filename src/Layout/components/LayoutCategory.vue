@@ -13,7 +13,7 @@
           </router-link>
         </li>
         <li>
-          <router-link to="/">
+          <router-link to="/discover/playlist" :class="route.path.includes('/playlist') ? 'active-category' : ''">
             歌单
           </router-link>
         </li>

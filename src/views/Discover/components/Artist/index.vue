@@ -87,7 +87,7 @@
 import { getArtistlistAPI, getHotSinger } from '@/apis/singer'
 import { onMounted, ref, computed, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { catelist, areaObj, typeObj, filterlist } from '@/data'
+import { catelist, areaObj, typeObj, filterlist } from './data'
 
 const route = useRoute()
 const router = useRouter()

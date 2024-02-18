@@ -151,6 +151,11 @@ const router = createRouter({
                   meta: { hasCate: true }
                 }
               ]
+            },
+            {
+              path: 'playlist',
+              component: () => import('@/views/Discover/components/Playlist'),
+              meta: { hasCate: true }
             }
           ]
         }
