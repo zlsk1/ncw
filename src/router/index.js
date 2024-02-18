@@ -138,7 +138,19 @@ const router = createRouter({
             {
               path: 'artist',
               component: () => import('@/views/Discover/components/Artist'),
-              meta: { hasCate: true }
+              meta: { hasCate: true },
+              children: [
+                {
+                  path: 'signed',
+                  component: () => import('@/views/Discover/components/Artist'),
+                  meta: { hasCate: true }
+                },
+                {
+                  path: 'cate',
+                  component: () => import('@/views/Discover/components/Artist'),
+                  meta: { hasCate: true }
+                }
+              ]
             }
           ]
         }
