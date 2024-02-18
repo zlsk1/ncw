@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getTimestamp } from './time'
 
 const http = axios.create({
   baseURL: 'http://localhost:3000',
@@ -6,8 +7,16 @@ const http = axios.create({
   timeout: 10000
 })
 
-axios.interceptors.request.use(config => {
-  // 在发送请求之前做些什么
+http.interceptors.request.use(config => {
+  const mode = import.meta.env.MODE
+  if (mode === 'production') {
+    if (config.params) {
+      const merge = Object.assign(config.params, { stamp: getTimestamp() })
+      config.params = merge
+    } else {
+      config.params = { stamp: getTimestamp() }
+    }
+  }
   return config
 }, error => {
   // 对请求错误做些什么

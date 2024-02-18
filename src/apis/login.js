@@ -70,7 +70,7 @@ export const createNickname = () => {
 
 export const testNickname = (nickname) => {
   return http({
-    url: `/nickname/check?${getTimestamp()}`,
+    url: `/nickname/check?stamp=${getTimestamp()}`,
     method: 'POST',
     data: {
       nickname
@@ -94,7 +94,7 @@ export const loginRefreshAPI = () => {
  */
 export const getLoginStatusAPI = () => {
   return http({
-    url: `/login/status?${getTimestamp()}`
+    url: `/login/status?stamp=${getTimestamp()}`
   })
 }
 
@@ -116,7 +116,7 @@ export const getQrKeyAPI = () => {
  */
 export const createQrCodeAPI = ({ key, qrimg = 1 }) => {
   return http({
-    url: `/login/qr/create?stamp=${getTimestamp()}&`,
+    url: `/login/qr/create?stamp=${getTimestamp()}`,
     params: {
       key,
       qrimg
