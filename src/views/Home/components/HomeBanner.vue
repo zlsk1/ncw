@@ -1,7 +1,13 @@
 <template>
   <div class="banner-wrap">
-    <CarouselWrap class="w980" height="285px">
-      <CarouselItem v-for="item in bannerList" :key="item.targetId">
+    <el-carousel
+      class="w980"
+      height="285px"
+      trigger="click"
+      :interval="5000"
+      arrow="always"
+    >
+      <el-carousel-item v-for="item in bannerList" :key="item.targetId">
         <router-link v-if="item.targetId" class="fl download-wrap" :to="`/song/${item.targetId}`">
           <img :src="item.imageUrl" alt="" style="width: 75%">
           <a href="" class="download" />
@@ -15,16 +21,14 @@
           <img :src="item.imageUrl" alt="" style="width: 75%">
           <a href="" class="download" />
         </a>
-      </CarouselItem>
-    </CarouselWrap>
+      </el-carousel-item>
+    </el-carousel>
   </div>
 </template>
 
 <script setup>
 import { getBanner } from '@/apis/home'
 import { onMounted, ref } from 'vue'
-import CarouselWrap from '@/components/Carousel/CarouselWrap'
-import CarouselItem from '@/components/Carousel/CarouselItem'
 
 const bannerList = ref([])
 
@@ -50,21 +54,24 @@ onMounted(() => {
   width: 25%;
   background: url('@/assets/icons/download.png');
 }
-</style>
-
-<style>
-  .el-carousel__button {
-    display: block;
-    opacity: .48;
-    width: 6px;
-    height: 6px;
-    background-color: #fff;
-    border: none;
-    cursor: pointer;
-    border-radius: 50%;
-    transition: .3s;
-  }
-  .el-carousel .is-active .el-carousel__button{
-    background-color: #c60b11;
-  }
+:deep(.el-carousel__indicators--horizontal) {
+  left: calc((100% - 245px) / 2);
+}
+:deep(.el-carousel__button) {
+  display: block;
+  opacity: .48;
+  width: 6px;
+  height: 6px;
+  background-color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: .3s;
+}
+:deep(.el-carousel__button&:hover) {
+  background-color: #c60b11;
+}
+:deep(.el-carousel .is-active .el-carousel__button) {
+  background-color: #c60b11;
+}
 </style>

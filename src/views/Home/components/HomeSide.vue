@@ -7,12 +7,12 @@
         </router-link>
         <div>
           <div class="fl-sb">
-            <router-link to="/" class="nickname ellipsis-1">
+            <router-link :to="`/user/home/${userId}`" class="nickname ellipsis-1">
               {{ nickname }}
             </router-link>
             <img class="vip" src="https://p6.music.126.net/obj/wonDlsKUwrLClGjCm8Kx/32582188101/3e49/6a48/39f3/c4124c59baca58313e16a62c5577808b.png" alt="">
           </div>
-          <router-link class="level" to="/">
+          <router-link class="level" to="/user/level">
             {{ info?.level }}
             <i />
           </router-link>

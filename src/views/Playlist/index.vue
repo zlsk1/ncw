@@ -28,7 +28,7 @@
             </span>
           </div>
           <Btns :id="route.params.id" :dynamic="dynamic" class="btns" />
-          <div class="tags fl">
+          <div v-if="playlist?.playlist?.tags.length !== 0" class="tags fl">
             标签：
             <router-link to="/">
               <el-tag v-for="(item, index) in playlist?.playlist?.tags" :key="index" type="info">
@@ -36,18 +36,20 @@
               </el-tag>
             </router-link>
           </div>
-          <p class="desc">
+          <p v-if="description" class="desc">
             <span>介绍：</span>
             {{ description }}
           </p>
-          <div v-if="!isExpand" class="expand" @click="expandDesc">
-            展开
-            <ArrowDown style="width: 1em;height: 1em" />
-          </div>
-          <div v-else class="expand" @click="expandDesc">
-            收起
-            <ArrowUp style="width: 1em;height: 1em" />
-          </div>
+          <template v-if="description.length > 100">
+            <div v-if="!isExpand" class="expand" @click="expandDesc">
+              展开
+              <ArrowDown style="width: 1em;height: 1em" />
+            </div>
+            <div v-else class="expand" @click="expandDesc">
+              收起
+              <ArrowUp style="width: 1em;height: 1em" />
+            </div>
+          </template>
         </div>
       </div>
       <div class="main-playlist">
@@ -127,18 +129,20 @@
       <Comment />
     </div>
     <div class="playlist-right">
-      <div class="header">
-        喜欢这个歌单的人
-      </div>
-      <div class="alsolike">
-        <ul class="fl">
-          <li v-for="item in playlist?.playlist?.subscribers" :key="item.avatarImgId">
-            <router-link :to="`/user/home/${item.userId}`">
-              <img :src="item.avatarUrl + '?param=40y40'" alt="">
-            </router-link>
-          </li>
-        </ul>
-      </div>
+      <template v-if="playlist?.playlist?.subscribers.length !== 0">
+        <div class="header">
+          喜欢这个歌单的人
+        </div>
+        <div class="alsolike">
+          <ul class="fl">
+            <li v-for="item in playlist?.playlist?.subscribers" :key="item.avatarImgId">
+              <router-link :to="`/user/home/${item.userId}`">
+                <img :src="item.avatarUrl + '?param=40y40'" alt="">
+              </router-link>
+            </li>
+          </ul>
+        </div>
+      </template>
       <DownLoadSide />
     </div>
   </div>
@@ -177,13 +181,17 @@ const getplaylist = async (id) => {
   const res = await getPlayListDetail(id)
   playlist.value = res.data
   description.value = playlist.value?.playlist?.description.slice(0, 100).concat('...')
+  window.scrollTo({ top: 0 })
   const _res = await getPlayListAllAPI({ id })
   playlist.value.playlist.tracks = _res.data.songs
 }
 
 let expandDesc = () => {
+  !isExpand.value ? '' : window.scrollTo({ top: 0 })
   isExpand.value = !isExpand.value
-  description.value = isExpand.value ? playlist.value?.playlist?.description : playlist.value?.playlist?.description.slice(0, 100).concat('...')
+  description.value = isExpand.value
+    ? playlist.value?.playlist?.description
+    : playlist.value?.playlist?.description.slice(0, 100).concat('...')
 }
 
 let play = (o, type) => {

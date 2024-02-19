@@ -56,11 +56,11 @@
             :key="item.commentId"
             class="fl hot-comment-items f12"
           >
-            <router-link to="/">
+            <router-link :to="`/user/home/${item.user.userId}`">
               <img v-lazy="item.user.avatarUrl + '?param=50y50'" alt="" class="avatar">
             </router-link>
             <div class="content">
-              <router-link to="/" class="name">
+              <router-link :to="`/user/home/${item.user.userId}`" class="name">
                 {{ item.user.nickname }}
               </router-link>
               <img
@@ -119,11 +119,11 @@
             class="fl hot-comment-items f12"
           >
             <template v-if="!item.parentCommentId" />
-            <router-link to="/">
+            <router-link :to="`/user/home/${item.user.userId}`">
               <img v-lazy="item.user.avatarUrl + '?param=50y50'" alt="" class="avatar">
             </router-link>
             <div class="content">
-              <router-link to="/" class="name">
+              <router-link :to="`/user/home/${item.user.userId}`" class="name">
                 {{ item.user.nickname }}
               </router-link>
               <img

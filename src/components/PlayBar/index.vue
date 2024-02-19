@@ -76,9 +76,9 @@
                 <div v-show="isShowVol" ref="volWrap" class="vol-wrap">
                   <div class="vol-bg" @click="clickVol">
                     <div ref="volBg" class="bg-red" />
-                  </div>
-                  <div ref="volControl" class="vol-control-icon" @mousedown="controlVol">
-                    <div class="inner" />
+                    <div ref="volControl" class="vol-control-icon" @mousedown="controlVol">
+                      <div class="inner" />
+                    </div>
                   </div>
                 </div>
                 <i class="volume" @click="openVolControl" />
@@ -113,7 +113,7 @@
               <i class="add-like" />
               <span>收藏全部</span>
             </li>
-            <li @click="store.actionDelAll">
+            <li @click="delAll">
               <i class="del" />
               <span>清除</span>
             </li>
@@ -124,7 +124,7 @@
             v-for="(item, i) in store.songQueue"
             :key="item.id"
             class="item fl-sb"
-            @click="chooseSong(item, i, item.id)"
+            @click="chooseSong(i)"
           >
             <div class="play-wrap">
               <div v-if="i === store?.index" class="play" />
@@ -195,7 +195,7 @@
 </template>
 
 <script setup>
-import { ref, onBeforeUnmount, watch } from 'vue'
+import { ref, onBeforeUnmount, watch, nextTick, onMounted } from 'vue'
 import { formatSongDuration } from '@/utils/time'
 import { judgeJson } from '@/utils/index'
 import { getLyric } from '@/apis/song'
@@ -222,27 +222,28 @@ const word = ref('')
 const index = ref(0)
 const lrc = ref(null)
 
+onMounted(() => {
+  audio.value.volume = store.setting.volume
+})
+
 onBeforeUnmount(() => {
   store.actionUpdateSetting({ volume: audio.value.volume })
-  openVolControl = null; play = null; pause = null; mousedown = null; clickProgress = null; clickProgress = null; closePlayList = null; prev = null
-  next = null; controlVol = null; clickVol = null; chooseSong = null; switchMode = null
+  openVolControl = null; play = null; pause = null; mousedown = null; clickProgress = null; closePlayList = null; prev = null
+  next = null; controlVol = null; clickVol = null; chooseSong = null; switchMode = null; delAll = null
   window.removeEventListener('keyup', keyup)
 })
 
 // 监听当前歌曲的变化（解决正在播放时切换其他的歌曲不能正常播放）
 watch(() => store.currentSong, (newVal, oldVal) => {
+  if (!newVal) return
   if (oldVal === undefined) { // 播放列表长度从0变为1时
-    play()
-    return
-  } else if (newVal && oldVal && newVal.id === oldVal.id) { // newVal&&将删除全部时排除在外
-    audio.value.currentTime = 0
     play()
   } else {
     play()
   }
 })
 
-const loadedmetadata = e => {
+const loadedmetadata = () => {
   if (store.currentSong.id) {
     getLrc(store.currentSong.id)
   }
@@ -280,8 +281,7 @@ const timeupdate = e => {
 }
 
 const ended = () => {
-  document.querySelector('.played-bg').style.width = 0 + '%'
-  moveBtn.value.style.left = '-11px'
+  resetProgressBar()
   next()
 }
 
@@ -289,17 +289,9 @@ let mousedown = e1 => {
   if (store.currentSong) {
     e1.preventDefault()
     const playedBg = document.querySelector('.played-bg')
-    const Parentleft = document.querySelector('.bar-wrap').getBoundingClientRect().left
+    const parentleft = document.querySelector('.bar-wrap').getBoundingClientRect().left
     const mousemove = e2 => {
-      if (e2.clientX > Parentleft && e2.clientX <= Parentleft + progressBarWidth) {
-        isMove.value = true
-        const moveDistance = e2.clientX - Parentleft
-        const percent = moveDistance / progressBarWidth
-        pregressTime.value = percent * store.currentSong.time / 1000
-        moveBtn.value.style.left = -btnWidth + moveDistance + 'px'
-        playedBg.style.width = percent * 100 + '%'
-        now.value = store.currentSong.time / 1000 * percent
-      }
+      setProgress(e2, parentleft, playedBg)
       playBar.value.onmouseup = (e) => {
         e.stopPropagation()
         audio.value.currentTime = pregressTime.value
@@ -307,19 +299,33 @@ let mousedown = e1 => {
         playBar.value.onmouseup = null
       }
     }
-    playBar.value.onmousemove = debounce(mousemove, 16)
+    playBar.value.onmousemove = debounce(mousemove, 0)
   }
 }
 
 let clickProgress = e => {
   if (store.currentSong) {
-    const clientX = document.querySelector('.bar-wrap').getBoundingClientRect().left
+    const parentleft = document.querySelector('.bar-wrap').getBoundingClientRect().left
     const playedBg = document.querySelector('.played-bg')
-    const moveDistance = e.clientX - clientX
-    pregressTime.value = (moveDistance / progressBarWidth) * store.currentSong.time / 1000
-    moveBtn.value.style.left = -btnWidth + moveDistance + 'px'
-    playedBg.style.width = (moveDistance / progressBarWidth) * 100 + '%'
-    audio.value.currentTime = pregressTime.value
+    setProgress(e, parentleft, playedBg)
+  }
+}
+
+/**
+ *
+ * @param {*} e 事件对象
+ * @param {*} parentleft 父元素距离视口左侧的距离
+ * @param {*} domBg 背景dom
+ */
+const setProgress = (e, parentleft, domBg) => {
+  if (e.clientX > parentleft && e.clientX <= parentleft + progressBarWidth) {
+    isMove.value = true
+    const left = Math.ceil(e.clientX - parentleft)
+    const percent = left / progressBarWidth
+    pregressTime.value = percent * store.currentSong.time / 1000
+    moveBtn.value.style.left = left - btnWidth + 'px'
+    domBg.style.width = percent * 100 + '%'
+    now.value = store.currentSong.time / 1000 * percent
   }
 }
 
@@ -351,14 +357,7 @@ let controlVol = e => {
   e.preventDefault()
   const parentTop = volWrap.value.getBoundingClientRect().top
   const mousemove = e1 => {
-    {
-      const moveDistance = e1.clientY - parentTop - 6
-      if (moveDistance < 99 && moveDistance > 6) {
-        volControl.value.style.top = moveDistance + 'px'
-        volBg.value.style.height = 99 - moveDistance + 'px'
-        audio.value.volume = ((90 - moveDistance) / 90).toFixed(1) > 0 ? ((90 - moveDistance) / 90).toFixed(1) : 0
-      }
-    }
+    changeTop(e1, parentTop)
     volWrap.value.onmouseup = () => {
       volWrap.value.onmouseup = null
       volWrap.value.onmousemove = null
@@ -370,19 +369,29 @@ let controlVol = e => {
 
 let clickVol = e => {
   const parentTop = volWrap.value.getBoundingClientRect().top
-  const moveDistance = e.clientY - parentTop - 6
-  if (moveDistance < 99 && moveDistance > 6) {
-    volControl.value.style.top = moveDistance + 'px'
-    volBg.value.style.height = 99 - moveDistance + 'px'
-    audio.value.volume = ((90 - moveDistance) / 90).toFixed(1) > 0 ? ((90 - moveDistance) / 90).toFixed(1) : 0
-  }
+  changeTop(e, parentTop)
 }
 
 let openVolControl = () => {
   isShowVol.value = !isShowVol.value
-  volControl.value.style.top = 99 - (90 * store.setting.volume) + 'px'
+  volControl.value.style.top = 102 - (90 * store.setting.volume) - 18 + 'px'
   volBg.value.style.height = 90 * store.setting.volume + 'px'
   if (!isShowVol.value) store.actionUpdateSetting({ volume: audio.value.volume }) // 关闭时再存储音量
+}
+
+const setVolume = moveDistance => {
+  if (moveDistance > 0) {
+    audio.value.volume = moveDistance
+  } else audio.value.volume = 0
+}
+
+const changeTop = (e, parentTop) => {
+  const top = e.clientY - parentTop
+  if (top < 102 && top > 12) {
+    volControl.value.style.top = top - 18 + 'px'
+    volBg.value.style.height = 102 - top + 'px'
+    setVolume(((102 - top) / 90))
+  }
 }
 
 let closePlayList = () => {
@@ -391,10 +400,10 @@ let closePlayList = () => {
   store.actionUpdateSetting({ volume: audio.value.volume })
 }
 
-let chooseSong = (item, i, id) => {
+let chooseSong = i => {
   store.actionUpdateIndex(i)
+  if (i === store.index) audio.value.currentTime = 0 // 重复选择相同歌曲 重播此歌曲
   play()
-  getLrc(id)
 }
 
 let switchMode = () => {
@@ -422,6 +431,19 @@ const keyup = e => {
 window.addEventListener('keyup', keyup)
 
 const onelength = () => { if (store.songQueue.length === 1) return }
+
+let delAll = () => {
+  store.status = 0
+  store.actionDelAll()
+  lrc.value = []
+  resetProgressBar()
+  nextTick(() => { isPaused.value = true })
+}
+
+const resetProgressBar = () => {
+  document.querySelector('.played-bg').style.width = 0
+  moveBtn.value.style.left = '-11px'
+}
 </script>
 
 <style lang="scss" scoped>
@@ -738,8 +760,8 @@ const onelength = () => { if (store.songQueue.length === 1) return }
         }
         .vol-control-icon {
           position: absolute;
-          left: 10px;
-          top: 99px;
+          left: -4px;
+          top: 0;
           width: 12px;
           height: 12px;
           background-color: #fff;

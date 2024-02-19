@@ -79,7 +79,7 @@ export const usePlayStore = defineStore('play', () => {
     }
   }
 
-  const actionDelAll = i => {
+  const actionDelAll = () => {
     localStorage.setItem('song_queue', JSON.stringify([]))
     songQueue.value = []
     currentSong.value = undefined
@@ -94,7 +94,7 @@ export const usePlayStore = defineStore('play', () => {
 
   const actionUpdateCurrentSong = () => {
     currentSong.value = localStorage.getItem('song_queue')
-      ? JSON.parse(localStorage.getItem('song_queue'))[getSongIndex()]
+      ? JSON.parse(localStorage.getItem('song_queue'))[index.value]
       : null
   }
 
@@ -110,7 +110,7 @@ export const usePlayStore = defineStore('play', () => {
 
   watch(index, () => {
     actionUpdateCurrentSong()
-    document.title = status.value ? currentSong.value.name : '音乐'
+    document.title = status.value ? currentSong.value?.name : '音乐'
   })
 
   watch(setting, val => {
@@ -118,7 +118,7 @@ export const usePlayStore = defineStore('play', () => {
   })
 
   watch(status, val => {
-    document.title = val ? currentSong.value.name : '音乐'
+    document.title = val ? currentSong.value?.name : '音乐'
   })
 
   return {

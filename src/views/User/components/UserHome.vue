@@ -105,7 +105,7 @@
       </h3>
       <div class="content">
         <Card v-for="item in playlist" :key="item.id">
-          <router-link to="/">
+          <router-link :to="`/playlist/${item.id}`">
             <Pic :src="item.img + '?param=140y140'" mask1 />
           </router-link>
           <div class="card-play fl-sb">
@@ -114,9 +114,11 @@
             <i class="play" title="播放" @click="addPlayList(item.id)" />
           </div>
           <template #footer>
-            <p class="ellipsis-1 name" :title="item.name">
-              {{ item.name }}
-            </p>
+            <router-link :to="`/playlist/${item.id}`">
+              <p class="ellipsis-1 name" :title="item.name">
+                {{ item.name }}
+              </p>
+            </router-link>
           </template>
         </Card>
       </div>
@@ -208,7 +210,7 @@ const sendText = ref('')
 const isShow = ref(false)
 
 const isMe = computed(() => {
-  return hasProfile() ? route.params.id === JSON.parse(localStorage.getItem('userInfo')).profile.userId : false
+  return hasProfile() ? Number(route.params.id) === JSON.parse(localStorage.getItem('userInfo')).profile.userId : false
 })
 
 onMounted(async () => {

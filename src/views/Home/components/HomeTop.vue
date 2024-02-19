@@ -49,7 +49,7 @@
           </li>
         </ul>
         <div class="bottom">
-          <router-link to="/">
+          <router-link :to="`/discover/toplist/${item.id}`">
             查看全部&gt;
           </router-link>
         </div>
@@ -273,6 +273,9 @@ const addPlayList = async id => { playStore.actionAddSongs(id) }
         font-size: 12px;
         background-color: #e8e8e8;
         cursor: pointer;
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
   }
