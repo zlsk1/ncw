@@ -125,7 +125,6 @@ const getArtistlist = async (limit, offset, initial, type, area) => {
     res = await getArtistlistAPI({ limit, offset, initial, type, area })
   }
   artistlist.value = res.data
-  window.scrollTo({ top: 0 })
 }
 
 let select = ({ type, area, path }) => {

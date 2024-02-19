@@ -175,7 +175,6 @@ const getPlayList = async () => {
   topStore.topId.length === 0 ? await topStore.actionTopId() : ''
   const res = await getPlayListDetail(currentId.value)
   playlist.value = res.data.playlist
-  window.scrollTo({ top: 0 })
 }
 
 let play = (o, type) => { playStore.actionAddSong(o, type) }

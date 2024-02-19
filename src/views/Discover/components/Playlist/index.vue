@@ -138,7 +138,6 @@ const getTopPlaylistHigh = async ({ order, cat, limit, before }) => {
   const res = await getAllPlaylistAPI({ order, cat, limit, before })
   playlist.value = res.data
   _before = playlist.value.lasttime
-  window.scrollTo({ top: 0 })
 }
 
 let select = tag => {
