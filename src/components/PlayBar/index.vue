@@ -34,7 +34,7 @@
                 <i class="img-wrap" />
                 <img :src="store.currentSong ? `${store.currentSong?.picUrl}?param=34y34` : 'https://s4.music.126.net/style/web2/img/default/default_album.jpg?param=34y34'">
               </router-link>
-              <div class="bar-wrap">
+              <div ref="barWrap" class="bar-wrap">
                 <div class="info">
                   <router-link class="track-name ellipsis-1" :to="`/song/${store?.currentSong?.id}`" :title="store.currentSong?.name">
                     {{ store.currentSong?.name }}
@@ -58,7 +58,7 @@
                 <div class="bar" @click="clickProgress">
                   <i ref="moveBtn" class="moveBtn" @mousedown="mousedown" />
                   <div class="bar-bg" />
-                  <div class="played-bg" />
+                  <div ref="playBg" class="played-bg" />
                 </div>
               </div>
               <div class="time">
@@ -88,7 +88,7 @@
                   @click="switchMode"
                 />
                 <div class="playlist">
-                  <i class="playlist-icon" title="播放列表" @click.stop="isShow = !isShow" />
+                  <i class="playlist-icon" title="播放列表" @click.stop="openPlaylist" />
                   <span class="playlist-count">
                     {{ store.songQueue?.length }}
                   </span>
@@ -195,19 +195,22 @@
 </template>
 
 <script setup>
-import { ref, onBeforeUnmount, watch, nextTick, onMounted } from 'vue'
+import { ref, onBeforeUnmount, watch, nextTick, onMounted, computed } from 'vue'
 import { formatSongDuration } from '@/utils/time'
 import { judgeJson } from '@/utils/index'
 import { getLyric } from '@/apis/song'
 import { usePlayStore } from '@/stores/play'
-import { debounce } from '@/utils/index'
+import { useMouseInElement } from '@vueuse/core'
 
 const store = usePlayStore()
 
 const progressBarWidth = 466
 const btnWidth = 11
+
 const moveBtn = ref(null)
 const playBar = ref(null)
+const playBg = ref(null)
+const barWrap = ref(null)
 const audio = ref(null)
 const volControl = ref(null)
 const volWrap = ref(null)
@@ -222,6 +225,24 @@ const word = ref('')
 const index = ref(0)
 const lrc = ref(null)
 
+const { x } = useMouseInElement(barWrap)
+
+const left = computed(() => {
+  return x.value - barLeft.value
+})
+
+const barLeft = computed(() => {
+  return barWrap.value?.getBoundingClientRect().left
+})
+
+watch(() => store.currentSong, val => {
+  if (!val) return
+  index.value = 0
+  word.value.scrollTo({ top: 0 })
+  Array.from(word.value.children).forEach(v => { v.classList = 'per-line' })
+  play()
+})
+
 onMounted(() => {
   audio.value.volume = store.setting.volume
 })
@@ -231,16 +252,6 @@ onBeforeUnmount(() => {
   openVolControl = null; play = null; pause = null; mousedown = null; clickProgress = null; closePlayList = null; prev = null
   next = null; controlVol = null; clickVol = null; chooseSong = null; switchMode = null; delAll = null
   window.removeEventListener('keyup', keyup)
-})
-
-// 监听当前歌曲的变化（解决正在播放时切换其他的歌曲不能正常播放）
-watch(() => store.currentSong, (newVal, oldVal) => {
-  if (!newVal) return
-  if (oldVal === undefined) { // 播放列表长度从0变为1时
-    play()
-  } else {
-    play()
-  }
 })
 
 const loadedmetadata = () => {
@@ -265,7 +276,7 @@ const timeupdate = e => {
   if (!isMove.value) {
     now.value = e.target.currentTime
     const percent = now.value / store.currentSong?.time * 1000 * 100
-    document.querySelector('.played-bg').style.width = percent + btnWidth / progressBarWidth + '%'
+    playBg.value.style.width = percent + btnWidth / progressBarWidth + '%'
     moveBtn.value.style.left = `calc(${percent}% - ${btnWidth}px)`
   }
   if (isShow.value) {
@@ -273,7 +284,7 @@ const timeupdate = e => {
     if (index.value < _index) {
       word.value.children[index.value].textContent ? word.value.children[index.value].classList.replace('per-line', 'active-lyric') : ''
       word.value.children[index.value - 1]?.classList.replace('active-lyric', 'per-line')
-      word.value.scrollTo({ top: _index * 32 - 96, behavior: 'smooth' })
+      word.value.scrollTo({ top: _index * 32 - 128, behavior: 'smooth' })
       index.value = _index
     }
   }
@@ -285,48 +296,39 @@ const ended = () => {
   next()
 }
 
-let mousedown = e1 => {
+let mousedown = e => {
   if (store.currentSong) {
-    e1.preventDefault()
-    const playedBg = document.querySelector('.played-bg')
-    const parentleft = document.querySelector('.bar-wrap').getBoundingClientRect().left
-    const mousemove = e2 => {
-      setProgress(e2, parentleft, playedBg)
-      playBar.value.onmouseup = (e) => {
-        e.stopPropagation()
+    e.preventDefault()
+    playBar.value.onmousemove = () => {
+      if (left.value > 0 && left.value <= progressBarWidth) {
+        isMove.value = true
+        setProgress()
+      }
+      playBar.value.onmouseup = e1 => {
+        e1.stopPropagation()
         audio.value.currentTime = pregressTime.value
         playBar.value.onmousemove = null
         playBar.value.onmouseup = null
       }
     }
-    playBar.value.onmousemove = debounce(mousemove, 0)
   }
 }
 
-let clickProgress = e => {
+let clickProgress = () => {
   if (store.currentSong) {
-    const parentleft = document.querySelector('.bar-wrap').getBoundingClientRect().left
-    const playedBg = document.querySelector('.played-bg')
-    setProgress(e, parentleft, playedBg)
+    if (left.value > 0 && left.value <= progressBarWidth) {
+      setProgress()
+      audio.value.currentTime = pregressTime.value
+    }
   }
 }
 
-/**
- *
- * @param {*} e 事件对象
- * @param {*} parentleft 父元素距离视口左侧的距离
- * @param {*} domBg 背景dom
- */
-const setProgress = (e, parentleft, domBg) => {
-  if (e.clientX > parentleft && e.clientX <= parentleft + progressBarWidth) {
-    isMove.value = true
-    const left = Math.ceil(e.clientX - parentleft)
-    const percent = left / progressBarWidth
-    pregressTime.value = percent * store.currentSong.time / 1000
-    moveBtn.value.style.left = left - btnWidth + 'px'
-    domBg.style.width = percent * 100 + '%'
-    now.value = store.currentSong.time / 1000 * percent
-  }
+const setProgress = () => {
+  const percent = left.value / progressBarWidth
+  pregressTime.value = percent * store.currentSong.time / 1000
+  moveBtn.value.style.left = left.value - btnWidth + 'px'
+  playBg.value.style.width = percent * 100 + '%'
+  now.value = store.currentSong.time / 1000 * percent
 }
 
 let prev = () => {
@@ -354,9 +356,8 @@ let next = () => {
 }
 
 let controlVol = e => {
-  e.preventDefault()
   const parentTop = volWrap.value.getBoundingClientRect().top
-  const mousemove = e1 => {
+  volWrap.value.onmousemove = e1 => {
     changeTop(e1, parentTop)
     volWrap.value.onmouseup = () => {
       volWrap.value.onmouseup = null
@@ -364,7 +365,6 @@ let controlVol = e => {
       volWrap.value.onmousemove = null
     }
   }
-  volWrap.value.onmousemove = debounce(mousemove, 16)
 }
 
 let clickVol = e => {
@@ -441,8 +441,15 @@ let delAll = () => {
 }
 
 const resetProgressBar = () => {
-  document.querySelector('.played-bg').style.width = 0
+  playBg.value.style.width = 0
   moveBtn.value.style.left = '-11px'
+}
+
+const openPlaylist = async () => {
+  isShow.value = !isShow.value
+  if (isShow.value) {
+    setTimeout(() => { word.value.scrollTo({ top: index.value * 32 - 128 }) }, 0)
+  }
 }
 </script>
 
