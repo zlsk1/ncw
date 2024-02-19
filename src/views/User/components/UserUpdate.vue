@@ -68,7 +68,7 @@
         <span>更换头像</span>
       </div>
       <div class="upload-btn">
-        <el-button type="primary" @click="clickUpload">
+        <el-button type="primary" :disabled="file ? true : false" @click="clickUpload">
           上传头像
         </el-button> <span>支持jpg、png、bmp格式的图片，且文件小于5M</span>
       </div>
@@ -85,11 +85,6 @@
             src=""
             class="controlImg"
           >
-          <!-- <img
-            v-if="file"
-            src=""
-            class="opacity"
-          > -->
           <div class="choose">
             <div class="expand" />
           </div>
@@ -260,7 +255,6 @@ const setImg = url => {
   document.querySelector('.small img').src = url
   document.querySelector('.big img').src = url
   document.querySelector('.upload .controlImg').src = url
-  // document.querySelector('.upload .opacity').src = url
 }
 
 let updateAvatar = async () => {
