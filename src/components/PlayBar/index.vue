@@ -4,7 +4,7 @@
       <audio
         ref="audio"
         :src="`https://music.163.com/song/media/outer/url?id=${store.currentSong?.id}.mp3`"
-        :loop="store.setting?.mode === 2"
+        :loop="isLoop"
         :autoplay="!isPaused"
         @loadedmetadata="loadedmetadata"
         @timeupdate="timeupdate"
@@ -219,7 +219,7 @@ const isPaused = ref(true)
 const isShowVol = ref(false)
 const isMove = ref(false)
 const isShow = ref(false)
-const now = ref('00:00')
+const now = ref('0')
 const pregressTime = ref('')
 const word = ref('')
 const index = ref(0)
@@ -235,11 +235,17 @@ const barLeft = computed(() => {
   return barWrap.value?.getBoundingClientRect().left
 })
 
+const isLoop = computed(() => {
+  return store.setting?.mode === 2 || store.songQueue.length === 1
+})
+
 watch(() => store.currentSong, val => {
   if (!val) return
-  index.value = 0
-  word.value.scrollTo({ top: 0 })
-  Array.from(word.value.children).forEach(v => { v.classList = 'per-line' })
+  if (word.value) {
+    index.value = 0
+    word.value.scrollTo({ top: 0 })
+    Array.from(word.value.children).forEach(v => { v.classList = 'per-line' })
+  }
   play()
 })
 
@@ -288,10 +294,10 @@ const timeupdate = e => {
       index.value = _index
     }
   }
-  isMove.value = isMove.value ? false : ''
 }
 
 const ended = () => {
+  now.value = '0'
   resetProgressBar()
   next()
 }
@@ -306,6 +312,7 @@ let mousedown = e => {
       }
       playBar.value.onmouseup = e1 => {
         e1.stopPropagation()
+        isMove.value = false
         audio.value.currentTime = pregressTime.value
         playBar.value.onmousemove = null
         playBar.value.onmouseup = null
@@ -355,11 +362,12 @@ let next = () => {
   }
 }
 
-let controlVol = e => {
+let controlVol = () => {
   const parentTop = volWrap.value.getBoundingClientRect().top
-  volWrap.value.onmousemove = e1 => {
-    changeTop(e1, parentTop)
-    volWrap.value.onmouseup = () => {
+  volWrap.value.onmousemove = e => {
+    changeTop(e, parentTop)
+    volWrap.value.onmouseup = e1 => {
+      e1.stopPropagation()
       volWrap.value.onmouseup = null
       volWrap.value.onmousemove = null
       volWrap.value.onmousemove = null
