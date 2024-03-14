@@ -66,7 +66,7 @@
             </dt>
             <div class="right">
               <dd v-for="item in searchSuggset?.songs" :key="item.id">
-                <router-link :to="`/song/${item.id}`">
+                <router-link :to="`/song/${item.id}`" @mousedown="router.push(`/song/${item.id}`)">
                   <p class="ellipsis-1">
                     {{ `${item.name}-${item.artists.map(v => v.name).join('/')}` }}
                   </p>
@@ -81,7 +81,7 @@
             </dt>
             <div class="right">
               <dd v-for="item in searchSuggset?.artists" :key="item.id">
-                <router-link :to="`/artist/${item.id}`">
+                <router-link :to="`/artist/${item.id}`" @mousedown="router.push(`/artist/${item.id}`)">
                   <p class="ellipsis-1">
                     {{ item.name }}
                   </p>
@@ -96,7 +96,7 @@
             </dt>
             <div class="right">
               <dd v-for="item in searchSuggset?.albums" :key="item.id">
-                <router-link :to="`/playlist/${item.id}`">
+                <router-link :to="`/album/${item.id}`" @mousedown="router.push(`/album/${item.id}`)">
                   <p class="ellipsis-1">
                     {{ `${item.name}-${item.artist.name}` }}
                   </p>
@@ -111,7 +111,7 @@
             </dt>
             <div class="right">
               <dd v-for="item in searchSuggset?.playlists" :key="item.id">
-                <router-link :to="`/playlist/${item.id}`">
+                <router-link :to="`/playlist/${item.id}`" @mousedown="router.push(`/playlist/${item.id}`)">
                   <p class="ellipsis-1">
                     {{ item.name }}
                   </p>
