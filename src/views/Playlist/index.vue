@@ -150,7 +150,7 @@
 
 <script setup>
 import { getPlayListDetail, getPlayListAllAPI, getPlaylistDynamicAPI } from '@/apis/playList'
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { ArrowDown, ArrowUp } from '@element-plus/icons-vue'
 import { usePlayStore } from '@/stores/play'
@@ -173,10 +173,6 @@ onMounted(() => {
   getDynamic(route.params.id)
 })
 
-onBeforeUnmount(() => {
-  expandDesc = null; play = null
-})
-
 const getplaylist = async (id) => {
   const res = await getPlayListDetail(id)
   playlist.value = res.data
@@ -186,7 +182,7 @@ const getplaylist = async (id) => {
   playlist.value.playlist.tracks = _res.data.songs
 }
 
-let expandDesc = () => {
+const expandDesc = () => {
   !isExpand.value ? '' : window.scrollTo({ top: 0 })
   isExpand.value = !isExpand.value
   description.value = isExpand.value
@@ -194,7 +190,7 @@ let expandDesc = () => {
     : playlist.value?.playlist?.description.slice(0, 100).concat('...')
 }
 
-let play = (o, type) => {
+const play = (o, type) => {
   playStore.actionAddSong(o, type)
 }
 

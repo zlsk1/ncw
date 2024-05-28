@@ -85,7 +85,7 @@
 
 <script setup>
 import { getArtistlistAPI, getHotSinger } from '@/apis/singer'
-import { onMounted, ref, computed, onBeforeUnmount } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { catelist, areaObj, typeObj, filterlist } from './data'
 
@@ -113,10 +113,6 @@ onMounted(() => {
   getArtistlist(limit, offset, initial, typeObj[route.query.type], areaObj[route.query.area])
 })
 
-onBeforeUnmount(() => {
-  select = null; handleFilter = null
-})
-
 const getArtistlist = async (limit, offset, initial, type, area) => {
   let res
   if (route.fullPath === '/discover/artist') {
@@ -127,12 +123,12 @@ const getArtistlist = async (limit, offset, initial, type, area) => {
   artistlist.value = res.data
 }
 
-let select = ({ type, area, path }) => {
+const select = ({ type, area, path }) => {
   currentCate.value = area + '' + type
   getArtistlist(limit, offset, initial, typeObj[type], areaObj[area])
 }
 
-let handleFilter = cate => {
+const handleFilter = cate => {
   if (cate === '#') initial = 0
   else initial = cate
   getArtistlist(limit, offset, initial, typeObj[route.query.type], areaObj[route.query.area])

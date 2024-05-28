@@ -2,39 +2,39 @@
   <div class="recomend-wrap">
     <div class="header fl-sb">
       <div class="left fl">
-        <router-link to="/" class="title">
+        <router-link to="/discover/playlist" class="title">
           编辑推荐
         </router-link>
         <ul class="tab">
           <li>
-            <router-link to="/">
+            <router-link to="/discover/playlist?category=华语">
               华语
             </router-link>
           </li>
           <li>
-            <router-link to="/">
+            <router-link to="/discover/playlist?category=流行">
               流行
             </router-link>
           </li>
           <li>
-            <router-link to="/">
+            <router-link to="/discover/playlist?category=摇滚">
               摇滚
             </router-link>
           </li>
           <li>
-            <router-link to="/">
+            <router-link to="/discover/playlist?category=民谣">
               民谣
             </router-link>
           </li>
           <li>
-            <router-link to="/">
+            <router-link to="/discover/playlist?category=电子">
               电子
             </router-link>
           </li>
         </ul>
       </div>
       <div class="right">
-        <router-link to="/">
+        <router-link to="/discover/playlist">
           更多
         </router-link>
         <i />
@@ -71,7 +71,7 @@
 
 <script setup>
 import { getPersonalized } from '@/apis/home'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { formatPlayCount } from '@/utils/index'
 import { usePlayStore } from '@/stores/play'
 const store = usePlayStore()
@@ -82,16 +82,12 @@ onMounted(() => {
   getPersonalizedList()
 })
 
-onBeforeUnmount(() => {
-  addPlayList = null
-})
-
 const getPersonalizedList = async () => {
   const res = await getPersonalized(8)
   personalizedList.value = res.data.result
 }
 
-let addPlayList = async id => {
+const addPlayList = async id => {
   store.actionAddSongs(id)
 }
 

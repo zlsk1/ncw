@@ -70,7 +70,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { judgeJson } from '@/utils/index'
 import { ArrowDown } from '@element-plus/icons-vue'
@@ -90,10 +90,6 @@ const maxHeight = '304px'
 
 onMounted(() => {
   getData(route.params.id)
-})
-
-onBeforeUnmount(() => {
-  expandLrc = null; goComment = null
 })
 
 onBeforeRouteUpdate((to, from) => {
@@ -122,7 +118,7 @@ const expandLrc = () => {
   }
 }
 
-let goComment = () => {
+const goComment = () => {
   window.scrollTo({ top: document.querySelector('.comment-wrap .header').getBoundingClientRect().top })
   textarea.value.focus()
 }

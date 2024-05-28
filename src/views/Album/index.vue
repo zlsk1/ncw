@@ -151,7 +151,7 @@
 </template>
 
 <script setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { usePlayStore } from '@/stores/play'
 import { getAlbumAPI } from '@/apis/album'
@@ -174,10 +174,6 @@ onMounted(() => {
   getAlbum(route.params.id)
 })
 
-onBeforeUnmount(() => {
-  expand = null; play = null
-})
-
 const getAlbum = async id => {
   const res = await getAlbumAPI(id)
   const res1 = await getArtistAlbumAPI(res.data.album.artist.id, 5)
@@ -185,11 +181,11 @@ const getAlbum = async id => {
   albums.value = res1.data
 }
 
-let expand = () => {
+const expand = () => {
   isExpand.value = !isExpand.value
 }
 
-let play = (o, type) => {
+const play = (o, type) => {
   playStore.actionAddSong(o, type)
 }
 </script>

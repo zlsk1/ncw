@@ -116,15 +116,12 @@
 
 <script setup>
 import { getMsgContentAPI, sendTextAPI } from '@/apis/user'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { ArrowRight } from '@element-plus/icons-vue'
 import { ElLoading } from 'element-plus'
 import Emj from '@/components/Emj'
 import { formatMsgTime } from '@/utils/time'
-import { useUserStore } from '@/stores/user'
-
-const userStore = useUserStore()
 
 const route = useRoute()
 
@@ -139,10 +136,6 @@ let _before = ''
 onMounted(async () => {
   await getMsgContent(route.query.id, 10, _before)
   scrollbar.value.setScrollTop(10000)
-})
-
-onBeforeUnmount(() => {
-  sendText = null
 })
 
 const getMsgContent = async (uid, limit, before) => {
@@ -176,7 +169,7 @@ const scroll = async ({ scrollTop }) => {
   }
 }
 
-let sendText = async () => {
+const sendText = async () => {
   await sendTextAPI({ user_ids: route.query.id, msg: textValue.value })
   getMsgContent(route.query.id, 10)
 }
@@ -242,6 +235,7 @@ let sendText = async () => {
           width: 50px;
           height: 50px;
           margin-right: 20px;
+          flex-shrink: 0;
         }
         .msg-bg {
           position: relative;

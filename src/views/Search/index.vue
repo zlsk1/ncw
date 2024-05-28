@@ -104,7 +104,7 @@
 
 <script setup>
 import { Search, ArrowRight } from '@element-plus/icons-vue'
-import { onMounted, ref, onBeforeUnmount } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { getSearchSuggest } from '@/apis/search'
 import { debounce } from '@/utils/index'
@@ -145,10 +145,6 @@ onMounted(() => {
   getSearchResult()
 })
 
-onBeforeUnmount(() => {
-  handleFocus = null; handleBlur = null
-})
-
 onBeforeRouteUpdate(to => {
   if (to) index.value = Number(to.params.type)
 })
@@ -173,9 +169,9 @@ const _handleSearch = e => {
 
 const handleSearch = debounce(_handleSearch, 20)
 
-let handleFocus = () => { isFocus.value = !isFocus.value }
+const handleFocus = () => { isFocus.value = !isFocus.value }
 
-let handleBlur = () => { isFocus.value = !isFocus.value }
+const handleBlur = () => { isFocus.value = !isFocus.value }
 
 const pushRoute = () => router.push({ path: `/search/${searchVal.value}/${index.value}` })
 </script>

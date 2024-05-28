@@ -38,7 +38,7 @@
 
 <script setup>
 import { getSongSimilar } from '@/apis/song'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { usePlayStore } from '@/stores/play'
 import DownLoadSide from '@/components/DownLoadSide'
@@ -53,10 +53,6 @@ onMounted(() => {
   getSimi()
 })
 
-onBeforeUnmount(() => {
-  play = null
-})
-
 onBeforeRouteUpdate((to, from) => {
   if (to) getSimi(to.params.id)
 })
@@ -66,7 +62,7 @@ const getSimi = async () => {
   simiList.value = res.data.songs
 }
 
-let play = (o, type) => { playStore.actionAddSong(o, type) }
+const play = (o, type) => { playStore.actionAddSong(o, type) }
 </script>
 
 <style lang="scss" scoped>

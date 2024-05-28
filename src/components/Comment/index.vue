@@ -200,7 +200,7 @@
 import Emj from '@/components/Emj'
 import { formatTimeStamp, isBeforeYesterday } from '@/utils/time'
 import { debounce, hasProfile } from '@/utils/index'
-import { nextTick, onBeforeUnmount, onMounted, ref, computed } from 'vue'
+import { nextTick, onMounted, ref, computed } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { likeComment,
@@ -248,10 +248,6 @@ onMounted(() => {
   getComment(currentId.value, offset.value, limit.value)
 })
 
-onBeforeUnmount(() => {
-  input = null; onChoose = null; handleComment = null; addAite = null; like = null; changePage = null; showLogin = null
-})
-
 onBeforeRouteUpdate((to, from) => {
   if (to) getComment(currentId.value, offset.value, limit.value)
 })
@@ -272,13 +268,13 @@ const getComment = async (id, offset, limit) => {
 
 const _input = e => {}
 
-let input = debounce(_input, 30)
+const input = debounce(_input, 30)
 
-let onChoose = (e, type) => {
+const onChoose = (e, type) => {
   type === 0 ? comment.value += `[${e}]` : reply.value += `[${e}]`
 }
 
-let handleComment = async () => {
+const handleComment = async () => {
   if (comment.value.trim().length === 0) {
     ElMessage({
       message: '输入点内容再提交吧',
@@ -292,7 +288,7 @@ let handleComment = async () => {
   }
 }
 
-let addAite = (type) => {
+const addAite = (type) => {
   if (type === 0) comment.value += '@'
   else if (type === 1) reply.value += '@'
 }
@@ -323,7 +319,7 @@ const handleReply = (nickname) => {
   }
 }
 
-let like = async (cid, liked, index) => {
+const like = async (cid, liked, index) => {
   const res = await likeComment({ id: route.params.id, cid, t: liked ? 0 : 1 })
   if (res.status === 200) {
     commentObj.value.hotComments[index].liked = !liked
@@ -333,7 +329,7 @@ let like = async (cid, liked, index) => {
   }
 }
 
-let changePage = e => {
+const changePage = e => {
   DOMIndex.value = ''
   offset.value = e * limit.value
   offset.value = offset.value === limit.value ? '' : offset.value // 获取第一页的数据时要包括精彩评论
@@ -348,7 +344,7 @@ const delComment = async () => {
     })
 }
 
-let showLogin = () => {
+const showLogin = () => {
   if (!hasProfile()) isShow.value = !isShow.value
 }
 </script>

@@ -12,13 +12,15 @@
     <i v-if="props.album2" class="album2" />
     <i v-if="props.album3" class="album3" />
     <i v-if="props.play" class="play" />
-    <img v-lazy="props.src" alt="">
+    <img v-if="lazyLoad" v-lazy="props.src" alt="">
+    <img v-else :src="props.src" alt="">
   </div>
 </template>
 
 <script setup>
 const props = defineProps({
   src: { type: String, default: '' },
+  lazyLoad: { type: Boolean, default: true },
   album: { type: Boolean, default: false },
   album1: { type: Boolean, default: false },
   album2: { type: Boolean, default: false },

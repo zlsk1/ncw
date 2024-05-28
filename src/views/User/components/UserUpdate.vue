@@ -122,7 +122,7 @@
 
 <script setup>
 import { useUserStore } from '@/stores/user'
-import { onMounted, ref, nextTick, onBeforeUnmount } from 'vue'
+import { onMounted, ref, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import {
   provinceAndCityData
@@ -172,11 +172,7 @@ onMounted(() => {
   getDetail()
 })
 
-onBeforeUnmount(() => {
-  submit = null; switchUpdate = null; changeFile = null; clickUpload = null; cancelImg = null; updateAvatar = null
-})
-
-let submit = async () => {
+const submit = async () => {
   await form.value.validate(async (valid, fields) => {
     if (valid) {
       const { value: province, children } = provinceAndCityData.find(v => v.label === formData.value.area[0])
@@ -230,9 +226,9 @@ const getArea = () => {
   }
 }
 
-let switchUpdate = () => { updateImg.value = !updateImg.value }
+const switchUpdate = () => { updateImg.value = !updateImg.value }
 
-let changeFile = e => {
+const changeFile = e => {
   file.value = e.target.files[0]
   const reader = new FileReader()
   reader.onload = e => {
@@ -241,11 +237,11 @@ let changeFile = e => {
   reader.readAsDataURL(file.value)
 }
 
-let clickUpload = () => {
+const clickUpload = () => {
   document.querySelector('.upload input').click()
 }
 
-let cancelImg = () => {
+const cancelImg = () => {
   if (!file.value) updateImg.value = !updateImg.value
   else setImg(userStore.avator)
   file.value = null
@@ -257,7 +253,7 @@ const setImg = url => {
   document.querySelector('.upload .controlImg').src = url
 }
 
-let updateAvatar = async () => {
+const updateAvatar = async () => {
   const formData = new FormData()
   formData.append('imgFile', file.value)
   try {

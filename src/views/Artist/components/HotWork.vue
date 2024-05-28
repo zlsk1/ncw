@@ -53,7 +53,7 @@
 
 <script setup>
 import { getArtistTopSongAPI } from '@/apis/artist'
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { formatSongDuration } from '@/utils/time'
 import { usePlayStore } from '@/stores/play'
@@ -69,10 +69,6 @@ onMounted(() => {
   getTopSong(route.params.id)
 })
 
-onBeforeUnmount(() => {
-  play = null; addPlaylist = null
-})
-
 onBeforeRouteUpdate((to) => {
   if (to) {
     getTopSong(to.params.id)
@@ -85,9 +81,9 @@ const getTopSong = async id => {
   isLoad.value = false
 }
 
-let play = (o, type) => { playStore.actionAddSong(o, type) }
+const play = (o, type) => { playStore.actionAddSong(o, type) }
 
-let addPlaylist = async id => {
+const addPlaylist = async id => {
   const ids = topSongList.value.map(v => v.id).join(',')
   playStore.actionGetSongs(ids, topSongList.value)
 }

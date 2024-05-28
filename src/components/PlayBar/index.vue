@@ -1,5 +1,5 @@
 <template>
-  <div v-clickOutside="closePlayList">
+  <div ref="playBarRef">
     <div class="playBar-wrap">
       <audio
         ref="audio"
@@ -101,7 +101,7 @@
         </div>
       </div>
     </div>
-    <div v-if="isShow" class="play-queue-wrap w980 fl">
+    <div v-if="isShow" ref="playlistRef" class="play-queue-wrap w980 fl">
       <img :src="store.currentSong?.picUrl" alt="" class="bg-img">
       <div class="play-queue">
         <div class="header fl-sb">
@@ -200,7 +200,7 @@ import { formatSongDuration } from '@/utils/time'
 import { judgeJson } from '@/utils/index'
 import { getLyric } from '@/apis/song'
 import { usePlayStore } from '@/stores/play'
-import { useMouseInElement } from '@vueuse/core'
+import { useMouseInElement, onClickOutside } from '@vueuse/core'
 
 const store = usePlayStore()
 
@@ -210,6 +210,7 @@ const btnWidth = 11
 const moveBtn = ref(null)
 const playBar = ref(null)
 const playBg = ref(null)
+const playBarRef = ref(null)
 const barWrap = ref(null)
 const audio = ref(null)
 const volControl = ref(null)
@@ -251,12 +252,15 @@ watch(() => store.currentSong, val => {
 
 onMounted(() => {
   audio.value.volume = store.setting.volume
+  onClickOutside(playBarRef.value, (e) => {
+    isShow.value = false
+    isShowVol.value = false
+    store.actionUpdateSetting({ volume: audio.value.volume })
+  })
 })
 
 onBeforeUnmount(() => {
   store.actionUpdateSetting({ volume: audio.value.volume })
-  openVolControl = null; play = null; pause = null; mousedown = null; clickProgress = null; closePlayList = null; prev = null
-  next = null; controlVol = null; clickVol = null; chooseSong = null; switchMode = null; delAll = null
   window.removeEventListener('keyup', keyup)
 })
 
@@ -266,13 +270,13 @@ const loadedmetadata = () => {
   }
 }
 
-let play = () => {
+const play = () => {
   audio.value.play()
   isPaused.value = false
   store.status = 1
 }
 
-let pause = () => {
+const pause = () => {
   audio.value.pause()
   isPaused.value = true
   store.status = 0
@@ -302,7 +306,7 @@ const ended = () => {
   next()
 }
 
-let mousedown = e => {
+const mousedown = e => {
   if (store.currentSong) {
     e.preventDefault()
     playBar.value.onmousemove = () => {
@@ -321,7 +325,7 @@ let mousedown = e => {
   }
 }
 
-let clickProgress = () => {
+const clickProgress = () => {
   if (store.currentSong) {
     if (left.value > 0 && left.value <= progressBarWidth) {
       setProgress()
@@ -338,7 +342,7 @@ const setProgress = () => {
   now.value = store.currentSong.time / 1000 * percent
 }
 
-let prev = () => {
+const prev = () => {
   onelength()
   if (store.index > 0) {
     store.actionUpdateIndex(store.index - 1)
@@ -347,7 +351,7 @@ let prev = () => {
   }
 }
 
-let next = () => {
+const next = () => {
   onelength()
   // 顺序播放
   if (store.setting.mode === 0) {
@@ -362,7 +366,7 @@ let next = () => {
   }
 }
 
-let controlVol = () => {
+const controlVol = () => {
   const parentTop = volWrap.value.getBoundingClientRect().top
   volWrap.value.onmousemove = e => {
     changeTop(e, parentTop)
@@ -375,12 +379,12 @@ let controlVol = () => {
   }
 }
 
-let clickVol = e => {
+const clickVol = e => {
   const parentTop = volWrap.value.getBoundingClientRect().top
   changeTop(e, parentTop)
 }
 
-let openVolControl = () => {
+const openVolControl = () => {
   isShowVol.value = !isShowVol.value
   volControl.value.style.top = 102 - (90 * store.setting.volume) - 18 + 'px'
   volBg.value.style.height = 90 * store.setting.volume + 'px'
@@ -402,19 +406,13 @@ const changeTop = (e, parentTop) => {
   }
 }
 
-let closePlayList = () => {
-  isShow.value = false
-  isShowVol.value = false
-  store.actionUpdateSetting({ volume: audio.value.volume })
-}
-
-let chooseSong = i => {
+const chooseSong = i => {
   store.actionUpdateIndex(i)
   if (i === store.index) audio.value.currentTime = 0 // 重复选择相同歌曲 重播此歌曲
   play()
 }
 
-let switchMode = () => {
+const switchMode = () => {
   const mode = store.setting.mode >= 2 ? 0 : ++store.setting.mode
   store.actionUpdateSetting({ mode })
 }
@@ -440,7 +438,7 @@ window.addEventListener('keyup', keyup)
 
 const onelength = () => { if (store.songQueue.length === 1) return }
 
-let delAll = () => {
+const delAll = () => {
   store.status = 0
   store.actionDelAll()
   lrc.value = []

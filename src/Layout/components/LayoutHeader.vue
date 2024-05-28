@@ -192,7 +192,7 @@
 </template>
 
 <script setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
@@ -224,10 +224,6 @@ onMounted(() => {
   getLoginStatusAPI()
 })
 
-onBeforeUnmount(() => {
-  handleSearch = null; handleFocus = null; handleBlur = null
-})
-
 const dropdownChange = e => {
   isShowBadge.value = !e
 }
@@ -250,11 +246,11 @@ const _handleSearch = async e => {
   }
 }
 
-let handleSearch = debounce(_handleSearch, 20)
+const handleSearch = debounce(_handleSearch, 20)
 
-let handleFocus = () => { isFocus.value = !isFocus.value }
+const handleFocus = () => { isFocus.value = !isFocus.value }
 
-let handleBlur = () => { isFocus.value = !isFocus.value }
+const handleBlur = () => { isFocus.value = !isFocus.value }
 </script>
 
 <style lang="scss" scoped>

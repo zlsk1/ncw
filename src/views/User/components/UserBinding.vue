@@ -40,17 +40,13 @@
 <script setup>
 import UserHeader from './UserHeader'
 import { hideTel } from '@/utils/index'
-import { onBeforeUnmount, ref } from 'vue'
+import { ref } from 'vue'
 
 const phone = '11111111111'
 
 const isPassword = ref(false)
 
-onBeforeUnmount(() => {
-  openPassword = null
-})
-
-let openPassword = () => { isPassword.value = !isPassword.value }
+const openPassword = () => { isPassword.value = !isPassword.value }
 
 </script>
 

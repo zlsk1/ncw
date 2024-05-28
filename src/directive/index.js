@@ -1,8 +1,6 @@
-import { clickOutside } from './clickOutside'
 import { lazy } from './lazyload'
 
 const directives = {
-  clickOutside,
   lazy
 }
 

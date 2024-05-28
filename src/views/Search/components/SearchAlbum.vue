@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted } from 'vue'
 import { handleSearchAPI } from '@/apis/search'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { usePlayStore } from '@/stores/play'
@@ -61,10 +61,6 @@ onMounted(() => {
   handleSearch(route.params.k, limit, offset, route.params.type)
 })
 
-onBeforeUnmount(() => {
-  play = null
-})
-
 onBeforeRouteUpdate(to => {
   if (to.params.k !== route.params.k) handleSearch(to.params.k, limit, offset, to.params.type)
 })
@@ -82,7 +78,7 @@ const changePage = e => {
   handleSearch(route.params.k, limit, offset, route.params.type)
 }
 
-let play = id => { playStore.actionAddSongs(id) }
+const play = id => { playStore.actionAddSongs(id) }
 </script>
 
 <style lang="scss" scoped>

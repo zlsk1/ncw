@@ -21,7 +21,7 @@
           ]
         }"
       >
-        <div v-clickOutside="clickPopOut">
+        <div ref="menuRef">
           <div class="category-header">
             <el-button size="small" @click="reset">
               全部风格
@@ -96,11 +96,16 @@
 </template>
 
 <script setup>
-import { onMounted, ref, onBeforeUnmount } from 'vue'
+import { onMounted, ref } from 'vue'
 import { usePlayStore } from '@/stores/play'
 import { getAllPlaylistAPI, getPlaylistCateAPI } from '@/apis/playList'
 import { ArrowDown } from '@element-plus/icons-vue'
 import { formatPlayCount } from '@/utils/index'
+import { onClickOutside } from '@vueuse/core'
+import { useRouter, useRoute } from 'vue-router'
+
+const router = useRouter()
+const route = useRoute()
 
 const playStore = usePlayStore()
 
@@ -109,17 +114,21 @@ let _before = ''
 
 const catelist = ref([])
 const playlist = ref(null)
-const currentCate = ref('全部')
+const currentCate = ref('')
 const isShow = ref(false)
+const menuRef = ref(null)
 
 onMounted(() => {
   getPlaylistHighCate()
-  getTopPlaylistHigh({ limit })
+  getFirstTopPlaylistHigh({ limit })
+
+  onClickOutside(menuRef, () => { isShow.value = false })
 })
 
-onBeforeUnmount(() => {
-  select = null; reset = null; openPopover = null; clickPopOut = null; addPlayList = null
-})
+const getFirstTopPlaylistHigh = async ({ limit, cat = route.query.category }) => {
+  await getTopPlaylistHigh({ limit, cat })
+  currentCate.value = cat || '全部'
+}
 
 const getPlaylistHighCate = async () => {
   const { data } = await getPlaylistCateAPI()
@@ -140,27 +149,25 @@ const getTopPlaylistHigh = async ({ order, cat, limit, before }) => {
   _before = playlist.value.lasttime
 }
 
-let select = tag => {
+const select = tag => {
   isShow.value = false
   currentCate.value = tag
   getTopPlaylistHigh({ cat: tag, limit, before: _before })
+  router.push({ path: '/discover/playlist', query: { tag }})
 }
 
 const changePage = page => {
   getTopPlaylistHigh({ limit, before: _before })
-  console.log(page)
 }
 
-let openPopover = () => { isShow.value = !isShow.value }
+const openPopover = () => { isShow.value = !isShow.value }
 
-let reset = () => {
+const reset = () => {
   getTopPlaylistHigh({ limit })
   currentCate.value = '全部'
 }
 
-let clickPopOut = () => { isShow.value = false }
-
-let addPlayList = id => { playStore.actionAddSongs(id) }
+const addPlayList = id => { playStore.actionAddSongs(id) }
 </script>
 
 <style lang="scss" scoped>

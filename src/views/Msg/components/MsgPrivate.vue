@@ -53,7 +53,7 @@
 
 <script setup>
 import { getMsgAPI } from '@/apis/user'
-import { onMounted, ref, watch, nextTick, onBeforeUnmount } from 'vue'
+import { onMounted, ref, watch, nextTick } from 'vue'
 import { formatTimeStamp } from '@/utils/time'
 import { useElementVisibility } from '@vueuse/core'
 import { ElLoading } from 'element-plus'
@@ -71,7 +71,6 @@ let _offset = 0
 const limit = 20
 
 watch(targetIsVisible, async val => {
-  // console.log(val)
   if (val && msgData.value?.more) {
     const loadingInstance = ElLoading.service({
       target: '.bar',
@@ -88,8 +87,6 @@ onMounted(async () => {
   await getMsg(limit, _offset)
 })
 
-onBeforeUnmount(() => { toDetail = null })
-
 const getMsg = async (limit, offset) => {
   const res = await getMsgAPI(limit, offset)
   if (offset === 0) msgData.value = res.data
@@ -102,7 +99,7 @@ const getMsg = async (limit, offset) => {
   loading.value = false
 }
 
-let toDetail = (id, name) => {
+const toDetail = (id, name) => {
   router.push({ path: 'private_detail', query: { id, name }})
 }
 </script>
@@ -119,6 +116,7 @@ let toDetail = (id, name) => {
     .items {
       display: flex;
       justify-content: space-between;
+      max-width: 100%;
       padding: 15px 10px;
       border-bottom: 1px dashed #ccc;
       cursor: pointer;
@@ -129,6 +127,7 @@ let toDetail = (id, name) => {
         display: block;
       }
       .avatar {
+        flex-shrink: 0;
         margin-right: 20px;
       }
       .items-name {
@@ -153,7 +152,7 @@ let toDetail = (id, name) => {
         }
       }
       .msg {
-        width: 640px;
+        width: 600px;
         height: 20px;
         font-size: 12px;
         color: #999;

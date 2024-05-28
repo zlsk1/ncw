@@ -25,6 +25,7 @@
               <Card>
                 <router-link :to="`/album/${item1.id}`">
                   <Pic
+                    :lazy-load="false"
                     album
                     :src="`${item1.picUrl}?param=100y100`"
                   />
@@ -175,6 +176,9 @@ const addPlayList = async id => { playStore.actionAddSongs(id) }
       .right {
         display: flex;
         align-items: center;
+        &:hover {
+          text-decoration: underline;
+        }
         a {
           margin-right: 6px;
         }

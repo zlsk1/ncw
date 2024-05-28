@@ -17,7 +17,7 @@
 <script setup>
 import HomeBanner from './components/HomeBanner'
 import HomeRecomend from './components/HomeRecomend'
-import HomeNewAlbum from './components/HoneNewAlbum.vue'
+import HomeNewAlbum from './components/HomeNewAlbum.vue'
 import HomeTop from './components/HomeTop.vue'
 import HomeSide from './components/HomeSide.vue'
 </script>

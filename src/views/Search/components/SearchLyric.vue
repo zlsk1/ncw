@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted } from 'vue'
 import { handleSearchAPI } from '@/apis/search'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { ArrowDown, ArrowUp } from '@element-plus/icons-vue'
@@ -48,10 +48,6 @@ const isLoad = ref(true)
 
 onMounted(() => {
   handleSearch(route.params.k, limit, offset, route.params.type)
-})
-
-onBeforeUnmount(() => {
-  expand = null
 })
 
 onBeforeRouteUpdate(to => {
@@ -72,7 +68,7 @@ const changePage = e => {
   handleSearch(route.params.k, limit, offset, route.params.type)
 }
 
-let expand = index => { result.value.songs[index].isExpand = !result.value.songs[index].isExpand }
+const expand = index => { result.value.songs[index].isExpand = !result.value.songs[index].isExpand }
 </script>
 
 <style lang="scss" scoped>

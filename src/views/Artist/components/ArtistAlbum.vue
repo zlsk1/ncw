@@ -37,7 +37,7 @@
 
 <script setup>
 import { getArtistAlbumAPI } from '@/apis/artist'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { usePlayStore } from '@/stores/play'
 import Card from '@/components/Card'
@@ -53,10 +53,6 @@ const isLoad = ref(true)
 const limit = 12
 
 onMounted(() => { getArtistAlbum({ id: route.params.id, limit, offset: offset.value }) })
-
-onBeforeUnmount(() => {
-  play = null
-})
 
 onBeforeRouteUpdate(to => {
   getArtistAlbum({ id: to.params.id, limit, offset: offset.value })
@@ -74,7 +70,7 @@ const changePage = e => {
   getArtistAlbum({ id: route.params.id, limit, offset: offset.value })
 }
 
-let play = id => { playStore.actionAddSongs(id) }
+const play = id => { playStore.actionAddSongs(id) }
 </script>
 
 <style lang="scss" scoped>

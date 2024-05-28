@@ -138,7 +138,7 @@
 import { useTopStore } from '@/stores/top'
 import { usePlayStore } from '@/stores/play'
 import { getPlayListDetail } from '@/apis/playList'
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { formatMonthDay, getTimestamp, formatSongDuration } from '@/utils/time'
 import Comment from '@/components/Comment'
@@ -163,10 +163,6 @@ onMounted(() => {
   getPlayList()
 })
 
-onBeforeUnmount(() => {
-  play = null
-})
-
 onBeforeRouteUpdate(async to => {
   if (to) await getPlayList()
 })
@@ -177,7 +173,7 @@ const getPlayList = async () => {
   playlist.value = res.data.playlist
 }
 
-let play = (o, type) => { playStore.actionAddSong(o, type) }
+const play = (o, type) => { playStore.actionAddSong(o, type) }
 
 </script>
 

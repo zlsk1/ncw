@@ -13,14 +13,10 @@
 <script setup>
 import LayoutHeader from './components/LayoutHeader'
 import LayoutFooter from './components/LayoutFooter'
-import { ref, onBeforeUnmount } from 'vue'
+import { ref } from 'vue'
 import { debounce } from '@/utils'
 
 const isShowTop = ref(false)
-
-onBeforeUnmount(() => {
-  isShowTop.value = null
-})
 
 const backtoTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' })

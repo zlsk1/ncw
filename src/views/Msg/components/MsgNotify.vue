@@ -71,7 +71,7 @@
 
 <script setup>
 import { getNoticesAPI } from '@/apis/user'
-import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
+import { ref, onMounted, watch, nextTick } from 'vue'
 import { useElementVisibility } from '@vueuse/core'
 import { formatTimeStamp } from '@/utils/time'
 import { ElLoading } from 'element-plus'
@@ -103,8 +103,6 @@ onMounted(() => {
   getNotices()
 })
 
-onBeforeUnmount(() => { toDetail = null })
-
 const getNotices = async (limit, lasttime) => {
   const res = await getNoticesAPI({ limit, lasttime })
   noticeData.value = res.data
@@ -113,7 +111,7 @@ const getNotices = async (limit, lasttime) => {
   _lasttime = noticeData.value.notices[noticeData.value.notices.length - 1].time
 }
 
-let toDetail = (url) => {
+const toDetail = (url) => {
   if (typeof url !== 'number') location.href = url
   // router.push({ path: 'private_detail', query: { id, name }})
 }

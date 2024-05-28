@@ -8,10 +8,6 @@
 </template>
 
 <script setup>
-defineProps({
-  imgUrl: { type: String, default: '' },
-  imgHeight: { type: String, default: '140px' }
-})
 </script>
 
 <style lang="scss" scoped>

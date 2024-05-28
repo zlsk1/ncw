@@ -111,7 +111,7 @@
 <script setup>
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { getHotSinger } from '@/apis/singer'
 import { getHotDj } from '@/apis/dj'
 import { handleSigninAPI } from '@/apis/user'
@@ -132,10 +132,6 @@ onMounted(() => {
   avator.value ? getDetail() : ''
   getSinger(5)
   getDj(5)
-})
-
-onBeforeUnmount(() => {
-  handleSignin = null
 })
 
 watch(avator, val => {
@@ -163,7 +159,7 @@ const getDj = async limit => {
   djList.value = res.data.data.list
 }
 
-let handleSignin = async () => {
+const handleSignin = async () => {
   const res = await handleSigninAPI()
   ElMessage.warning(res.data.msg)
 }

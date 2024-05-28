@@ -181,7 +181,7 @@
 <script setup>
 import { usePlayStore } from '@/stores/play'
 import { getVipLevelAPI, getUserPlaylistAPI, getUserDetail, followUserAPI, sendTextAPI } from '@/apis/user'
-import { ref, onMounted, onBeforeUnmount, nextTick, computed } from 'vue'
+import { ref, onMounted, nextTick, computed } from 'vue'
 import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { formatPlayCount, hasProfile } from '@/utils/index'
 import { provinceAndCityData } from 'element-china-area-data'
@@ -220,10 +220,6 @@ onMounted(async () => {
   dynamicTags.value.push(profile.value?.nickname)
 })
 
-onBeforeUnmount(() => {
-  addPlayList = null; toEdit = null; follow = null; openSendDialog = null; handleInputConfirm = null; showInput = null; handleClose = null
-})
-
 onBeforeRouteUpdate(async (to, from) => {
   if (to) {
     await getDetail(to.params.id)
@@ -252,7 +248,7 @@ const getUserPlaylist = async (uid, limit, offset) => {
   playlist.value = res.data.playlist.map(v => { return { name: v.name, id: v.id, playCount: v.playCount, img: v.coverImgUrl } })
 }
 
-let addPlayList = async id => {
+const addPlayList = async id => {
   playStore.actionAddSongs(id)
 }
 
@@ -266,9 +262,9 @@ const getArea = () => {
   }
 }
 
-let toEdit = () => { router.push(`/user/update/${profile.value.userId}`) }
+const toEdit = () => { router.push(`/user/update/${profile.value.userId}`) }
 
-let follow = async t => {
+const follow = async t => {
   if (hasProfile()) {
     if (t !== 1) {
       ElMessageBox.alert('请使用手机登录网易云音乐APP扫码完成验证，登录账号要和当前账号一致', '请完成短信验证', {
@@ -282,13 +278,13 @@ let follow = async t => {
   } else isShow.value = !isShow.value
 }
 
-let openSendDialog = () => {
+const openSendDialog = () => {
   hasProfile()
     ? isShowSendDialog.value = !isShowSendDialog.value
     : isShow.value = !isShow.value
 }
 
-let handleInputConfirm = () => {
+const handleInputConfirm = () => {
   if (inputValue.value) {
     dynamicTags.value.push(inputValue.value)
   }
@@ -296,14 +292,14 @@ let handleInputConfirm = () => {
   inputValue.value = ''
 }
 
-let showInput = () => {
+const showInput = () => {
   inputVisible.value = true
   nextTick(() => {
     inputRef.value.focus()
   })
 }
 
-let handleClose = tag => {
+const handleClose = tag => {
   dynamicTags.value.splice(dynamicTags.value.indexOf(tag), 1)
 }
 

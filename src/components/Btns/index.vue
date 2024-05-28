@@ -28,7 +28,6 @@
 </template>
 
 <script setup>
-import { onBeforeUnmount } from 'vue'
 import { usePlayStore } from '@/stores/play'
 import { formatPlayCount } from '@/utils/index'
 
@@ -39,15 +38,11 @@ const props = defineProps({
   id: { type: [String, Number], default: '' }
 })
 
-onBeforeUnmount(() => {
-  goComment = null; addPlaylist = null
-})
-
-let goComment = () => {
+const goComment = () => {
   window.scrollTo({ top: document.querySelector('.comment-wrap .header').getBoundingClientRect().top })
 }
 
-let addPlaylist = id => {
+const addPlaylist = id => {
   playStore.actionAddSongs(id)
 }
 </script>
