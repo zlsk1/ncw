@@ -48,7 +48,7 @@
         </div>
         <div class="opera">
           <div class="fl">
-            <i class="pip" title="画中画歌词" />
+            <i class="pip" title="画中画歌词" @click="openPIP" />
             <i class="addlist" title="收藏" />
             <i class="share" title="分享" />
           </div>
@@ -72,6 +72,10 @@
         <i class="unlock" />
       </div>
     </div>
+    <video
+      ref="PIPRef"
+      src="https://vodkgeyttp8.vod.126.net/cloudmusic/obj/core/32993990090/fa31b7abeff1f3490ad289c68da636be.mp4?wsSecret=293ef8d6c8b044c89b54630e84fcfc1b&wsTime=1716904418"
+    />
   </div>
 </template>
 
@@ -81,6 +85,7 @@ import { formatSongDuration } from '@/utils/time'
 import ControlPlay from './ControlPlay'
 import { usePlayStore } from '@/stores/play'
 import { useMouseInElement } from '@vueuse/core'
+import { ElMessage } from 'element-plus'
 
 const store = usePlayStore()
 
@@ -98,11 +103,12 @@ const {
   isShowVol,
   isShowPlaylist,
   volBgHeight,
-  volControlTop
+  volControlTop,
 } = inject('playBarProvide')
 
 
 const barWrapRef = ref(null)
+const PIPRef = ref(null)
 const isIn = computed(() => left.value > 0 && left.value <= progressBarWidth)
 
 const { elementX: left } = useMouseInElement(barWrapRef)
@@ -161,6 +167,57 @@ const openPlaylist = async () => {
   isShowPlaylist.value = !isShowPlaylist.value
   if (isShowPlaylist.value) {
     setTimeout(() => { wordRef.value.scrollTo({ top: index.value * 32 - 128 }) }, 0)
+  }
+}
+
+const openPIP = async () => {
+  //  若已存在画中画
+  if (document.pictureInPictureElement) {
+    // 关闭画中画
+    document.exitPictureInPicture();
+  } else {
+    if (document.pictureInPictureEnabled) {
+      if(!PIPRef.value.requestPictureInPicture) return ElMessage.error('您的浏览器暂不支持此功能')
+      // 新建元数据
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: store.currentSong.name,
+        artist: store.currentSong.singer,
+        artwork: [
+          {
+            src: store.currentSong.picUrl,
+          },
+        ],
+      });
+
+      try {
+        PIPRef.value.requestPictureInPicture().then((pictureInPictureWindow) => {
+          pictureInPictureWindow.addEventListener(
+            "resize",
+            (e) => console.log(e),
+            false,
+          );
+        });// 开启画中画
+      } catch(err) {
+        ElMessage.error('数据加载失败，请稍后再试')
+        throw new Error(err)
+      }
+      PIPRef.value.autoplay = true
+      PIPRef.value.play()
+      
+      // 添加控件
+      if(navigator.mediaSession.setActionHandler) {
+        // 控件处理事件
+        navigator.mediaSession.setActionHandler("play", () => {
+          // code here
+        });
+        navigator.mediaSession.setActionHandler("pause", () => {
+        });
+        navigator.mediaSession.setActionHandler("previoustrack", () => {
+        });
+        navigator.mediaSession.setActionHandler("nexttrack", () => {
+        });
+      }
+    }
   }
 }
 </script>
