@@ -2,47 +2,45 @@
   <div class="btns-wrap">
     <ul class="btns fl f12">
       <li class="play fl">
-        <i @click="addPlaylist(props.id)">
+        <i @click="addPlaylist(id)">
           <i class="icon-play" />
           播放
         </i>
-        <i class="icon-add" title="添加到播放列表" @click="addPlaylist(props.id)" />
+        <i class="icon-add" title="添加到播放列表" @click="addPlaylist(id)" />
       </li>
       <li class="like">
-        <i v-if="!props?.dynamic?.bookedCount" class="icon-like">收藏</i>
+        <i v-if="!dynamic?.bookedCount" class="icon-like">收藏</i>
         <i v-else class="icon-like">({{ formatPlayCount(dynamic.bookedCount) }})</i>
       </li>
       <li class="share">
-        <i v-if="!props?.dynamic?.shareCount" class="icon-share">分享</i>
+        <i v-if="!dynamic?.shareCount" class="icon-share">分享</i>
         <i v-else class="icon-share">({{ dynamic.shareCount }})</i>
       </li>
       <li class="download">
         <i class="icon-download">下载</i>
       </li>
       <li class="comment" @click="goComment">
-        <i v-if="!props?.dynamic?.commentCount" class="icon-comment">评论</i>
+        <i v-if="!dynamic?.commentCount" class="icon-comment">评论</i>
         <i v-else class="icon-comment">({{ dynamic.commentCount }})</i>
       </li>
     </ul>
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { usePlayStore } from '@/stores/play'
 import { formatPlayCount } from '@/utils/index'
+import { btnsProps } from './index'
 
 const playStore = usePlayStore()
 
-const props = defineProps({
-  dynamic: { type: Object, default: () => null },
-  id: { type: [String, Number], default: '' }
-})
+defineProps(btnsProps)
 
 const goComment = () => {
-  window.scrollTo({ top: document.querySelector('.comment-wrap .header').getBoundingClientRect().top })
+  window.scrollTo({ top: ((document.querySelector('.comment-wrap .header')) as HTMLElement).getBoundingClientRect().top })
 }
 
-const addPlaylist = id => {
+const addPlaylist = (id: number) => {
   playStore.actionAddSongs(id)
 }
 </script>

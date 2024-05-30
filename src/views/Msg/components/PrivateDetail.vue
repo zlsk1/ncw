@@ -114,7 +114,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { getMsgContentAPI, sendTextAPI } from '@/apis/user'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'

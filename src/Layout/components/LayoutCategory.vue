@@ -37,7 +37,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { useRoute } from 'vue-router'
 import { useTopStore } from '@/stores/top'
 

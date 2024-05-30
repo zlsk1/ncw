@@ -60,7 +60,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { getNewAlbum } from '@/apis/home'
 import { ref, onMounted, watch, onUpdated } from 'vue'
 import { usePlayStore } from '@/stores/play'

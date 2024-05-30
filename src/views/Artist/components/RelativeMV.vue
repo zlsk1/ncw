@@ -23,7 +23,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { getArtistMVAPI } from '@/apis/artist'
 import { onMounted, ref } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'

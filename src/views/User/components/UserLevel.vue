@@ -55,7 +55,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { getUserLevelInfoAPI } from '@/apis/user'
 import { onMounted, ref, computed } from 'vue'
 import Progress from '@/components/Progress'

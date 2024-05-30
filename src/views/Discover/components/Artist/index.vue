@@ -83,7 +83,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { getArtistlistAPI, getHotSinger } from '@/apis/singer'
 import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'

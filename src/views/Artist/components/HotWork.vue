@@ -51,7 +51,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { getArtistTopSongAPI } from '@/apis/artist'
 import { ref, onMounted } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'

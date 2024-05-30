@@ -26,7 +26,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { getBanner } from '@/apis/home'
 import { onMounted, ref } from 'vue'
 

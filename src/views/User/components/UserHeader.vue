@@ -23,7 +23,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { useRoute } from 'vue-router'
 
 const userId = JSON.parse(localStorage.getItem('userInfo'))?.profile.userId

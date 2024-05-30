@@ -178,7 +178,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { usePlayStore } from '@/stores/play'
 import { getVipLevelAPI, getUserPlaylistAPI, getUserDetail, followUserAPI, sendTextAPI } from '@/apis/user'
 import { ref, onMounted, nextTick, computed } from 'vue'

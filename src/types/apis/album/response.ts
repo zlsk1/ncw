@@ -1,0 +1,148 @@
+import type {
+  arType,
+  alType,
+  songQuality,
+  artistType 
+} from "../../common";
+
+export interface albumType {
+  resourceState: boolean,
+  songs: songsItem[],
+  code: number,
+  album: {
+    songs: [],
+    paid: boolean,
+    onSale: boolean,
+    mark: number,
+    awardTags: any,
+    artists: artistType[],
+    copyrightId: number,
+    picId: number,
+    artist: artistType,
+    publishTime: number,
+    company: string,
+    briefDesc: string,
+    picUrl: string,
+    commentThreadId: string,
+    blurPicUrl: string,
+    companyId: number,
+    pic: number,
+    status: number,
+    subType: string,
+    alias: number[],
+    description: string,
+    tags: string,
+    name: string,
+    id: number,
+    type: string,
+    size: number,
+    picId_str: string,
+    info: {
+      commentThread: {
+        id: string,
+        resourceInfo: {
+          id: number,
+          userId: number,
+          name: string,
+          imgUrl: string,
+          creator: any,
+          encodedId: any,
+          subTitle: any,
+          webUrl: any,
+        }
+      },
+      latestLikedUsers: any,
+      liked: boolean,
+      comments: any,
+      resourceType: number,
+      resourceId: number,
+      commentCount: number,
+      likedCount: number,
+      shareCount: number,
+      threadId: string
+    }
+  }
+}
+
+interface songsItem {
+  rtUrls: [],
+  ar: arType[],
+  al: alType,
+  st: number,
+  noCopyrightRcmd: any,
+  songJumpInfo: any,
+  djId: number,
+  no: number,
+  fee: number,
+  mv: number,
+  t: number,
+  v: number,
+  cd: number,
+  rtype: number,
+  rurl: any,
+  pst: number,
+  alia: string[],
+  pop: number,
+  rt: string,
+  mst: number,
+  cp: number,
+  crbt: any,
+  cf: string,
+  dt: number,
+  h: songQuality | null,
+  sq: songQuality | null,
+  hr: songQuality | null,
+  l: songQuality | null,
+  m: songQuality | null,
+  rtUrl: any,
+  ftype: any,
+  a: any,
+  name: string,
+  id: string,
+  videoInfo: {
+    moreThanOne: boolean,
+    video: any
+  },
+  privilege: {
+    id: number,
+    fee: number,
+    payed: number,
+    st: number,
+    pl: number,
+    dl: number,
+    sp: number,
+    cp: number,
+    subp: number,
+    cs: boolean,
+    maxbr: number,
+    fl: number,
+    toast: boolean,
+    flag: number,
+    preSell: boolean,
+    playMaxbr: number,
+    downloadMaxbr: number,
+    maxBrLevel: string,
+    playMaxBrLevel: string,
+    downloadMaxBrLevel: string,
+    plLevel: string,
+    dlLevel: string,
+    flLevel: string,
+    rscl: any,
+    freeTrialPrivilege: {
+      resConsumable: boolean,
+      userConsumable: boolean,
+      listenType: number,
+      cannotListenReason: number,
+      playReason: any,
+      rightSource: number,
+      chargeInfoList: chargeInfoItemType[]
+    }
+  }
+}
+
+interface chargeInfoItemType {
+  rate: number,
+  chargeUrl: any,
+  chargeMessage: any,
+  chargeType: number
+}

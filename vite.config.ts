@@ -48,7 +48,7 @@ export default defineConfig({
         // 用于命名代码拆分时创建的共享块的输出命名
         chunkFileNames: 'js/[name].[hash].js',
         // 用于输出静态资源的命名，[ext]表示文件扩展名
-        assetFileNames: (assetInfo) => {
+        assetFileNames: (assetInfo: any) => {
           if (assetInfo.name.includes('png')) {
             return 'icons/[name].[hash].[ext]'
           } else {

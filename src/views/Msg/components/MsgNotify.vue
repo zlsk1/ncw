@@ -69,7 +69,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { getNoticesAPI } from '@/apis/user'
 import { ref, onMounted, watch, nextTick } from 'vue'
 import { useElementVisibility } from '@vueuse/core'

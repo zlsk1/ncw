@@ -148,7 +148,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { getPlayListDetail, getPlayListAllAPI, getPlaylistDynamicAPI } from '@/apis/playList'
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'

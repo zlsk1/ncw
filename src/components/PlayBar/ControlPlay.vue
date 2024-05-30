@@ -16,7 +16,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { inject } from 'vue'
 
 const { isPaused, prev, next, play, pause } = inject('playBarProvide')

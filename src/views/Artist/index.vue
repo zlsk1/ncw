@@ -47,7 +47,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { getArtistDetailAPI } from '@/apis/artist'
 import { getHotSinger } from '@/apis/singer'
 import { computed, onMounted, ref } from 'vue'

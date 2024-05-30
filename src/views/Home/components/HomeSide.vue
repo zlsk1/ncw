@@ -108,7 +108,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref, watch } from 'vue'

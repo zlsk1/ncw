@@ -69,7 +69,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { judgeJson } from '@/utils/index'

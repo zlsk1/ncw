@@ -43,7 +43,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, onUnmounted, ref } from 'vue'
 const emit = defineEmits(['choose'])
 

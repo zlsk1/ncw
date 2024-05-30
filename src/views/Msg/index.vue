@@ -39,7 +39,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { getPlCountAPI } from '@/apis/user'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'

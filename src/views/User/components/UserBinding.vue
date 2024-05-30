@@ -37,7 +37,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import UserHeader from './UserHeader'
 import { hideTel } from '@/utils/index'
 import { ref } from 'vue'

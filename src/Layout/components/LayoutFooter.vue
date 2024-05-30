@@ -79,6 +79,8 @@
   </footer>
 </template>
 
+<script lang="ts" setup></script>
+
 <style lang="scss" scoped>
   .footer-wrap {
     padding: 20px 0 70px 0;

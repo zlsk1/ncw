@@ -191,7 +191,7 @@
   </header>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'

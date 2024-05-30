@@ -22,14 +22,14 @@
                 class="artist"
                 :to="`/artist/${item.id}`"
               >
-                {{ index === albumInfo?.album?.artists.length - 1 ? item.name : `${item.name}/` }}
+                {{ index === albumInfo?.album?.artists.length as number - 1 ? item.name : `${item.name}/` }}
               </router-link>
             </div>
             <p class="publish">
-              发布时间：{{ new Date(albumInfo?.album?.publishTime).toLocaleString().split(' ')[0] }}
+              发布时间：{{ new Date(albumInfo?.album?.publishTime as number).toLocaleString().split(' ')[0] }}
             </p>
             <p>发行公司：{{ albumInfo?.album?.company }}</p>
-            <Btns class="btns" :dynamic="{shareCount:albumInfo?.album?.info?.shareCount, commentCount: albumInfo?.album?.info?.commentCount}" />
+            <Btns class="btns" :dynamic="{shareCount: albumInfo?.album?.info?.shareCount as number, commentCount: albumInfo?.album?.info?.commentCount as number }" />
           </div>
         </div>
         <div class="desc">
@@ -150,31 +150,32 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { usePlayStore } from '@/stores/play'
 import { getAlbumAPI } from '@/apis/album'
 import { getArtistAlbumAPI } from '@/apis/artist'
-import Comment from '@/components/Comment'
-import Btns from '@/components/Btns'
-import DownLoadSide from '@/components/DownLoadSide'
 import { formatSongDuration, getTimestamp } from '@/utils/time'
 import { ArrowDown, ArrowUp, ArrowRight } from '@element-plus/icons-vue'
+import type { albumType } from '@/types/'
+import Comment from '@/components/Comment/index.vue'
+import Btns from '@/components/Btns/index.vue'
+import DownLoadSide from '@/components/DownLoadSide/index.vue'
 
 const playStore = usePlayStore()
 
 const route = useRoute()
 
-const albumInfo = ref(null)
+const albumInfo = ref<albumType>()
 const isExpand = ref(false)
 const albums = ref(null)
 
 onMounted(() => {
-  getAlbum(route.params.id)
+  getAlbum(Number(route.params.id))
 })
 
-const getAlbum = async id => {
+const getAlbum = async (id: number) => {
   const res = await getAlbumAPI(id)
   const res1 = await getArtistAlbumAPI(res.data.album.artist.id, 5)
   albumInfo.value = res.data
@@ -185,7 +186,7 @@ const expand = () => {
   isExpand.value = !isExpand.value
 }
 
-const play = (o, type) => {
+const play = (o: Object, type?:number) => {
   playStore.actionAddSong(o, type)
 }
 </script>

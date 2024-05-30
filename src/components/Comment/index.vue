@@ -24,7 +24,7 @@
             v-model="comment"
             maxlength="140"
             placeholder="评论"
-            @input="input"
+            @input="input as unknown as InputEvent"
             @focus="showLogin"
           />
           <div class="utils fl-sb">
@@ -74,7 +74,7 @@
               </span>
               <div class="bottom fl-sb">
                 <div class="comment-time">
-                  {{ formatTimeStamp(item.time) }}
+                  {{ formatTimeStamp(Number(item.time)) }}
                 </div>
                 <div class="fl">
                   <span>
@@ -152,7 +152,7 @@
                     <span v-if="item.likedCount > 0" class="like-count">({{ item.likedCount }})</span>
                     <span v-else class="like-count-zero" />
                   </span>
-                  <span class="reply" @click="openReply(i = !isPlaylistUrl ? offset <= limit ? i + commentObj?.hotComments.length : i : i , item.user.nickname)">回复</span>
+                  <span class="reply" @click="openReply(Number(!isPlaylistUrl ? offset <= limit ? i + commentObj?.hotComments.length : i : i) , item.user.nickname)">回复</span>
                 </div>
               </div>
               <div v-if="!isPlaylistUrl ? offset <= limit ? DOMIndex === i + 15 : DOMIndex === i : DOMIndex === i" class="reply-textarea">
@@ -184,7 +184,7 @@
           small
           background
           :page-size="20"
-          :page-count="Math.ceil(commentObj?.total / limit)"
+          :page-count="currentPage"
           layout="prev, pager, next"
           prev-text="上一页"
           next-text="下一页"
@@ -196,23 +196,25 @@
   </div>
 </template>
 
-<script setup>
-import Emj from '@/components/Emj'
+<script lang="ts" setup>
 import { formatTimeStamp, isBeforeYesterday } from '@/utils/time'
 import { debounce, hasProfile } from '@/utils/index'
 import { nextTick, onMounted, ref, computed } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { likeComment,
+import { 
+  likeComment,
   sendCommentAPI,
   delCommentAPI,
   getSongComment,
   getCommentPlaylistAPI,
-  getCommentAlbumAPI
+  getCommentAlbumAPI,
 } from '@/apis/comment'
 import { useUserStore } from '@/stores/user'
 import { useTopStore } from '@/stores/top'
-import Login from '@/views/Login'
+import Login from '@/views/Login/index.vue'
+import Emj from '@/components/Emj/index.vue'
+import type { pagingDataType, songCommentType } from '@/types'
 
 const emit = defineEmits(['getTotal'])
 
@@ -221,15 +223,15 @@ const topStore = useTopStore()
 
 const route = useRoute()
 
-const myId = JSON.parse(localStorage.getItem('userInfo'))?.profile.userId
+const myId = JSON.parse(localStorage.getItem('userInfo') as string)?.profile.userId
 
 const addAiteRef = ref(null)
-const replyTextarea = ref(null)
+const replyTextarea = ref<HTMLTextAreaElement>()
 const comment = ref('')
 const reply = ref('')
-const DOMIndex = ref('')
+const DOMIndex = ref<number | string>('')
 const offset = ref(0)
-const commentObj = ref(null)
+const commentObj = ref<songCommentType>()
 const isShow = ref(false)
 
 const currentId = computed(() => {
@@ -244,33 +246,38 @@ const limit = computed(() => {
   return isPlaylistUrl.value ? 30 : 20
 })
 
+const currentPage = computed(() => {
+  return Math.ceil((commentObj.value as songCommentType).total / limit.value)
+})
+
 onMounted(() => {
-  getComment(currentId.value, offset.value, limit.value)
+  getComment({ id: currentId.value, offset: offset.value, limit: limit.value })
 })
 
-onBeforeRouteUpdate((to, from) => {
-  if (to) getComment(currentId.value, offset.value, limit.value)
+onBeforeRouteUpdate((to) => {
+  if (to) getComment({ id: currentId.value, offset: offset.value, limit: limit.value })
 })
 
-const getComment = async (id, offset, limit) => {
+const getComment = async (obj: pagingDataType) => {
+  const { id, offset, limit } = obj
   if (isPlaylistUrl.value) {
     const res = await getCommentPlaylistAPI({ id, offset, limit })
     commentObj.value = res.data
   } else if (route.path.includes('/song')) {
     const res = await getSongComment({ id, offset, limit })
     commentObj.value = res.data
-    emit('getTotal', commentObj.value.total)
+    emit('getTotal', commentObj.value?.total)
   } else if (route.path.includes('/album')) {
     const res = await getCommentAlbumAPI({ id, offset, limit })
     commentObj.value = res.data
   }
 }
 
-const _input = e => {}
+const _input = () => {}
 
 const input = debounce(_input, 30)
 
-const onChoose = (e, type) => {
+const onChoose = (e: Event, type: number) => {
   type === 0 ? comment.value += `[${e}]` : reply.value += `[${e}]`
 }
 
@@ -283,17 +290,17 @@ const handleComment = async () => {
       duration: 2000
     })
   } else {
-    const res = await sendCommentAPI({ t: 1, type: 0, id: route.params.id, content: comment.value })
+    const res = await sendCommentAPI({ t: 1, type: 0, id: route.params.id as string, content: comment.value })
     console.log(res)
   }
 }
 
-const addAite = (type) => {
+const addAite = (type :number) => {
   if (type === 0) comment.value += '@'
   else if (type === 1) reply.value += '@'
 }
 
-const openReply = (i, nickname) => {
+const openReply = (i: number, nickname: string) => {
   if (!hasProfile()) {
     isShow.value = !isShow.value
     return
@@ -302,13 +309,13 @@ const openReply = (i, nickname) => {
   else {
     DOMIndex.value = i
     nextTick(() => {
-      replyTextarea.value[0].focus()
+      replyTextarea.value?.focus()
     })
   }
   reply.value = `${nickname}:`
 }
 
-const handleReply = (nickname) => {
+const handleReply = (nickname: string) => {
   if (reply.value === `${nickname}:`) {
     ElMessage({
       message: '输入点内容再提交吧',
@@ -319,27 +326,29 @@ const handleReply = (nickname) => {
   }
 }
 
-const like = async (cid, liked, index) => {
-  const res = await likeComment({ id: route.params.id, cid, t: liked ? 0 : 1 })
+const like = async (cid: number, liked: boolean, index: number) => {
+  const res = await likeComment({ id: route.params.id as string, cid, t: liked ? 0 : 1 })
   if (res.status === 200) {
-    commentObj.value.hotComments[index].liked = !liked
+    const currentComment = (commentObj.value as songCommentType).hotComments[index]
+    
+    currentComment.liked = !liked
     !liked
-      ? commentObj.value.hotComments[index].likedCount += 1
-      : commentObj.value.hotComments[index].likedCount -= 1
+      ? currentComment.likedCount += 1
+      : currentComment.likedCount -= 1
   }
 }
 
-const changePage = e => {
+const changePage = (currPage: number) => {
   DOMIndex.value = ''
-  offset.value = e * limit.value
-  offset.value = offset.value === limit.value ? '' : offset.value // 获取第一页的数据时要包括精彩评论
-  getComment(currentId.value, offset.value, limit.value)
+  offset.value = currPage * limit.value
+  offset.value = offset.value === limit.value ? 0 : offset.value // 获取第一页的数据时要包括精彩评论
+  getComment({ id: currentId.value, offset: offset.value, limit: limit.value })
 }
 
 const delComment = async () => {
   ElMessageBox.confirm('确定删除你的评论', { type: 'warning' })
     .then(async () => {
-      const res = await delCommentAPI({ t: 0, type: 0, id: route.params.id })
+      const res = await delCommentAPI({ t: 0, type: 0, id: route.params.id as string })
       if (res.status === 200) ElMessage.success('删除成功！')
     })
 }

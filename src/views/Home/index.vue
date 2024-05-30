@@ -14,7 +14,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import HomeBanner from './components/HomeBanner'
 import HomeRecomend from './components/HomeRecomend'
 import HomeNewAlbum from './components/HomeNewAlbum.vue'

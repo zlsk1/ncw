@@ -17,7 +17,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 const props = defineProps({
   src: { type: String, default: '' },
   lazyLoad: { type: Boolean, default: true },

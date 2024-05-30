@@ -36,7 +36,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { getSongSimilar } from '@/apis/song'
 import { onMounted, ref } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'

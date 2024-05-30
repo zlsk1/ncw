@@ -8,7 +8,7 @@ export const getTimestamp = () => {
  * @param {Number} type 0为ms 1为s
  * @returns '00:00'
  */
-export const formatSongDuration = (t, type) => {
+export const formatSongDuration = (t: string | number, type: 0 | 1) => {
   if (typeof (t) === 'string' || typeof (t) === 'undefined') return '00:00'
   const arr = [1000, 1000 * 60, 1000 * 60 * 60]
   let m, s
@@ -43,7 +43,7 @@ export const formatSongDuration = (t, type) => {
  * @param {*} stamp
  * @returns
  */
-export const formatTimeStamp = (stamp) => {
+export const formatTimeStamp = (stamp: number) => {
   const date = new Date()
   const t = new Date(stamp).toLocaleString()
   const a = t.split(' ')[0]
@@ -57,9 +57,9 @@ export const formatTimeStamp = (stamp) => {
   }
 }
 
-export const isBeforeYesterday = (stamp) => {
+export const isBeforeYesterday = (stamp: number): boolean => {
   const nowDay = new Date().getDate()
-  const d = new Date(stamp).toLocaleString().split(' ')[0].split('/')[2]
+  const d = Number(new Date(stamp).toLocaleString().split(' ')[0].split('/')[2])
   if (nowDay - d < 2) return true
   else return false
 }
@@ -69,7 +69,7 @@ export const isBeforeYesterday = (stamp) => {
  * @param {*} stamp
  * @returns
  */
-export const formatMonthDay = (stamp) => {
+export const formatMonthDay = (stamp: number) => {
   const m = (new Date(stamp).getMonth() + 1).toString().padStart(2, '0')
   const d = new Date(stamp).getDate().toString().padStart(2, '0')
   return `${m}月${d}日`
@@ -80,7 +80,7 @@ export const formatMonthDay = (stamp) => {
  * @param {*} stamp
  * @returns 23-06-06 15:27
  */
-export const formatMsgTime = stamp => {
+export const formatMsgTime = (stamp: number): string => {
   const t = new Date(stamp).toLocaleString()
   const front = t.split(' ')[0].split('/')
   const end = t.split(' ')[1].slice(0, 5)

@@ -30,7 +30,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { usePlayStore } from '@/stores/play'
 import { formatSongDuration } from '@/utils/time'
 import { onBeforeMount } from 'vue'

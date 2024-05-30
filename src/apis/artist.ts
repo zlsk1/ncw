@@ -1,6 +1,6 @@
 import http from '@/utils/http'
 
-export const getArtistDetailAPI = id => {
+export const getArtistDetailAPI = (id: number) => {
   return http({
     url: '/artist/detail',
     params: {
@@ -16,7 +16,7 @@ export const getArtistDetailAPI = id => {
  * @param {*} offset 偏移数量 默认 为 0
  * @returns
  */
-export const getArtistAlbumAPI = (id, limit, offset) => {
+export const getArtistAlbumAPI = (id: number, limit: number, offset?: number) => {
   return http({
     url: '/artist/album',
     params: {
@@ -27,7 +27,7 @@ export const getArtistAlbumAPI = (id, limit, offset) => {
   })
 }
 
-export const getArtistAPI = id => {
+export const getArtistAPI = (id: number) => {
   return http({
     url: '/artist/mv',
     params: {
@@ -36,7 +36,7 @@ export const getArtistAPI = id => {
   })
 }
 
-export const getArtistTopSongAPI = id => {
+export const getArtistTopSongAPI = (id: number) => {
   return http({
     url: '/artist/top/song',
     params: {
@@ -45,7 +45,7 @@ export const getArtistTopSongAPI = id => {
   })
 }
 
-export const getArtistProduceAPI = id => {
+export const getArtistProduceAPI = (id: number) => {
   return http({
     url: '/artist/desc',
     params: {
@@ -54,7 +54,7 @@ export const getArtistProduceAPI = id => {
   })
 }
 
-export const getArtistMVAPI = id => {
+export const getArtistMVAPI = (id: number) => {
   return http({
     url: '/artist/mv',
     params: {

@@ -134,7 +134,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { useTopStore } from '@/stores/top'
 import { usePlayStore } from '@/stores/play'
 import { getPlayListDetail } from '@/apis/playList'

@@ -102,7 +102,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { Search, ArrowRight } from '@element-plus/icons-vue'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'

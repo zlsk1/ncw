@@ -1,5 +1,18 @@
 import http from '@/utils/http'
 
+// request type
+import type { 
+  pagingDataType,
+  commentFloorType,
+  likeCommentType,
+  sendCommentType,
+  delCommentType,
+
+  responseType,
+  songCommentType,
+  floorCommentType
+} from '@/types'
+
 /**
  *
  * @param {*} id 歌曲id
@@ -8,16 +21,15 @@ import http from '@/utils/http'
  * @param {*} before
  * * @returns 歌曲评论
  */
-export const getSongComment = ({ id, limit, offset, before }) => {
-  return http({
-    url: '/comment/music',
-    params: {
-      id,
-      limit,
-      offset,
-      before
+export const getSongComment = (obj: pagingDataType) => {
+  return http.get<songCommentType>(
+    '/comment/music',
+    {
+      params: {
+        ...obj
+      }
     }
-  })
+  )
 }
 
 /**
@@ -27,15 +39,15 @@ export const getSongComment = ({ id, limit, offset, before }) => {
  * @param {*} type 0 => 歌曲 1 => mv 2 => 歌单 3 => 专辑 4 => 电台节目 5 => 视频 6 => 动态 7 => 电台
  * @returns 歌曲楼层评论
  */
-export const getCommentFloor = ({ parentCommentId, id, type }) => {
-  return http({
-    url: '/comment/floor',
-    params: {
-      parentCommentId,
-      id,
-      type
+export const getCommentFloor = (obj: commentFloorType) => {
+  return http.get<responseType<floorCommentType>>(
+    '/comment/floor',
+    {
+      params: {
+        ...obj
+      }
     }
-  })
+  )
 }
 
 /**
@@ -46,7 +58,8 @@ export const getCommentFloor = ({ parentCommentId, id, type }) => {
  * @param {*} type 0 => 歌曲 1 => mv 2 => 歌单 3 => 专辑 4 => 电台节目 5 => 视频 6 => 动态 7 => 电台
  * @returns
  */
-export const likeComment = ({ id, cid, t, type = 0 }) => {
+export const likeComment = (obj: likeCommentType) => {
+  const { id, cid, t, type = 0 } = obj
   return http({
     url: 'comment/like',
     method: 'POST',
@@ -68,16 +81,12 @@ export const likeComment = ({ id, cid, t, type = 0 }) => {
  * @param {*} commentId 回复的评论 id (回复评论时必填)
  * @returns
  */
-export const sendCommentAPI = ({ t, type, id, content, commentId }) => {
+export const sendCommentAPI = (obj: sendCommentType) => {
   return http({
     url: '/comment',
     method: 'POST',
     data: {
-      t,
-      type,
-      id,
-      content,
-      commentId
+      ...obj
     }
   })
 }
@@ -90,29 +99,25 @@ export const sendCommentAPI = ({ t, type, id, content, commentId }) => {
  * @param {*} commentId 回复的评论 id
  * @returns
  */
-export const delCommentAPI = ({ t, type, id, commentId }) => {
+export const delCommentAPI = (obj: delCommentType) => {
   return http({
     url: '/comment',
     method: 'POST',
     data: {
-      t,
-      type,
-      id,
-      commentId
+      ...obj
     }
   })
 }
 
-export const getCommentPlaylistAPI = ({ id, limit, offset, before }) => {
-  return http({
-    url: '/comment/playlist',
-    params: {
-      id,
-      limit,
-      offset,
-      before
+export const getCommentPlaylistAPI = (obj: pagingDataType) => {
+  return http.get<songCommentType>(
+    '/comment/playlist',
+    {
+      params: {
+        ...obj
+      }
     }
-  })
+  )
 }
 
 /**
@@ -123,14 +128,13 @@ export const getCommentPlaylistAPI = ({ id, limit, offset, before }) => {
  * @param {*} before
  * * @returns
  */
-export const getCommentAlbumAPI = ({ id, limit, offset, before }) => {
-  return http({
-    url: '/comment/album',
-    params: {
-      id,
-      limit,
-      offset,
-      before
+export const getCommentAlbumAPI = (obj: pagingDataType) => {
+  return http.get<songCommentType>(
+    '/comment/album',
+    {
+      params: {
+        ...obj
+      }
     }
-  })
+  )
 }

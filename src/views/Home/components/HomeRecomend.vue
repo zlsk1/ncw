@@ -69,7 +69,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { getPersonalized } from '@/apis/home'
 import { onMounted, ref } from 'vue'
 import { formatPlayCount } from '@/utils/index'

@@ -9,7 +9,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import SongMain from './components/SongMain'
 import SongAside from './components/SongAside'
 </script>

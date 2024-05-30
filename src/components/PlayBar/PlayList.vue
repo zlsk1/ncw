@@ -91,7 +91,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { inject, nextTick, onMounted, watch } from 'vue'
 import { usePlayStore } from '@/stores/play'
 import { judgeJson } from '@/utils/index'

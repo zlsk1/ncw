@@ -10,7 +10,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import LayoutHeader from './components/LayoutHeader'
 import LayoutFooter from './components/LayoutFooter'
 import { ref } from 'vue'

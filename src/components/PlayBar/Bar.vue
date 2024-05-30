@@ -79,10 +79,10 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { inject, ref, computed } from 'vue'
 import { formatSongDuration } from '@/utils/time'
-import ControlPlay from './ControlPlay'
+import ControlPlay from './ControlPlay.vue'
 import { usePlayStore } from '@/stores/play'
 import { useMouseInElement } from '@vueuse/core'
 import { ElMessage } from 'element-plus'

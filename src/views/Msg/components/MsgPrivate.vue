@@ -51,7 +51,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { getMsgAPI } from '@/apis/user'
 import { onMounted, ref, watch, nextTick } from 'vue'
 import { formatTimeStamp } from '@/utils/time'

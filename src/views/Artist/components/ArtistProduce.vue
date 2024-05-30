@@ -33,7 +33,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { getArtistProduceAPI } from '@/apis/artist'
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'

@@ -120,7 +120,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { useUserStore } from '@/stores/user'
 import { onMounted, ref, nextTick } from 'vue'
 import { useRoute } from 'vue-router'

@@ -10,7 +10,7 @@
   />
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, inject, onMounted, onBeforeUnmount } from 'vue'
 import { usePlayStore } from '@/stores/play'
 import { getLyric } from '@/apis/song'

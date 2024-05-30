@@ -14,7 +14,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { inject, ref } from 'vue'
 import { useMouseInElement } from '@vueuse/core'
 
