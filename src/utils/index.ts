@@ -29,7 +29,7 @@ export const judgeJson = (str: string): boolean => {
  * @param {*} immediate 是否立即执行,默认立即执行
  */
 export function debounce (fn: Function, delay: number, immediate: boolean = true): Function {
-  let timer: null | number
+  let timer: null | NodeJS.Timeout
   return function (this: Function, ...args: Array<any>) {
     if (timer) {
       if (immediate) return

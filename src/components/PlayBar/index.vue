@@ -14,7 +14,7 @@
 import { ref, onMounted, provide } from 'vue'
 import { usePlayStore } from '@/stores/play'
 import { onClickOutside } from '@vueuse/core'
-import { usePlay } from './compoables/index'
+import { usePlay } from './composables/index'
 import { playBarProvide } from './constances'
 import PlayList from './PlayList.vue'
 import Audio from './Audio.vue'
