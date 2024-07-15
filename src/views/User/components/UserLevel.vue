@@ -58,7 +58,7 @@
 <script lang="ts" setup>
 import { getUserLevelInfoAPI } from '@/apis/user'
 import { onMounted, ref, computed } from 'vue'
-import Progress from '@/components/Progress'
+import Progress from '@/components/Progress/index.vue'
 import { InfoFilled } from '@element-plus/icons-vue'
 
 const levelInfo = ref(null)

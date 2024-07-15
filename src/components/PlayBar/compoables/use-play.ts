@@ -1,9 +1,10 @@
 import { unref, onBeforeUnmount, onMounted } from 'vue'
+import type { Ref } from 'vue'
 import { usePlayStore } from '@/stores/play'
 
 const store = usePlayStore()
 
-export const usePlay = ({audioRef, isPaused}) => {
+export const usePlay = (audioRef: HTMLAudioElement, isPaused: Ref<boolean>) => {
   const play = () => {
     unref(audioRef).play()
     isPaused.value = false
@@ -44,7 +45,7 @@ export const usePlay = ({audioRef, isPaused}) => {
     if (store.songQueue.length === 1) return
   }
 
-  const keyup = e => {
+  const keyup = (e: KeyboardEvent) => {
     if (e.ctrlKey && e.code === 'Space') {
       store.currentSong && isPaused.value ? play() : pause()
     } else if (e.ctrlKey && e.code === 'ArrowRight') {

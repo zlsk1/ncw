@@ -120,25 +120,25 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { ArrowRight } from '@element-plus/icons-vue'
 import { ElLoading } from 'element-plus'
-import Emj from '@/components/Emj'
+import Emj from '@/components/Emj/index.vue'
 import { formatMsgTime } from '@/utils/time'
 
 const route = useRoute()
 
-const historyData = ref(null)
-const scrollbar = ref(null)
+const historyData = ref<any>()
+const scrollbar = ref<any>()
 const textValue = ref('')
 
-const userId = JSON.parse(localStorage.getItem('userInfo'))?.profile.userId
+const userId = JSON.parse(localStorage.getItem('userInfo') as string)?.profile.userId
 let _scrollHeight = 0
-let _before = ''
+let _before = 0
 
 onMounted(async () => {
-  await getMsgContent(route.query.id, 10, _before)
-  scrollbar.value.setScrollTop(10000)
+  await getMsgContent(route.query.id as unknown as number, 10, _before)
+  scrollbar.value?.setScrollTop(10000)
 })
 
-const getMsgContent = async (uid, limit, before) => {
+const getMsgContent = async (uid: number, limit: number, before?: number) => {
   const loadingInstance = ElLoading.service({
     target: '.loading',
     text: '加载中'
@@ -156,22 +156,22 @@ const getMsgContent = async (uid, limit, before) => {
   // console.log(JSON.parse(historyData.value.msgs[5].msg))
 }
 
-const chooseEmj = e => {
+const chooseEmj = (e: any) => {
   textValue.value += `[${e}]`
 }
 
-const scroll = async ({ scrollTop }) => {
+const scroll = async ({ scrollTop }: any) => {
   if (scrollTop === 0 && historyData.value.more) {
     // 记录获取新数据前的高度
-    _scrollHeight = document.querySelector('.msg-history').clientHeight
-    await getMsgContent(route.query.id, 10, _before)
-    scrollbar.value.setScrollTop(document.querySelector('.msg-history').clientHeight - _scrollHeight)
+    _scrollHeight = document.querySelector('.msg-history')?.clientHeight as number
+    await getMsgContent(route.query.id as unknown as number, 10, _before)
+    scrollbar.value.setScrollTop(document.querySelector('.msg-history')?.clientHeight as number - _scrollHeight)
   }
 }
 
 const sendText = async () => {
   await sendTextAPI({ user_ids: route.query.id, msg: textValue.value })
-  getMsgContent(route.query.id, 10)
+  getMsgContent(route.query.id as unknown as number, 10)
 }
 </script>
 

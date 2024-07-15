@@ -1,6 +1,8 @@
 import { useIntersectionObserver } from '@vueuse/core'
+import type { DirectiveBinding }  from 'vue'
+
 export const lazy = {
-  mounted (el, binding) {
+  mounted (el: HTMLImageElement, binding: DirectiveBinding) {
     useIntersectionObserver(
       el,
       ([{ isIntersecting }]) => {

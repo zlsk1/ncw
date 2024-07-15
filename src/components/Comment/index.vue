@@ -24,7 +24,7 @@
             v-model="comment"
             maxlength="140"
             placeholder="评论"
-            @input="input as unknown as InputEvent"
+            @input="input"
             @focus="showLogin"
           />
           <div class="utils fl-sb">
@@ -225,7 +225,7 @@ const route = useRoute()
 
 const myId = JSON.parse(localStorage.getItem('userInfo') as string)?.profile.userId
 
-const addAiteRef = ref(null)
+const addAiteRef = ref<HTMLElement>()
 const replyTextarea = ref<HTMLTextAreaElement>()
 const comment = ref('')
 const reply = ref('')
@@ -247,7 +247,7 @@ const limit = computed(() => {
 })
 
 const currentPage = computed(() => {
-  return Math.ceil((commentObj.value as songCommentType).total / limit.value)
+  return Math.ceil((commentObj.value as songCommentType)?.total / limit.value)
 })
 
 onMounted(() => {

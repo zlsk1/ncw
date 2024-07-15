@@ -197,12 +197,16 @@ import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 import { Search, ArrowRight } from '@element-plus/icons-vue'
-import Login from '@/views/Login'
-import LayoutCategory from './LayoutCategory'
 import { getPlCountAPI } from '@/apis/user'
 import { getSearchSuggest } from '@/apis/search'
 import { getLoginStatusAPI } from '@/apis/login'
 import { debounce } from '@/utils/index'
+import type {
+  searchResultType,
+  userPlCountType
+} from '@/types'
+import Login from '@/views/Login/index.vue'
+import LayoutCategory from './LayoutCategory.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -210,13 +214,13 @@ const router = useRouter()
 const store = useUserStore()
 const { token, avator } = storeToRefs(store)
 
-const userId = JSON.parse(localStorage.getItem('userInfo'))?.profile.userId
+const userId = JSON.parse(localStorage.getItem('userInfo') as string)?.profile.userId
 
 const searchValue = ref('')
 const isShow = ref(false)
 const isShowBadge = ref(true)
-const pl = ref(null)
-const searchSuggset = ref(null)
+const pl = ref<userPlCountType>()
+const searchSuggset = ref<searchResultType | null>()
 const isFocus = ref(false)
 
 onMounted(() => {
@@ -224,7 +228,7 @@ onMounted(() => {
   getLoginStatusAPI()
 })
 
-const dropdownChange = e => {
+const dropdownChange = (e: any) => {
   isShowBadge.value = !e
 }
 
@@ -237,7 +241,7 @@ const getPlCount = async () => {
   pl.value = res.data
 }
 
-const _handleSearch = async e => {
+const _handleSearch = async (e: any) => {
   if (e.trim()) {
     const res = await getSearchSuggest(searchValue.value)
     searchSuggset.value = res.data.result

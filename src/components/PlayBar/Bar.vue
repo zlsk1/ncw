@@ -86,6 +86,7 @@ import ControlPlay from './ControlPlay.vue'
 import { usePlayStore } from '@/stores/play'
 import { useMouseInElement } from '@vueuse/core'
 import { ElMessage } from 'element-plus'
+import { playBarProvide } from './constances'
 
 const store = usePlayStore()
 
@@ -104,11 +105,11 @@ const {
   isShowPlaylist,
   volBgHeight,
   volControlTop,
-} = inject('playBarProvide')
+} = inject(playBarProvide)!
 
 
 const barWrapRef = ref(null)
-const PIPRef = ref(null)
+const PIPRef = ref()
 const isIn = computed(() => left.value > 0 && left.value <= progressBarWidth)
 
 const { elementX: left } = useMouseInElement(barWrapRef)
@@ -117,7 +118,7 @@ const percent = computed(() => left.value / progressBarWidth)
 
 const pregressTime = computed(() => percent.value * store.currentSong.time / 1000)
 
-const mousedown = e => {
+const mousedown = (e: MouseEvent) => {
   if (store.currentSong) {
     e.preventDefault()
     playBarRef.value.onmousemove = () => {
@@ -125,7 +126,7 @@ const mousedown = e => {
         isMoving.value = true
         setProgress()
       }
-      playBarRef.value.onmouseup = e1 => {
+      playBarRef.value.onmouseup = (e1: MouseEvent) => {
         e1.stopPropagation()
         isMoving.value = false
         audioRef.value.currentTime = pregressTime.value
@@ -177,7 +178,7 @@ const openPIP = async () => {
     document.exitPictureInPicture();
   } else {
     if (document.pictureInPictureEnabled) {
-      if(!PIPRef.value.requestPictureInPicture) return ElMessage.error('您的浏览器暂不支持此功能')
+      if(!PIPRef.value?.requestPictureInPicture) return ElMessage.error('您的浏览器暂不支持此功能')
       // 新建元数据
       navigator.mediaSession.metadata = new MediaMetadata({
         title: store.currentSong.name,
@@ -190,19 +191,19 @@ const openPIP = async () => {
       });
 
       try {
-        PIPRef.value.requestPictureInPicture().then((pictureInPictureWindow) => {
+        PIPRef.value?.requestPictureInPicture().then((pictureInPictureWindow: HTMLElement) => {
           pictureInPictureWindow.addEventListener(
             "resize",
-            (e) => console.log(e),
+            (e: Event) => console.log(e),
             false,
           );
         });// 开启画中画
-      } catch(err) {
+      } catch(err: any) {
         ElMessage.error('数据加载失败，请稍后再试')
         throw new Error(err)
       }
-      PIPRef.value.autoplay = true
-      PIPRef.value.play()
+      PIPRef.value!.autoplay = true
+      PIPRef.value!.play()
       
       // 添加控件
       if(navigator.mediaSession.setActionHandler) {

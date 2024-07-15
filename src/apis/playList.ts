@@ -1,3 +1,9 @@
+import type {
+  playlistDetailType,
+  getAllPlaylistType,
+  allPlaylistType,
+  playlistCatelistType
+} from '@/types'
 import http from '@/utils/http'
 
 /**
@@ -6,14 +12,16 @@ import http from '@/utils/http'
  * @param {*} s 歌单最近的s个收藏者
  * @returns 歌单详情 al.name为专辑名称 ar为歌手信息
  */
-export const getPlayListDetail = (id, s) => {
-  return http({
-    url: '/playlist/detail',
-    params: {
-      id,
-      s
+export const getPlayListDetail = (id: number, s?: number) => {
+  return http.get<playlistDetailType>(
+    '/playlist/detail',
+    {
+      params: {
+        id,
+        s
+      }
     }
-  })
+  )
 }
 
 /**
@@ -23,7 +31,7 @@ export const getPlayListDetail = (id, s) => {
  * @param {*} offset
  * @returns
  */
-export const getPlayListAllAPI = ({ id, limit, offset }) => {
+export const getPlayListAllAPI = (id: number, limit?: number, offset?: number ) => {
   return http({
     url: '/playlist/track/all',
     params: {
@@ -64,9 +72,9 @@ export const getRelatedPlaylistAPI = id => {
  * @returns
  */
 export const getPlaylistCateAPI = () => {
-  return http({
-    url: '/playlist/catlist'
-  })
+  return http.get<playlistCatelistType>(
+    '/playlist/catlist'
+  )
 }
 
 /**
@@ -105,15 +113,18 @@ export const getTopPlaylistHighAPI = ({ cat, limit, before }) => {
  * @param {*} offset 偏移数量
  * @returns
  */
-export const getAllPlaylistAPI = ({ order, cat, limit, offset }) => {
-  return http({
-    url: '/top/playlist',
-    params: {
-      order,
-      cat,
-      limit,
-      offset
+export const getAllPlaylistAPI = (obj: getAllPlaylistType) => {
+  const { order = 'hot', cat = '全部', limit = 50, offset } = obj
+  return http.get<allPlaylistType>(
+    '/top/playlist',
+    {
+      params: {
+        order,
+        cat,
+        limit,
+        offset
+      }
     }
-  })
+  )
 }
 

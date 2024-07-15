@@ -15,40 +15,41 @@ import { ref, onMounted, provide } from 'vue'
 import { usePlayStore } from '@/stores/play'
 import { onClickOutside } from '@vueuse/core'
 import { usePlay } from './compoables/index'
-import PlayList from './PlayList'
-import Audio from './Audio'
-import Bar from './Bar'
+import { playBarProvide } from './constances'
+import PlayList from './PlayList.vue'
+import Audio from './Audio.vue'
+import Bar from './Bar.vue'
 
 const store = usePlayStore()
 
 const progressBarWidth = 466
 const btnWidth = 11
 
-const moveBtn = ref(null)
-const playBg = ref(null)
-const playBarRef = ref(null)
-const barRef = ref(null)
-const audioRef = ref(null)
+const moveBtn = ref()
+const playBg = ref()
+const playBarRef = ref()
+const barRef = ref()
+const audioRef = ref()
+const wordRef = ref()
 const isPaused = ref(true)
 const isShowVol = ref(false)
 const isMoving = ref(false)
 const isShowPlaylist = ref(false)
 const now = ref('0')
-const wordRef = ref('')
 const index = ref(0)
-const lrc = ref(null)
+const lrc = ref()
 const barLeft = ref('-11px')
 const playBgWidth = ref('0%')
 const volBgHeight = ref('0px')
 const volControlTop = ref('84px')
 
-const { prev, next, play, pause } = usePlay({ audioRef, isPaused })
+const { prev, next, play, pause } = usePlay(audioRef as unknown as HTMLAudioElement, isPaused)
 
 onMounted(() => {
   onClickOutside(playBarRef.value, () => {
     isShowPlaylist.value = false
     isShowVol.value = false
-    store.actionUpdateSetting({ volume: audioRef.value.volume })
+    store.actionUpdateSetting({ volume: audioRef.value?.volume })
   })
 })
 
@@ -57,7 +58,7 @@ const resetProgressBar = () => {
   barLeft.value = '-11px'
 }
 
-provide('playBarProvide', {
+provide(playBarProvide, {
   playBarRef,
   barRef,
   audioRef,

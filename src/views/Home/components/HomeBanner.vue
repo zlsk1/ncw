@@ -29,11 +29,13 @@
 <script lang="ts" setup>
 import { getBanner } from '@/apis/home'
 import { onMounted, ref } from 'vue'
+import type { bannerItemType } from '@/types'
 
-const bannerList = ref([])
+const bannerList = ref<bannerItemType[]>([])
 
 const getBannerList = async () => {
   const res = await getBanner()
+  
   bannerList.value = res.data.banners
 }
 

@@ -76,7 +76,7 @@ import { useElementVisibility } from '@vueuse/core'
 import { formatTimeStamp } from '@/utils/time'
 import { ElLoading } from 'element-plus'
 
-const noticeData = ref(null)
+const noticeData = ref<any>()
 const bar = ref(null)
 const loading = ref(true)
 
@@ -103,15 +103,15 @@ onMounted(() => {
   getNotices()
 })
 
-const getNotices = async (limit, lasttime) => {
-  const res = await getNoticesAPI({ limit, lasttime })
+const getNotices = async (limit: number = 30, lasttime?: number) => {
+  const res = await getNoticesAPI(limit, lasttime)
   noticeData.value = res.data
   // console.log(JSON.parse(noticeData.value.notices[0].notice))
   loading.value = false
   _lasttime = noticeData.value.notices[noticeData.value.notices.length - 1].time
 }
 
-const toDetail = (url) => {
+const toDetail = (url: string) => {
   if (typeof url !== 'number') location.href = url
   // router.push({ path: 'private_detail', query: { id, name }})
 }

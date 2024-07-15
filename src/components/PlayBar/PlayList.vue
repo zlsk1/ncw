@@ -77,14 +77,14 @@
         <p
           v-for="(item, i) in lrc"
           :key="i"
-          :data-time="judgeJson(item) ? JSON.parse(item).t / 1000 : Number(item.split(']')[0].split('[')[1]?.split(':')[0] * 60) + Number(item.split(']')[0].split('[')[1]?.split(':')[1])"
+          :data-time="judgeJson(item) ? JSON.parse(item).t / 1000 : Number((item as any).split(']')[0].split('[')[1]?.split(':')[0] * 60) + Number((item as any).split(']')[0].split('[')[1]?.split(':')[1])"
           class="per-line"
         >
           {{ judgeJson(item)
             ? JSON.parse(item).c.length === 1
               ? JSON.parse(item).c[0].tx
               : `${JSON.parse(item).c[0].tx}${JSON.parse(item).c[1].tx}`
-            : item.split(']')[1] }}
+            : (item as string).split(']')[1] }}
         </p>
       </div>
     </div>
@@ -97,11 +97,12 @@ import { usePlayStore } from '@/stores/play'
 import { judgeJson } from '@/utils/index'
 import { getLyric } from '@/apis/song'
 import { formatSongDuration } from '@/utils/time'
+import { playBarProvide } from './constances'
 
 const store = usePlayStore()
 
 const { 
-  audio,
+  audioRef,
   wordRef,
   isPaused,
   lrc,
@@ -110,7 +111,7 @@ const {
 
   resetProgressBar,
   play
-} = inject('playBarProvide')
+} = inject(playBarProvide)!
 
 onMounted(() => getLrc(store.currentSong.id))
 
@@ -119,19 +120,19 @@ watch(() => store.currentSong, val => {
   if (wordRef.value) {
     index.value = 0
     wordRef.value.scrollTo({ top: 0 })
-    Array.from(wordRef.value.children).forEach(v => { v.classList = 'per-line' })
+    Array.from(wordRef.value.children).forEach(v => { v.classList.add('per-line') })
   }
   play()
 })
 
-const getLrc = async id => {
+const getLrc = async (id: number) => {
   const res = await getLyric(id)
   lrc.value = res.data.lrc.lyric.split('\n')
 }
 
-const chooseSong = i => {
+const chooseSong = (i: number) => {
   store.actionUpdateIndex(i)
-  if (i === store.index) audio.value.currentTime = 0 // 重复选择相同歌曲 重播此歌曲
+  if (i === store.index) audioRef.value.currentTime = 0 // 重复选择相同歌曲 重播此歌曲
   play()
 }
 

@@ -14,6 +14,7 @@
 import { computed, inject, onMounted, onBeforeUnmount } from 'vue'
 import { usePlayStore } from '@/stores/play'
 import { getLyric } from '@/apis/song'
+import { playBarProvide } from './constances'
 
 const { 
   isPaused,
@@ -27,7 +28,7 @@ const {
   
   resetProgressBar,
   next
-} = inject('playBarProvide')
+} = inject(playBarProvide)!
 
 const store = usePlayStore()
 
@@ -35,7 +36,7 @@ const isLoop = computed(() => {
   return store.setting?.mode === 2 || store.songQueue.length === 1
 })
 
-const getLrc = async id => {
+const getLrc = async (id: number) => {
   const res = await getLyric(id)
   lrc.value = res.data.lrc.lyric.split('\n')
 }
@@ -46,12 +47,12 @@ const loadedmetadata = () => {
   }
 }
 
-const timeupdate = e => {
+const timeupdate = (e: Event) => {
   if (!isMoving.value) {
-    now.value = e.target.currentTime
+    now.value = (e.target as HTMLAudioElement).currentTime
   }
   if (isShowPlaylist.value) {
-    const _index = Array.from(wordRef.value.children).findIndex(v => v.dataset.time > e.target.currentTime)
+    const _index = Array.from(wordRef.value.children).findIndex(v => (v as any).dataset.time > (e.target as HTMLAudioElement).currentTime)
     if (index.value < _index) {
       wordRef.value.children[index.value].textContent ? wordRef.value.children[index.value].classList.replace('per-line', 'active-lyric') : ''
       wordRef.value.children[index.value - 1]?.classList.replace('active-lyric', 'per-line')

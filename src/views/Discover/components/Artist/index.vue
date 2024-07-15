@@ -14,11 +14,10 @@
           v-for="(type, index) in cate.type"
           :key="index"
           :index="cate.path[index]"
-          @click="select({
+          @click="select(
             type,
-            area: cate.area,
-            path: cate.path[index]
-          })"
+            cate.area,
+          )"
         >
           {{ cate.area === '推荐' ? type : cate.area + '' + type }}
         </el-menu-item>
@@ -32,7 +31,7 @@
         <li
           v-for="(item, index) in filterlist"
           :key="index"
-          :class="initial === item ? 'active' : ''"
+          :class="initial === item as any ? 'active' : ''"
           @click="handleFilter(item)"
         >
           <template v-if="item === '-1'">
@@ -88,15 +87,22 @@ import { getArtistlistAPI, getHotSinger } from '@/apis/singer'
 import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { catelist, areaObj, typeObj, filterlist } from './data'
+import type {
+  getArtistlistType,
+  ArtistlistInitialType,
+  ArtistlistTypeType,
+  ArtistlistAreaType,
+  topSingerType
+} from '@/types'
 
 const route = useRoute()
 const router = useRouter()
 
 const limit = 100
 const offset = 0
-let initial = route.query.initial || '-1'
+let initial: ArtistlistInitialType = route.query.initial as any || '-1'
 
-const artistlist = ref(null)
+const artistlist = ref<topSingerType>()
 const currentCate = ref(
   route.fullPath !== '/discover/artist'
     ? route.query.area + '' + route.query.type
@@ -110,10 +116,16 @@ const currentPath = computed(() => {
 })
 
 onMounted(() => {
-  getArtistlist(limit, offset, initial, typeObj[route.query.type], areaObj[route.query.area])
+  getArtistlist({
+    limit,
+    offset,
+    initial,
+    type: typeObj[route.query.type as keyof typeof typeObj] as ArtistlistTypeType,
+    area: areaObj[route.query.area as keyof typeof areaObj] as ArtistlistAreaType
+  })
 })
 
-const getArtistlist = async (limit, offset, initial, type, area) => {
+const getArtistlist = async ({ limit, offset, initial, type, area }: getArtistlistType) => {
   let res
   if (route.fullPath === '/discover/artist') {
     res = await getHotSinger(100)
@@ -123,15 +135,27 @@ const getArtistlist = async (limit, offset, initial, type, area) => {
   artistlist.value = res.data
 }
 
-const select = ({ type, area, path }) => {
+const select = (type: string, area: string) => {
   currentCate.value = area + '' + type
-  getArtistlist(limit, offset, initial, typeObj[type], areaObj[area])
+  getArtistlist({
+    limit,
+    offset,
+    initial,
+    type: typeObj[type as keyof typeof typeObj] as ArtistlistTypeType,
+    area: areaObj[area as keyof typeof areaObj] as ArtistlistAreaType
+  })
 }
 
-const handleFilter = cate => {
+const handleFilter = (cate: any) => {
   if (cate === '#') initial = 0
   else initial = cate
-  getArtistlist(limit, offset, initial, typeObj[route.query.type], areaObj[route.query.area])
+  getArtistlist({
+    limit,
+    offset,
+    initial,
+    type: typeObj[route.query.type as keyof typeof typeObj] as ArtistlistTypeType,
+    area: areaObj[route.query.area as keyof typeof areaObj] as ArtistlistAreaType
+  })
   router.push({ path: route.path, query: { area: route.query.area, type: route.query.type, initial }})
 }
 </script>

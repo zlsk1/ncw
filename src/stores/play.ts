@@ -1,19 +1,37 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
-import { getSongQueue, getCurrentSong, getSongIndex, getSetting } from '@/utils/auth'
+import {
+  getSongQueue,
+  getCurrentSong,
+  getSongIndex,
+  getSetting
+} from '@/utils/auth'
 import { getPlayListDetail } from '@/apis/playList'
 import { getSongUrl } from '@/apis/song'
 import { ElMessage } from 'element-plus'
-import { defaultSetting } from '@/cogfig'
+import { defaultSetting } from '@/config'
+import type { settingType } from '@/config'
+import type { playlistTracksType, arType } from '@/types'
+
+export interface songQueueType {
+  id: number,
+  name: string,
+  picUrl: string,
+  time?: number,
+  url?: string,
+  singer?: string,
+}
+
+type songQueueIndex = number
 
 export const usePlayStore = defineStore('play', () => {
-  const songQueue = ref(getSongQueue())
-  const currentSong = ref(getCurrentSong())
-  const index = ref(getSongIndex())
-  const setting = ref(getSetting())
+  const songQueue = ref<songQueueType[]>(getSongQueue())
+  const currentSong = ref<songQueueType | undefined>(getCurrentSong())
+  const setting = ref<settingType>(getSetting())
+  const index = ref<number>(getSongIndex())
   const status = ref(0)
 
-  const actionAddSongs = async id => {
+  const actionAddSongs = async (id: number) => {
     try {
       const { data: { playlist: { tracks }}} = await getPlayListDetail(id)
       const idsStr = tracks.map(v => { return v.id }).join(',')
@@ -24,8 +42,8 @@ export const usePlayStore = defineStore('play', () => {
   }
 
   // 可处理播放歌手热门歌曲
-  const actionGetSongs = async (ids, detail) => {
-    const songs = await getSongUrl(ids.split(','))
+  const actionGetSongs = async <T>(ids: string, detail: Pick<playlistTracksType, 'name' | 'ar' | 'al'>[] & T) => {
+    const songs = await getSongUrl(ids.split(',') as unknown as number)
     if (songs.data.code === -460) ElMessage.error(songs.data.message)
     else {
       const { data: { data }} = songs
@@ -36,7 +54,7 @@ export const usePlayStore = defineStore('play', () => {
           url: data[index].url,
           time: data[index].time,
           name: detail[i].name,
-          singer: detail[i].ar.length === 1 ? detail[i].ar[0].name : detail[i].ar.map(v => { return v.name }).join('/'),
+          singer: (detail[i].ar as arType[]).length === 1 ? (detail[i].ar as arType).name : (detail[i].ar as arType[]).map(v => { return v.name }).join('/'),
           picUrl: detail[i].al.picUrl
         }
       })
@@ -51,8 +69,9 @@ export const usePlayStore = defineStore('play', () => {
    * @param {*} o 歌曲对象 {id,picUrl,name,singer}
    * @param {*} type =0 插入方式 0为首项即立即播放 1为末项即添加到播放列表
    */
-  const actionAddSong = async (o, type = 0) => {
-    const res = await getSongUrl(o.id)
+  const actionAddSong = async (o: songQueueType, type = 0) => {
+    const res = await getSongUrl(o.id as number)
+      
     if (res.data.code === -460) ElMessage.error(res.data.message)
     else {
       const mergeObj = Object.assign(o, { url: res.data.data[0].url, time: res.data.data[0].time })
@@ -86,7 +105,7 @@ export const usePlayStore = defineStore('play', () => {
     actionUpdateIndex(0)
   }
 
-  const actionDelSong = i => {
+  const actionDelSong = (i: songQueueIndex) => {
     index.value === songQueue.value.length - 1 ? actionUpdateIndex(--index.value) : ''
     songQueue.value.splice(i, 1)
     localStorage.setItem('song_queue', JSON.stringify(songQueue.value))
@@ -94,23 +113,23 @@ export const usePlayStore = defineStore('play', () => {
 
   const actionUpdateCurrentSong = () => {
     currentSong.value = localStorage.getItem('song_queue')
-      ? JSON.parse(localStorage.getItem('song_queue'))[index.value]
+      ? JSON.parse(localStorage.getItem('song_queue') as string)[index.value]
       : null
   }
 
-  const actionUpdateSetting = (obj) => {
+  const actionUpdateSetting = (obj: Partial<settingType>) => {
     Object.assign(setting.value, obj)
     localStorage.setItem('play_setting', JSON.stringify(setting.value))
   }
 
-  const actionUpdateIndex = i => {
+  const actionUpdateIndex = (i: songQueueIndex) => {
     actionUpdateSetting({ index: i })
     index.value = i
   }
 
   watch(index, () => {
     actionUpdateCurrentSong()
-    document.title = status.value ? currentSong.value?.name : '音乐'
+    document.title = status.value ? currentSong.value?.name as string : '音乐'
   })
 
   watch(setting, val => {
@@ -118,7 +137,7 @@ export const usePlayStore = defineStore('play', () => {
   })
 
   watch(status, val => {
-    document.title = val ? currentSong.value?.name : '音乐'
+    document.title = val ? currentSong.value?.name as string : '音乐'
   })
 
   return {
@@ -127,6 +146,7 @@ export const usePlayStore = defineStore('play', () => {
     index,
     setting,
     status,
+
     actionAddSongs,
     actionGetSongs,
     actionAddSong,

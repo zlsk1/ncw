@@ -23,7 +23,7 @@
       </li>
     </ul>
     <el-pagination
-      :page-count="Math.ceil(albumList?.artist?.albumSize / limit)"
+      :page-count="Math.ceil((albumList?.artist as artistType)?.albumSize / limit)"
       :page-size="12"
       layout="prev, pager, next"
       next-text="下一页"
@@ -40,37 +40,46 @@ import { getArtistAlbumAPI } from '@/apis/artist'
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { usePlayStore } from '@/stores/play'
-import Card from '@/components/Card'
+import Card from '@/components/Card/index.vue'
+import type { artistAlbumType, artistType } from '@/types'
+
+type albumRequestType = {
+  id: number,
+  limit: number,
+  offset: number,
+}
 
 const route = useRoute()
+const id = Number(route.params.id)
 
 const playStore = usePlayStore()
 
-const albumList = ref([])
+const albumList = ref<artistAlbumType>()
 const offset = ref(0)
 const isLoad = ref(true)
 
 const limit = 12
 
-onMounted(() => { getArtistAlbum({ id: route.params.id, limit, offset: offset.value }) })
+onMounted(() => { getArtistAlbum({ id, limit, offset: offset.value }) })
 
-onBeforeRouteUpdate(to => {
-  getArtistAlbum({ id: to.params.id, limit, offset: offset.value })
+onBeforeRouteUpdate(() => {
+  getArtistAlbum({ id, limit, offset: offset.value })
 })
 
-const getArtistAlbum = async ({ id, limit, offset }) => {
+const getArtistAlbum = async (obj: albumRequestType) => {
+  const { id,  limit, offset } = obj
   isLoad.value = true
   const res = await getArtistAlbumAPI(id, limit, offset)
   albumList.value = res.data
   isLoad.value = false
 }
 
-const changePage = e => {
+const changePage = (e: number) => {
   offset.value = e === 1 ? 0 : (e - 1) * limit
-  getArtistAlbum({ id: route.params.id, limit, offset: offset.value })
+  getArtistAlbum({ id, limit, offset: offset.value })
 }
 
-const play = id => { playStore.actionAddSongs(id) }
+const play = (id: number) => { playStore.actionAddSongs(id) }
 </script>
 
 <style lang="scss" scoped>

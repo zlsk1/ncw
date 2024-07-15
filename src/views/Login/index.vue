@@ -52,7 +52,7 @@
           </p>
         </div>
         <el-form
-          ref="loginForm"
+          ref="loginFormRef"
           :model="loginFormData"
           :rules="loginFormRules"
           style="margin: 20px 0"
@@ -120,7 +120,7 @@
               v-if="isRegister"
               class="btn"
               style="width: 100%"
-              @click="handleLogin(loginForm)"
+              @click="handleLogin(loginFormRef)"
             >
               注册
             </el-button>
@@ -128,7 +128,7 @@
               v-else
               class="btn"
               style="width: 100%"
-              @click="handleLogin(loginForm)"
+              @click="handleLogin(loginFormRef)"
             >
               登录
             </el-button>
@@ -147,7 +147,8 @@
 </template>
 
 <script lang="ts" setup>
-import { loginByCaptcha,
+import {
+  loginByCaptcha,
   schemaCaptcha,
   testPhone,
   testNickname,
@@ -171,7 +172,7 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 
-const loginForm = ref(null)
+const loginFormRef = ref()
 const isSentCaptcha = ref(false)
 const isPhone = ref(false)
 const isLoginByPassword = ref(false)
@@ -181,7 +182,7 @@ const isLoad = ref(true)
 const qrCodeUrl = ref('')
 const captchaCountdown = ref(30)
 const reg = new RegExp(/^(?:(?:\+|00)86)?1\d{10}$/)
-let timer = null
+let timer: any = null
 
 const loginFormData = ref({
   phone: '',
@@ -193,8 +194,7 @@ const loginFormData = ref({
 })
 
 onUnmounted(() => {
-  handleLogin = null; getCaptcha = null; switchLoginWay = null; closeDialog = null; chooseOtherWay = null; createQrCode = null
-  isQrCode.value = null; timer = null
+  timer = null
 })
 
 watch(
@@ -230,22 +230,22 @@ watch(
 )
 
 // 自定义检验验证码
-const validCaptcha = async (rule, value, callback) => {
+const validCaptcha = async (rule: any, value: any, callback: any) => {
   if (!value) {
     return callback(new Error('请输入验证码'))
   }
   if (value.trim().length === 4) {
-    const res = await schemaCaptcha(loginFormData.value)
+    const res = await schemaCaptcha(loginFormData.value.phone, loginFormData.value.captcha)
     if (res.data.code !== 200) return callback(new Error('验证码错误'))
   }
 }
 
-const validPasswordConfirm = async (rule, value, callback) => {
+const validPasswordConfirm = async (rule: any, value: any, callback: any) => {
   if (!value) { return callback(new Error('请确认密码')) }
   if (value !== loginFormData.value.password) return callback(new Error('两次输入的密码不一致'))
 }
 
-const validNickname = async (rule, value, callback) => {
+const validNickname = async (rule: any, value: any, callback: any) => {
   if (!value) return callback(new Error('请输入昵称'))
   const res = await testNickname(value.trim())
   if (res.data.duplicated) return callback(new Error(`昵称已存在 推荐昵称：${res.data.candidateNicknames[Math.ceil(Math.random() * 10)]}`))
@@ -265,8 +265,8 @@ const loginFormRules = ref({
   captcha: { validator: validCaptcha, trigger: 'blur' }
 })
 
-let handleLogin = async formName => {
-  await loginForm.value.validate(async (valid, fields) => {
+let handleLogin = async (formName: any) => {
+  await formName.validate(async (valid: boolean) => {
     if (valid) {
       if (isRegister.value) {
         const res = await register()
@@ -274,7 +274,7 @@ let handleLogin = async formName => {
       }
       if (isLoginByPassword.value) {
         userStore.loginAction(loginFormData.value)
-        loginForm.value.resetFields()
+        formName.resetFields()
       }
       emit('close', false)
     }
@@ -298,14 +298,14 @@ let getCaptcha = async () => {
 }
 
 let switchLoginWay = () => {
-  loginForm.value.resetFields()
+  loginFormRef.value?.resetFields()
   isLoginByPassword.value = !isLoginByPassword.value
   isRegister.value = false
 }
 
 let closeDialog = () => {
   emit('close', false)
-  !isQrCode.value ? loginForm.value.resetFields() : ''
+  !isQrCode.value ? loginFormRef.value?.resetFields() : ''
   isLoginByPassword.value = false
 }
 
@@ -322,7 +322,7 @@ const backtoQrLogin = () => {
 let createQrCode = async () => {
   isLoad.value = true
   const res = await getQrKeyAPI()
-  const qr = await createQrCodeAPI({ key: res.data.data.unikey })
+  const qr = await createQrCodeAPI(res.data.data.unikey)
   qrCodeUrl.value = qr.data.data.qrimg
   isLoad.value = false
   timer = setInterval(async () => {

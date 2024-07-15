@@ -30,7 +30,7 @@
           </div>
         </div>
         <ul class="content">
-          <li v-for="(track, no) in topList[index]" :key="track.no" class="content-item">
+          <li v-for="(track, no) in topList[index]" :key="track?.no" class="content-item">
             <div class="fl">
               <p class="rank">
                 {{ no + 1 }}
@@ -41,8 +41,8 @@
                 </p>
               </router-link>
               <div class="icon">
-                <i class="play" title="播放" @click="updateSong({id: track.id, picUrl: track.al.picUrl, name: track.name, singer: track.ar.map(v => { return v.name }).join('/')})" />
-                <i class="addlist" title="添加到播放列表" @click="updateSong({id: track.id, picUrl: track.al.picUrl, name: track.name, singer: track.ar.map(v => { return v.name }).join('/')}, 1)" />
+                <i class="play" title="播放" @click="updateSong({id: track.id, picUrl: track.al.picUrl, name: track.name, singer: (track.ar as arType[]).map(v => { return v.name }).join('/')})" />
+                <i class="addlist" title="添加到播放列表" @click="updateSong({id: track.id, picUrl: track.al.picUrl, name: track.name, singer: (track.ar as arType[]).map(v => { return v.name }).join('/')}, 1)" />
                 <i class="like" title="收藏" />
               </div>
             </div>
@@ -63,10 +63,15 @@ import { onMounted, ref } from 'vue'
 import { useTopStore } from '@/stores/top'
 import { usePlayStore } from '@/stores/play'
 import { getPlayListDetail } from '@/apis/playList'
+import type { songQueueType } from '@/stores/play'
+import type {
+  playlistTracksType,
+  arType
+} from  '@/types'
 
 const topStore = useTopStore()
 const playStore = usePlayStore()
-const topList = ref([])
+const topList = ref<playlistTracksType[][]>([])
 
 onMounted(async () => {
   await topStore.actionTopId()
@@ -74,7 +79,7 @@ onMounted(async () => {
   getTopList(ids)
 })
 
-const getTopList = (ids) => {
+const getTopList = (ids: number[]) => {
   const p = Promise.all([
     getPlayListDetail(ids[0]),
     getPlayListDetail(ids[1]),
@@ -82,14 +87,14 @@ const getTopList = (ids) => {
   ])
   p.then(res => {
     for (const item of res) {
-      topList.value.push(item.data.playlist.tracks.slice(0, 10))
+      topList.value?.push(item.data.playlist.tracks.slice(0, 10))
     }
   })
 }
 
-const updateSong = async (o, type) => { playStore.actionAddSong(o, type) }
+const updateSong = async (o: songQueueType, type?: number) => { playStore.actionAddSong(o, type) }
 
-const addPlayList = async id => { playStore.actionAddSongs(id) }
+const addPlayList = async (id: number) => { playStore.actionAddSongs(id) }
 </script>
 
 <style lang="scss" scoped>

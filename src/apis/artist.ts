@@ -1,12 +1,22 @@
 import http from '@/utils/http'
+import type {
+  artistAlbumType,
+  artistDetailType,
+  responseType,
+  artistProduceType,
+  artistHotWorkType,
+  artistMVType
+} from '@/types'
 
 export const getArtistDetailAPI = (id: number) => {
-  return http({
-    url: '/artist/detail',
-    params: {
-      id
+  return http.get<responseType<artistDetailType>>(
+    '/artist/detail',
+    {
+      params: {
+        id
+      }
     }
-  })
+  )
 }
 
 /**
@@ -17,14 +27,16 @@ export const getArtistDetailAPI = (id: number) => {
  * @returns
  */
 export const getArtistAlbumAPI = (id: number, limit: number, offset?: number) => {
-  return http({
-    url: '/artist/album',
-    params: {
-      id,
-      limit,
-      offset
+  return http.get<artistAlbumType>(
+    '/artist/album',
+    {
+      params: {
+        id,
+        limit,
+        offset
+      }
     }
-  })
+  )
 }
 
 export const getArtistAPI = (id: number) => {
@@ -37,28 +49,34 @@ export const getArtistAPI = (id: number) => {
 }
 
 export const getArtistTopSongAPI = (id: number) => {
-  return http({
-    url: '/artist/top/song',
-    params: {
-      id
+  return http.get<artistHotWorkType>(
+    '/artist/top/song',
+    {
+      params: {
+        id
+      }
     }
-  })
+  )
 }
 
 export const getArtistProduceAPI = (id: number) => {
-  return http({
-    url: '/artist/desc',
-    params: {
-      id
+  return http.get<artistProduceType>(
+    '/artist/desc',
+    {
+      params: {
+        id
+      }
     }
-  })
+  )
 }
 
 export const getArtistMVAPI = (id: number) => {
-  return http({
-    url: '/artist/mv',
-    params: {
-      id
+  return http.get<artistMVType>(
+    '/artist/mv',
+    {
+      params: {
+        id
+      }
     }
-  })
+  )
 }

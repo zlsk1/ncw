@@ -46,9 +46,9 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 
-const msgCount = ref(0)
+const msgCount = ref<number>(0)
 
-onMounted(() => { getMsg() })
+onMounted(() => getMsg())
 
 const getMsg = async () => {
   const res = await getPlCountAPI()

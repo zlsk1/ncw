@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
   getQrKeyAPI,
@@ -49,21 +49,16 @@ const router = useRouter()
 
 const isLoad = ref(true)
 const qrCodeUrl = ref('')
-let timer = null
+let timer: any = null
 
 onMounted(() => {
   createQrCode()
-  console.log(route)
-})
-
-onUnmounted(() => {
-  createQrCode = null
 })
 
 let createQrCode = async () => {
   isLoad.value = true
   const res = await getQrKeyAPI()
-  const qr = await createQrCodeAPI({ key: res.data.data.unikey })
+  const qr = await createQrCodeAPI(res.data.data.unikey)
   qrCodeUrl.value = qr.data.data.qrimg
   isLoad.value = false
   timer = setInterval(async () => {

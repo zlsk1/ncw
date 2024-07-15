@@ -27,4 +27,13 @@ http.interceptors.request.use(
   }
 )
 
+http.interceptors.response.use(
+  (res) => {
+    return res
+  }, 
+  (err) => {
+    return Promise.reject(err)
+  }
+)
+
 export default http

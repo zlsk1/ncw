@@ -17,17 +17,17 @@
             <h2>{{ playlist?.playlist?.name }}</h2>
           </div>
           <div class="creator">
-            <router-link :to="`/user/home/${playlist?.playlist?.creator.userId}`">
-              <img :src="playlist?.playlist?.creator.avatarUrl + '?param=35y35'" alt="">
+            <router-link :to="`/user/home/${playlist?.playlist?.creator?.userId}`">
+              <img :src="playlist?.playlist?.creator?.avatarUrl + '?param=35y35'" alt="">
             </router-link>
-            <router-link :to="`/user/home/${playlist?.playlist?.creator.userId}`">
-              <span class="name">{{ playlist?.playlist?.creator.nickname }}</span>
+            <router-link :to="`/user/home/${playlist?.playlist?.creator?.userId}`">
+              <span class="name">{{ playlist?.playlist?.creator?.nickname }}</span>
             </router-link>
             <span class="time">
-              {{ new Date(playlist?.playlist?.createTime).toLocaleString().split(' ')[0] }}创建
+              {{ new Date(playlist?.playlist?.createTime as any).toLocaleString().split(' ')[0] }}创建
             </span>
           </div>
-          <Btns :id="route.params.id" :dynamic="dynamic" class="btns" />
+          <Btns :id="id" :dynamic="dynamic as dynamicType" class="btns" />
           <div v-if="playlist?.playlist?.tags.length !== 0" class="tags fl">
             标签：
             <router-link to="/">
@@ -85,16 +85,16 @@
               </td>
               <td>
                 <div class="fl title">
-                  <i class="icon icon-play" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')})" />
+                  <i class="icon icon-play" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: (item.ar as arType[]).map(v => { return v.name }).join('/')})" />
                   <router-link class="name ellipsis-1" :to="`/song/${item.id}`" :title="item.name">
                     {{ item.name }}
                   </router-link>
                 </div>
               </td>
               <td class="duration">
-                <span class="time">{{ formatSongDuration(item.dt, 0) }}</span>
+                <span class="time">{{ formatSongDuration(item.dt as number, 0) }}</span>
                 <div class="fl-sb">
-                  <i class="icon icon-add" title="添加到播放列表" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')}, 1)" />
+                  <i class="icon icon-add" title="添加到播放列表" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: (item.ar as arType[]).map(v => { return v.name }).join('/')}, 1)" />
                   <i class="icon icon-collect" title="收藏" />
                   <i class="icon icon-share" title="分享" />
                   <i class="icon icon-download" title="下载" />
@@ -104,11 +104,11 @@
                 <div class="singer ellipsis-1">
                   <router-link
                     v-for="(singer, index1) in item.ar"
-                    :key="singer.id"
-                    :title="item.ar.map(v => { return v.name })"
+                    :key="(singer as arType).id"
+                    :title="(item.ar as arType[]).map(v => { return v.name })"
                     :to="`/artist/${item.id}`"
                   >
-                    {{ index1 === item.ar.length - 1 ? singer.name : singer.name + '/' }}
+                    {{ index1 === (item.ar as arType[]).length - 1 ? (singer as arType).name : (singer as arType).name + '/' }}
                   </router-link>
                 </div>
               </td>
@@ -155,30 +155,35 @@ import { useRoute } from 'vue-router'
 import { ArrowDown, ArrowUp } from '@element-plus/icons-vue'
 import { usePlayStore } from '@/stores/play'
 import { formatSongDuration } from '@/utils/time'
-import DownLoadSide from '@/components/DownLoadSide'
-import Comment from '@/components/Comment'
-import Btns from '@/components/Btns'
+import DownLoadSide from '@/components/DownLoadSide/index.vue'
+import Comment from '@/components/Comment/index.vue'
+import Btns from '@/components/Btns/index.vue'
+import type { playlistDetailType } from '@/types'
+import type { songQueueType } from '@/stores/play'
+import type { dynamicType } from '@/components/Btns'
+import type { arType } from '@/types'
 
 const playStore = usePlayStore()
 
 const route = useRoute()
+const id = Number(route.params?.id)
 
-const playlist = ref([])
+const playlist = ref<playlistDetailType>()
 const description = ref('')
 const isExpand = ref(false)
-const dynamic = ref(null)
+const dynamic = ref<dynamicType>()
 
 onMounted(() => {
-  getplaylist(route.params.id)
-  getDynamic(route.params.id)
+  getplaylist(id)
+  getDynamic(id)
 })
 
-const getplaylist = async (id) => {
+const getplaylist = async (id: number) => {
   const res = await getPlayListDetail(id)
   playlist.value = res.data
   description.value = playlist.value?.playlist?.description.slice(0, 100).concat('...')
   window.scrollTo({ top: 0 })
-  const _res = await getPlayListAllAPI({ id })
+  const _res = await getPlayListAllAPI(id)
   playlist.value.playlist.tracks = _res.data.songs
 }
 
@@ -186,15 +191,15 @@ const expandDesc = () => {
   !isExpand.value ? '' : window.scrollTo({ top: 0 })
   isExpand.value = !isExpand.value
   description.value = isExpand.value
-    ? playlist.value?.playlist?.description
-    : playlist.value?.playlist?.description.slice(0, 100).concat('...')
+    ? playlist.value?.playlist?.description as string
+    : playlist.value?.playlist?.description.slice(0, 100).concat('...') as string
 }
 
-const play = (o, type) => {
+const play = (o: songQueueType, type?: number) => {
   playStore.actionAddSong(o, type)
 }
 
-const getDynamic = async id => {
+const getDynamic = async (id: number) => {
   const res = await getPlaylistDynamicAPI(id)
   dynamic.value = {
     commentCount: res.data.commentCount,

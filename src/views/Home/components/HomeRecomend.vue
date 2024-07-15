@@ -74,9 +74,11 @@ import { getPersonalized } from '@/apis/home'
 import { onMounted, ref } from 'vue'
 import { formatPlayCount } from '@/utils/index'
 import { usePlayStore } from '@/stores/play'
+import type { personalizedAlbumResultType } from '@/types'
+
 const store = usePlayStore()
 
-const personalizedList = ref([])
+const personalizedList = ref<personalizedAlbumResultType[]>([])
 
 onMounted(() => {
   getPersonalizedList()
@@ -87,7 +89,7 @@ const getPersonalizedList = async () => {
   personalizedList.value = res.data.result
 }
 
-const addPlayList = async id => {
+const addPlayList = async (id: number) => {
   store.actionAddSongs(id)
 }
 

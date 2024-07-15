@@ -1,4 +1,4 @@
-interface settingType {
+export interface settingType {
   autoplay: boolean,
   index: number,
   lock: boolean,

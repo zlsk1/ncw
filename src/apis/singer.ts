@@ -1,4 +1,5 @@
 import http from '@/utils/http'
+import type { topSingerType, getArtistlistType } from '@/types'
 
 /**
  *
@@ -6,17 +7,19 @@ import http from '@/utils/http'
  * @param {*} offset 偏移数量 , 用于分页
  * @returns 热门歌手
  */
-export const getHotSinger = (limit, offset = 0) => {
-  return http({
-    url: '/top/artists',
-    params: {
-      limit,
-      offset
-    }
-  })
+export const getHotSinger = (limit: number, offset: number = 0) => {
+  return http.get<topSingerType>(
+    '/top/artists',
+    {
+      params: {
+        limit,
+        offset
+      }
+    } 
+  )
 }
 
-export const getSignerDesc = id => {
+export const getSignerDesc = (id: number) => {
   return http({
     url: '/artist/desc',
     params: {
@@ -34,7 +37,7 @@ export const getSignerDesc = id => {
  * @param {*} area -1:全部 7华语 96欧美 8:日本 16韩国 0:其他
  * @returns
  */
-export const getArtistlistAPI = ({ limit, offset, initial, type, area }) => {
+export const getArtistlistAPI = ({ limit, offset, initial, type, area }: getArtistlistType) => {
   return http({
     url: '/artist/list',
     params: {

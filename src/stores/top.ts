@@ -2,8 +2,15 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { getTop } from '@/apis/home'
 
+type topIdType = {
+  id: number,
+  imgUrl: string,
+  name: string,
+  updateFrequency: string
+}
+
 export const useTopStore = defineStore('top', () => {
-  const topId = ref([])
+  const topId = ref<topIdType[]>([])
   const topList = ref([])
   const firstId = ref(topId.value[0]?.id || 19723756)
 
@@ -18,6 +25,7 @@ export const useTopStore = defineStore('top', () => {
     topId,
     topList,
     firstId,
+    
     actionTopId
   }
 })

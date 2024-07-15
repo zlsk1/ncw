@@ -1,7 +1,7 @@
 import http from '@/utils/http'
 import { getTimestamp } from '@/utils/time'
 
-export const loginByPassword = ({ phone, password }) => {
+export const loginByPassword = (phone: string, password?: string) => {
   return http({
     url: '/login/cellphone',
     method: 'POST',
@@ -12,7 +12,7 @@ export const loginByPassword = ({ phone, password }) => {
   })
 }
 
-export const loginByCaptcha = phone => {
+export const loginByCaptcha = (phone: string) => {
   return http({
     url: '/captcha/sent',
     method: 'POST',
@@ -22,7 +22,7 @@ export const loginByCaptcha = phone => {
   })
 }
 
-export const schemaCaptcha = ({ phone, captcha }) => {
+export const schemaCaptcha = (phone: string, captcha: string) => {
   return http({
     url: '/captcha/verify',
     method: 'POST',
@@ -39,7 +39,7 @@ export const logout = () => {
   })
 }
 
-export const testPhone = (phone) => {
+export const testPhone = (phone: string) => {
   return http({
     url: `/cellphone/existence/check?timeStamp=${getTimestamp()}`,
     method: 'POST',
@@ -49,7 +49,7 @@ export const testPhone = (phone) => {
   })
 }
 
-export const register = ({ phone, captcha, password, nickname }) => {
+export const register = (phone: string, captcha: string, password: string, nickname: string) => {
   return http({
     url: '/register/cellphone',
     method: 'POST',
@@ -68,7 +68,7 @@ export const createNickname = () => {
   })
 }
 
-export const testNickname = (nickname) => {
+export const testNickname = (nickname: string) => {
   return http({
     url: `/nickname/check?stamp=${getTimestamp()}`,
     method: 'POST',
@@ -114,7 +114,7 @@ export const getQrKeyAPI = () => {
  * @param {*} qrimg
  * @returns
  */
-export const createQrCodeAPI = ({ key, qrimg = 1 }) => {
+export const createQrCodeAPI = (key: string, qrimg: number = 1) => {
   return http({
     url: `/login/qr/create?stamp=${getTimestamp()}`,
     params: {
@@ -130,7 +130,7 @@ export const createQrCodeAPI = ({ key, qrimg = 1 }) => {
  * @param {*} qrimg
  * @returns
  */
-export const checkQrCodeAPI = (key) => {
+export const checkQrCodeAPI = (key: number) => {
   return http({
     url: `/login/qr/check?stamp=${getTimestamp()}`,
     params: {

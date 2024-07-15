@@ -61,7 +61,7 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-const msgData = ref(null)
+const msgData = ref<any>()
 const bar = ref(null)
 const loading = ref(true)
 
@@ -87,7 +87,7 @@ onMounted(async () => {
   await getMsg(limit, _offset)
 })
 
-const getMsg = async (limit, offset) => {
+const getMsg = async (limit: number, offset: number) => {
   const res = await getMsgAPI(limit, offset)
   if (offset === 0) msgData.value = res.data
   else {
@@ -99,7 +99,7 @@ const getMsg = async (limit, offset) => {
   loading.value = false
 }
 
-const toDetail = (id, name) => {
+const toDetail = (id: number, name: string) => {
   router.push({ path: 'private_detail', query: { id, name }})
 }
 </script>

@@ -22,17 +22,15 @@ export const judgeJson = (str: string): boolean => {
   }
 }
 
-type debouncedFn = Function
-
 /**
  * 防抖
  * @param {Function} fn
  * @param {*} delay 延迟毫秒数
  * @param {*} immediate 是否立即执行,默认立即执行
  */
-export function debounce (fn: debouncedFn, delay: number, immediate: boolean = true): debouncedFn {
+export function debounce (fn: Function, delay: number, immediate: boolean = true): Function {
   let timer: null | number
-  return function (this: debouncedFn, ...args: Array<any>) {
+  return function (this: Function, ...args: Array<any>) {
     if (timer) {
       if (immediate) return
       clearTimeout(timer)

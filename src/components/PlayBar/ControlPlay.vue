@@ -18,8 +18,9 @@
 
 <script setup lang="ts">
 import { inject } from 'vue'
+import { playBarProvide } from './constances'
 
-const { isPaused, prev, next, play, pause } = inject('playBarProvide')
+const { isPaused, prev, next, play, pause } = inject(playBarProvide)!
 </script>
 
 <style lang="scss" scoped>

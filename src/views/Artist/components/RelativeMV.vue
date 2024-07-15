@@ -1,6 +1,6 @@
 <template>
-  <div v-loading="isLoad" class="mv-wrap" :style="{justifyContent: MVlist.length ? '' : 'center'}">
-    <template v-if="MVlist.length">
+  <div v-loading="isLoad" class="mv-wrap" :style="{justifyContent: MVlist!.length ? '' : 'center'}">
+    <template v-if="MVlist!.length">
       <Card v-for="item in MVlist" :key="item.id">
         <router-link to="/">
           <Pic :src="item.imgurl + '?param=120y100'" play mask4 />
@@ -27,11 +27,12 @@
 import { getArtistMVAPI } from '@/apis/artist'
 import { onMounted, ref } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
-import Card from '@/components/Card'
+import Card from '@/components/Card/index.vue'
+import type { artistMVItemsType } from '@/types'
 
 const route = useRoute()
 
-const MVlist = ref([])
+const MVlist = ref<artistMVItemsType[]>()
 const isLoad = ref(true)
 
 onMounted(() => {
@@ -44,7 +45,7 @@ onBeforeRouteUpdate((to) => {
   }
 })
 
-const getMV = async id => {
+const getMV = async (id: any) => {
   const res = await getArtistMVAPI(id)
   MVlist.value = res.data.mvs
   isLoad.value = false

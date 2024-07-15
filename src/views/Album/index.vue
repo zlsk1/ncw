@@ -83,7 +83,7 @@
               </td>
               <td>
                 <div class="fl title">
-                  <i class="icon icon-play" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')})" />
+                  <i class="icon icon-play" @click="play({id: Number(item.id), picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')})" />
                   <router-link class="name ellipsis-1" :to="`/song/${item.id}`" :title="item.name">
                     {{ item.name }}
                   </router-link>
@@ -92,7 +92,7 @@
               <td class="duration">
                 <span class="time">{{ formatSongDuration(item.dt, 0) }}</span>
                 <div class="fl-sb">
-                  <i class="icon icon-add" title="添加到播放列表" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')}, 1)" />
+                  <i class="icon icon-add" title="添加到播放列表" @click="play({id: Number(item.id), picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')}, 1)" />
                   <i class="icon icon-collect" title="收藏" />
                   <i class="icon icon-share" title="分享" />
                   <i class="icon icon-download" title="下载" />
@@ -158,18 +158,19 @@ import { getAlbumAPI } from '@/apis/album'
 import { getArtistAlbumAPI } from '@/apis/artist'
 import { formatSongDuration, getTimestamp } from '@/utils/time'
 import { ArrowDown, ArrowUp, ArrowRight } from '@element-plus/icons-vue'
-import type { albumType } from '@/types/'
 import Comment from '@/components/Comment/index.vue'
 import Btns from '@/components/Btns/index.vue'
 import DownLoadSide from '@/components/DownLoadSide/index.vue'
+import type { songQueueType } from '@/stores/play'
+import type { albumType, artistAlbumType } from '@/types'
 
 const playStore = usePlayStore()
 
 const route = useRoute()
 
 const albumInfo = ref<albumType>()
+const albums = ref<artistAlbumType>()
 const isExpand = ref(false)
-const albums = ref(null)
 
 onMounted(() => {
   getAlbum(Number(route.params.id))
@@ -186,7 +187,7 @@ const expand = () => {
   isExpand.value = !isExpand.value
 }
 
-const play = (o: Object, type?:number) => {
+const play = (o: songQueueType, type?:number) => {
   playStore.actionAddSong(o, type)
 }
 </script>

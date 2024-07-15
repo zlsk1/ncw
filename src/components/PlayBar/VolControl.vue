@@ -17,21 +17,22 @@
 <script lang="ts" setup>
 import { inject, ref } from 'vue'
 import { useMouseInElement } from '@vueuse/core'
+import { playBarProvide } from './constances'
 
-const { audioRef, volControlTop, volBgHeight, isShowVol } = inject('playBarProvide')
+const { audioRef, volControlTop, volBgHeight, isShowVol } = inject(playBarProvide)!
 
-const volWrapRef = ref(null)
+const volWrapRef = ref<HTMLElement>()
 
 const { elementY } = useMouseInElement(volWrapRef)
 
 const controlVol = () => {
-  volWrapRef.value.onmousemove = () => {
+  volWrapRef.value!.onmousemove = () => {
     setVolume()
-    volWrapRef.value.onmouseup = e1 => {
+    volWrapRef.value!.onmouseup = e1 => {
       e1.stopPropagation()
-      volWrapRef.value.onmouseup = null
-      volWrapRef.value.onmousemove = null
-      volWrapRef.value.onmousemove = null
+      volWrapRef.value!.onmouseup = null
+      volWrapRef.value!.onmousemove = null
+      volWrapRef.value!.onmousemove = null
     }
   }
 }

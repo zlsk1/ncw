@@ -15,8 +15,8 @@
 </template>
 
 <script lang="ts" setup>
-import HomeBanner from './components/HomeBanner'
-import HomeRecomend from './components/HomeRecomend'
+import HomeBanner from './components/HomeBanner.vue'
+import HomeRecomend from './components/HomeRecomend.vue'
 import HomeNewAlbum from './components/HomeNewAlbum.vue'
 import HomeTop from './components/HomeTop.vue'
 import HomeSide from './components/HomeSide.vue'

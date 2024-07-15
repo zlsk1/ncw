@@ -1,7 +1,8 @@
 import http from '@/utils/http'
 import { getTimestamp } from '@/utils/time'
+import type { userPlCountType } from '@/types'
 
-export const getUserDetail = uid => {
+export const getUserDetail = (uid: number) => {
   return http({
     url: `/user/detail?stamp=${getTimestamp()}`,
     params: {
@@ -28,7 +29,7 @@ export const getUserPlaylistAPI = ({ uid, limit, offset }) => {
   })
 }
 
-export const getVipLevelAPI = uid => {
+export const getVipLevelAPI = (uid: number) => {
   return http({
     url: '/vip/info',
     params: {
@@ -115,9 +116,9 @@ export const sendTextAPI = ({ user_ids, msg }) => {
  * @returns
  */
 export const getPlCountAPI = () => {
-  return http({
-    url: `/pl/count?stamp=${getTimestamp()}`
-  })
+  return http.get<userPlCountType>(
+    `/pl/count?stamp=${getTimestamp()}`
+  )
 }
 
 /**
@@ -126,7 +127,7 @@ export const getPlCountAPI = () => {
  * @param {*} offset 偏移数量
  * @returns
  */
-export const getMsgAPI = (limit, offset) => {
+export const getMsgAPI = (limit: number, offset: number) => {
   return http({
     url: `/msg/private?stamp=${getTimestamp()}`,
     params: {
@@ -160,7 +161,7 @@ export const getMsgContentAPI = ({ uid, limit, before }) => {
  * @param {*} lasttime 传入上一次返回结果的 time,将会返回下一页的数据
  * @returns
  */
-export const getNoticesAPI = ({ limit, lasttime }) => {
+export const getNoticesAPI = (limit: number = 30, lasttime?: number) => {
   return http({
     url: `/msg/notices?stamp=${getTimestamp()}`,
     params: {
@@ -191,7 +192,7 @@ export const getUserLevelInfoAPI = () => {
  * @param {*} type 其中 0 为安卓端签到 ,1 为 web/PC 签到 默认为1
  * @returns
  */
-export const handleSigninAPI = (type = 1) => {
+export const handleSigninAPI = (type: 0 | 1 = 1) => {
   return http({
     url: '/daily_signin',
     params: {

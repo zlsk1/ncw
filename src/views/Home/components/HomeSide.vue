@@ -115,17 +115,18 @@ import { onMounted, ref, watch } from 'vue'
 import { getHotSinger } from '@/apis/singer'
 import { getHotDj } from '@/apis/dj'
 import { handleSigninAPI } from '@/apis/user'
-import Login from '@/views/Login'
+import Login from '@/views/Login/index.vue'
 import { ElMessage } from 'element-plus'
+import type { artistType, djPoplistType } from '@/types'
 
 const store = useUserStore()
 const { avator, nickname } = storeToRefs(store)
 
-const userId = JSON.parse(localStorage.getItem('userInfo'))?.profile.userId
+const userId = JSON.parse(localStorage.getItem('userInfo') as string)?.profile.userId
 
-const singerList = ref([])
-const djList = ref([])
-const info = ref(null)
+const singerList = ref<artistType[]>()
+const djList = ref<djPoplistType[]>([])
+const info = ref<any>(null)
 const isShow = ref(false)
 
 onMounted(() => {
@@ -139,8 +140,8 @@ watch(avator, val => {
 })
 
 const getDetail = () => {
-  store.actiongetUserDetail(JSON.parse(localStorage.getItem('userInfo'))?.profile.userId)
-  const { level, profile } = JSON.parse(localStorage.getItem('userInfo'))
+  store.actiongetUserDetail(JSON.parse(localStorage.getItem('userInfo') as string)?.profile.userId)
+  const { level, profile } = JSON.parse(localStorage.getItem('userInfo') as string)
   info.value = {
     eventCount: profile.eventCount,
     follows: profile.follows,
@@ -149,12 +150,12 @@ const getDetail = () => {
   }
 }
 
-const getSinger = async (limit) => {
+const getSinger = async (limit: number) => {
   const res = await getHotSinger(limit)
   singerList.value = res.data.artists
 }
 
-const getDj = async limit => {
+const getDj = async (limit: number) => {
   const res = await getHotDj(limit)
   djList.value = res.data.data.list
 }

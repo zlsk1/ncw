@@ -34,10 +34,10 @@
               </dt>
               <dd class="tag fl">
                 <span
-                  v-for="tag in cate.children"
-                  :key="tag.id"
+                  v-for="(tag, _) in cate.children"
+                  :key="_"
                   :class="tag.name === currentCate ? 'active-tag' : ''"
-                  @click="select(tag.name)"
+                  @click="select(tag.name as UnionTypeToArray<playlistCategoryType>)"
                 >
                   {{ tag.name }}
                 </span>
@@ -78,14 +78,14 @@
               {{ item.name }}
             </router-link>
             <span class="f12">by</span>
-            <router-link :to="`/user/home/${item.creator.userId}`" class="creator ellipsis-1 f12" :title="item.creator.nickname">
-              {{ item.creator.nickname }}
+            <router-link :to="`/user/home/${item.creator!.userId}`" class="creator ellipsis-1 f12" :title="item.creator!.nickname">
+              {{ item.creator!.nickname }}
             </router-link>
           </template>
         </Card>
       </div>
       <el-pagination
-        :page-count="Math.ceil(playlist?.total / limit)"
+        :page-count="Math.ceil(playlist?.total! / limit)"
         layout="prev, pager, next"
         background
         small
@@ -103,6 +103,13 @@ import { ArrowDown } from '@element-plus/icons-vue'
 import { formatPlayCount } from '@/utils/index'
 import { onClickOutside } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
+import type {
+  allPlaylistType,
+  playlistCateContent,
+  playlistCategoryType,
+  getAllPlaylistType
+} from '@/types'
+import type { UnionTypeToArray } from '@/utils/types/index'
 
 const router = useRouter()
 const route = useRoute()
@@ -110,10 +117,9 @@ const route = useRoute()
 const playStore = usePlayStore()
 
 const limit = 35
-let _before = ''
 
-const catelist = ref([])
-const playlist = ref(null)
+const catelist = ref<{ type: string, children: playlistCateContent[] }[]>([])
+const playlist = ref<allPlaylistType>()
 const currentCate = ref('')
 const isShow = ref(false)
 const menuRef = ref(null)
@@ -125,39 +131,40 @@ onMounted(() => {
   onClickOutside(menuRef, () => { isShow.value = false })
 })
 
-const getFirstTopPlaylistHigh = async ({ limit, cat = route.query.category }) => {
+const getFirstTopPlaylistHigh = async ({ limit, cat = route.query.category as string }: getAllPlaylistType) => {
   await getTopPlaylistHigh({ limit, cat })
-  currentCate.value = cat || '全部'
+  currentCate.value = cat as string || '全部'
 }
 
 const getPlaylistHighCate = async () => {
   const { data } = await getPlaylistCateAPI()
   // 遍历主类
   for (const key in data.categories) {
-    catelist.value.push({ type: data.categories[key], children: [] })
+    catelist.value?.push({ type: data.categories[key], children: [] })
     // 遍历次类
     data.sub.forEach(item => {
       // 次类属于主类？插入到主类的children中
-      item.category === Number(key) ? catelist.value[key].children.push(item) : ''
-    })
+      item.category === Number(key) ? catelist.value![key].children.push(item) : ''
+    })  
   }
 }
 
-const getTopPlaylistHigh = async ({ order, cat, limit, before }) => {
-  const res = await getAllPlaylistAPI({ order, cat, limit, before })
+const getTopPlaylistHigh = async ({ order, cat, limit }: getAllPlaylistType) => {
+  const res = await getAllPlaylistAPI({ order, cat, limit })
   playlist.value = res.data
-  _before = playlist.value.lasttime
 }
 
-const select = tag => {
+const select = (tag: UnionTypeToArray<playlistCategoryType>) => {
+  console.log(tag);
+  
   isShow.value = false
   currentCate.value = tag
-  getTopPlaylistHigh({ cat: tag, limit, before: _before })
+  getTopPlaylistHigh({ cat: tag, limit })
   router.push({ path: '/discover/playlist', query: { tag }})
 }
 
-const changePage = page => {
-  getTopPlaylistHigh({ limit, before: _before })
+const changePage = () => {
+  getTopPlaylistHigh({ limit })
 }
 
 const openPopover = () => { isShow.value = !isShow.value }
@@ -167,7 +174,7 @@ const reset = () => {
   currentCate.value = '全部'
 }
 
-const addPlayList = id => { playStore.actionAddSongs(id) }
+const addPlayList = (id: number) => { playStore.actionAddSongs(id) }
 </script>
 
 <style lang="scss" scoped>

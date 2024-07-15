@@ -20,7 +20,7 @@
           </td>
           <td>
             <div class="fl title">
-              <i class="icon icon-play" @click="play({id: item.id, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')})" />
+              <i class="icon icon-play" @click="play({id: item.id as unknown as number, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')})" />
               <router-link class="name ellipsis-1" :to="`/song/${item.id}`" :title="item.name">
                 {{ item.name }}
               </router-link>
@@ -29,7 +29,7 @@
           <td class="duration" style="width: 100px">
             <span class="time">{{ formatSongDuration(item.dt, 0) }}</span>
             <div class="fl-sb">
-              <i class="icon icon-add" title="添加到播放列表" @click="play({id: item.id, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')}, 1)" />
+              <i class="icon icon-add" title="添加到播放列表" @click="play({id: item.id as unknown as number, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')}, 1)" />
               <i class="icon icon-collect" title="收藏" />
               <i class="icon icon-share" title="分享" />
               <i class="icon icon-download" title="下载" />
@@ -56,13 +56,14 @@ import { getArtistTopSongAPI } from '@/apis/artist'
 import { ref, onMounted } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { formatSongDuration } from '@/utils/time'
-import { usePlayStore } from '@/stores/play'
+import { usePlayStore, type songQueueType } from '@/stores/play'
+import type { songsItem } from '@/types'
 
 const route = useRoute()
 
 const playStore = usePlayStore()
 
-const topSongList = ref([])
+const topSongList = ref<songsItem[]>()
 const isLoad = ref(true)
 
 onMounted(() => {
@@ -75,17 +76,17 @@ onBeforeRouteUpdate((to) => {
   }
 })
 
-const getTopSong = async id => {
-  const res = await getArtistTopSongAPI(id)
+const getTopSong = async (id: string | string[]) => {
+  const res = await getArtistTopSongAPI(id as unknown as number)
   topSongList.value = res.data.songs
   isLoad.value = false
 }
 
-const play = (o, type) => { playStore.actionAddSong(o, type) }
+const play = (o: songQueueType, type?: number) => { playStore.actionAddSong(o, type) }
 
-const addPlaylist = async id => {
-  const ids = topSongList.value.map(v => v.id).join(',')
-  playStore.actionGetSongs(ids, topSongList.value)
+const addPlaylist = async () => {
+  const ids = topSongList.value!.map(v => v.id).join(',')
+  playStore.actionGetSongs<songsItem[]>(ids, topSongList.value as songsItem[])
 }
 </script>
 

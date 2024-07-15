@@ -1,6 +1,6 @@
 export interface responseType<T> {
-  code: number,
-  message: string,
+  code?: number,
+  message?: string,
   data: T
 }
 
@@ -60,7 +60,8 @@ export interface ipLocationType {
 export type arType = {
   id: number,
   name: string,
-  alia: string[]
+  alia: string[],
+  tns: []
 }
 
 export type alType = {
@@ -68,18 +69,20 @@ export type alType = {
   name: string,
   pic_str: string,
   pic: number,
-  picUrl: string
+  picUrl: string,
+  tns: []
 }
 
 export interface songQuality {
-  br: number,
-  fid: number,
-  size: number,
-  vd: number,
-  sr: number,
+  br?: number,
+  fid?: number,
+  size?: number,
+  vd?: number,
+  sr?: number,
 }
 
 export interface artistType {
+  accountId?: number
   img1v1Id: number,
   topicPerson: number,
   picId: number,
@@ -93,5 +96,91 @@ export interface artistType {
   alias: number[],
   name: string,
   id: number,
-  img1v1Id_str: string
+  img1v1Id_str: string,
+  identifyTag?: string[],
+  identities?: string[],
+  cover?: string
+}
+
+export interface songsItem {
+  rtUrls: [],
+  ar: arType[],
+  al: alType,
+  st: number,
+  noCopyrightRcmd: any,
+  songJumpInfo: any,
+  djId: number,
+  no: number,
+  fee: number,
+  mv: number,
+  t: number,
+  v: number,
+  cd: number,
+  rtype: number,
+  rurl: any,
+  pst: number,
+  alia: string[],
+  pop: number,
+  rt: string,
+  mst: number,
+  cp: number,
+  crbt: any,
+  cf: string,
+  dt: number,
+  h: songQuality | null,
+  sq: songQuality | null,
+  hr: songQuality | null,
+  l: songQuality | null,
+  m: songQuality | null,
+  rtUrl: any,
+  ftype: any,
+  a: any,
+  name: string,
+  id: string,
+  videoInfo: {
+    moreThanOne: boolean,
+    video: any
+  },
+  privilege?: {
+    id: number,
+    fee: number,
+    payed: number,
+    st: number,
+    pl: number,
+    dl: number,
+    sp: number,
+    cp: number,
+    subp: number,
+    cs: boolean,
+    maxbr: number,
+    fl: number,
+    toast: boolean,
+    flag: number,
+    preSell: boolean,
+    playMaxbr: number,
+    downloadMaxbr: number,
+    maxBrLevel: string,
+    playMaxBrLevel: string,
+    downloadMaxBrLevel: string,
+    plLevel: string,
+    dlLevel: string,
+    flLevel: string,
+    rscl: any,
+    freeTrialPrivilege: {
+      resConsumable: boolean,
+      userConsumable: boolean,
+      listenType: number,
+      cannotListenReason: number,
+      playReason: any,
+      rightSource: number,
+      chargeInfoList: chargeInfoItemType[]
+    }
+  }
+}
+
+interface chargeInfoItemType {
+  rate: number,
+  chargeUrl: any,
+  chargeMessage: any,
+  chargeType: number
 }

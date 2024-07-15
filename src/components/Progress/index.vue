@@ -25,21 +25,16 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
+import { progressProps } from './index'
 
-const props = defineProps({
-  percentage: { type: [Number, String], default: 50, required: true },
-  section: { type: Number, default: 0 },
-  width: { type: String, default: '200px' },
-  height: { type: String, default: '10px' },
-  color: { type: String, default: '#409eff' }
-})
+const props = defineProps(progressProps)
 
 const perWidth = computed(() => {
   return 100 / _section.value
 })
 
 const nextLevel = computed(() => {
-  return Math.floor(_percentage.value * 10) + 1
+  return Math.floor(_percentage.value as number * 10) + 1
 })
 
 const _section = computed(() => {

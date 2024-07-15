@@ -1,4 +1,4 @@
-import { defaultSetting } from '@/cogfig'
+import { defaultSetting } from '@/config'
 
 export const getToken = () => {
   return JSON.parse(localStorage.getItem('token') as string)

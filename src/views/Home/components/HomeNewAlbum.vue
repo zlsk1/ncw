@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class="content-wrap">
-      <ul ref="content" class="fl newAlbum-content">
+      <ul ref="contentRef" class="fl newAlbum-content">
         <li
           v-for="(item, index) in albumList"
           :key="index"
@@ -65,12 +65,13 @@ import { getNewAlbum } from '@/apis/home'
 import { ref, onMounted, watch, onUpdated } from 'vue'
 import { usePlayStore } from '@/stores/play'
 import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
+import type { albumMainType } from '@/types'
 
 const playStore = usePlayStore()
 
-const albumList = ref([])
+const albumList = ref<albumMainType[][]>([])
 const per = 5
-const content = ref(null)
+const contentRef = ref<HTMLUListElement>()
 const items = ref(0)
 const i = ref(0)
 const isRender = ref(false)
@@ -80,12 +81,12 @@ onMounted(() => {
 })
 
 onUpdated(() => {
-  content.value.children.length ? isRender.value = true : ''
+  contentRef.value?.children.length ? isRender.value = true : ''
 })
 
 watch(isRender, (newVal, oldVal) => {
   if (!oldVal) {
-    items.value = content.value.children.length - 1
+    items.value = contentRef.value?.children.length as number - 1
   }
 })
 
@@ -93,20 +94,20 @@ const getNewAlbumList = async () => {
   const res = await getNewAlbum()
   const length = res.data.albums.slice(0, 10).length / per
   for (let i = 0; i < length; i++) {
-    albumList.value.push(res.data.albums.slice((per * i), per * (i + 1)))
+    albumList.value?.push(res.data.albums.slice((per * i), per * (i + 1)))
   }
   albumList.value.push(albumList.value[0])
 }
 
 const goto = () => {
-  content.value.style.transition = 'all 1s linear'
-  content.value.style.transform = `translateX(calc(-100% * ${i.value}))`
+  contentRef.value!.style.transition = 'all 1s linear'
+  contentRef.value!.style.transform = `translateX(calc(-100% * ${i.value}))`
 }
 
 const next = () => {
   if (i.value === items.value) {
-    content.value.style.transition = 'none'
-    content.value.style.transform = 'translateX(0)'
+    contentRef.value!.style.transition = 'none'
+    contentRef.value!.style.transform = 'translateX(0)'
     setTimeout(() => { i.value = 1; goto() }, 0)
   } else {
     i.value++
@@ -116,8 +117,8 @@ const next = () => {
 
 const prev = () => {
   if (i.value === 0) {
-    content.value.style.transition = 'none'
-    content.value.style.transform = `translateX(calc(-100% * ${items.value}))`
+    contentRef.value!.style.transition = 'none'
+    contentRef.value!.style.transform = `translateX(calc(-100% * ${items.value}))`
     setTimeout(() => { i.value = items.value - 1; goto() }, 0)
   } else {
     i.value--
@@ -125,7 +126,7 @@ const prev = () => {
   }
 }
 
-const addPlayList = async id => { playStore.actionAddSongs(id) }
+const addPlayList = async (id: number) => { playStore.actionAddSongs(id) }
 </script>
 
 <style lang="scss" scoped>

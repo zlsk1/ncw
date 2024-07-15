@@ -37,6 +37,7 @@
 import { getArtistProduceAPI } from '@/apis/artist'
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
+import type { artistProduceType } from '@/types'
 
 const props = defineProps({
   name: { type: String, default: '' }
@@ -44,7 +45,7 @@ const props = defineProps({
 
 const route = useRoute()
 
-const data = ref([])
+const data = ref<artistProduceType>()
 
 const isEmpyt = computed(() => {
   return data.value?.briefDesc && data.value?.introduction && data.value?.topicData
@@ -60,8 +61,8 @@ onBeforeRouteUpdate((to) => {
   }
 })
 
-const getProduce = async id => {
-  const res = await getArtistProduceAPI(id)
+const getProduce = async (id: string | string[]) => {
+  const res = await getArtistProduceAPI(id as unknown as number)
   data.value = res.data
 }
 </script>

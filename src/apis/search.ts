@@ -1,4 +1,5 @@
 import http from '@/utils/http'
+import type { searchType } from '@/types'
 
 /**
  *
@@ -6,14 +7,16 @@ import http from '@/utils/http'
  * @param {*} type 如果传 'mobile' 则返回移动端数据
  * @returns
  */
-export const getSearchSuggest = (keywords, type) => {
-  return http({
-    url: '/search/suggest',
-    params: {
-      keywords,
-      type
+export const getSearchSuggest = (keywords: string, type?: string) => {
+  return http.get<searchType>(
+    '/search/suggest',
+    {
+      params: {
+        keywords,
+        type
+      }
     }
-  })
+  )
 }
 
 /**

@@ -56,14 +56,15 @@ import ArtistProduce from './components/ArtistProduce.vue'
 import ArtistAlbum from './components/ArtistAlbum.vue'
 import HotWork from './components/HotWork.vue'
 import RelativeMV from './components/RelativeMV.vue'
-import DownLoadSide from '@/components/DownLoadSide'
+import DownLoadSide from '@/components/DownLoadSide/index.vue'
+import type { artistDetailType, artistType } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
 
-const artistData = ref(null)
+const artistData = ref<artistDetailType>()
 const tabIndex = ref(0)
-const hotSinger = ref([])
+const hotSinger = ref<artistType[]>()
 
 const componentList = [
   { label: '热门作品', name: HotWork, str: 'HotWork' },
@@ -92,7 +93,7 @@ onBeforeRouteUpdate((to) => {
   }
 })
 
-const getArtistDetail = async id => {
+const getArtistDetail = async (id: any) => {
   const res = await getArtistDetailAPI(id)
   artistData.value = res.data.data
 }
@@ -102,7 +103,7 @@ const getHSinger = async () => {
   hotSinger.value = res.data.artists
 }
 
-const changeTab = e => {
+const changeTab = (e: any) => {
   tabIndex.value = Number(e.index)
   switch (Number(e.index)) {
     case 0:

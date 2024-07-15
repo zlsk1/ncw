@@ -11,8 +11,8 @@
 </template>
 
 <script lang="ts" setup>
-import LayoutHeader from './components/LayoutHeader'
-import LayoutFooter from './components/LayoutFooter'
+import LayoutHeader from './components/LayoutHeader.vue'
+import LayoutFooter from './components/LayoutFooter.vue'
 import { ref } from 'vue'
 import { debounce } from '@/utils'
 
@@ -29,7 +29,7 @@ const _scroll = () => {
 
 const scroll = debounce(_scroll, 30)
 
-window.addEventListener('scroll', scroll)
+window.addEventListener('scroll', scroll as any)
 </script>
 
 <style lang="scss" scoped>

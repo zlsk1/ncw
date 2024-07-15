@@ -6,7 +6,7 @@
       </h3>
       <ul>
         <li v-for="item in topStore.topId.slice(0, 4)" :key="item.id">
-          <router-link :to="`/discover/toplist/${item.id}`" class="side-items fl" :class="route.params.id == item.id ? 'side-active' : ''">
+          <router-link :to="`/discover/toplist/${item.id}`" class="side-items fl" :class="id === item.id ? 'side-active' : ''">
             <img :src="`${item.imgUrl}?param=40y40`" alt="" class="side-img">
             <div class="side-info">
               <p class="side-name ellipsis-1" :title="item.name">
@@ -24,7 +24,7 @@
       </h3>
       <ul>
         <li v-for="item in topStore.topId.slice(4, 51)" :key="item.id">
-          <router-link :to="`/discover/toplist/${item.id}`" class="side-items fl" :class="route.params.id == item.id ? 'side-active' : ''">
+          <router-link :to="`/discover/toplist/${item.id}`" class="side-items fl" :class="id === item.id ? 'side-active' : ''">
             <img :src="`${item.imgUrl}?param=40y40`" alt="" class="side-img">
             <div class="side-info">
               <p class="side-name ellipsis-1" :title="item.name">
@@ -52,15 +52,15 @@
           </h3>
           <div class="update-info">
             <i class="icon-clock" />
-            <span>最近更新：{{ formatMonthDay(playlist?.updateTime) }}</span>
+            <span>最近更新：{{ formatMonthDay(playlist?.updateTime as number) }}</span>
             <span>（{{ topStore?.topId[currentIndex]?.updateFrequency }}）</span>
           </div>
           <Btns
             :id="topStore?.topId[currentIndex]?.id"
             :dynamic="{
               bookedCount: playlist?.subscribedCount,
-              shareCount: playlist?.shareCount,
-              commentCount: playlist?.commentCount
+              shareCount: playlist?.shareCount as number,
+              commentCount: playlist?.commentCount as number
             }"
           />
         </div>
@@ -98,16 +98,16 @@
                   <router-link v-if="index <= 2" :to="`/song/${item.id}`">
                     <img :src="item.al.picUrl + '?param=50y50'" alt="">
                   </router-link>
-                  <i class="icon icon-play" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')})" />
+                  <i class="icon icon-play" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: (item.ar as arType[]).map(v => { return v.name }).join('/')})" />
                   <router-link class="name ellipsis-1" :to="`/song/${item.id}`" :title="item.name">
                     {{ item.name }}
                   </router-link>
                 </div>
               </td>
               <td class="duration">
-                <span class="time">{{ formatSongDuration(item.dt, 0) }}</span>
+                <span class="time">{{ formatSongDuration(item.dt as number, 0) }}</span>
                 <div class="fl-sb">
-                  <i class="icon icon-add" title="添加到播放列表" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')}, 1)" />
+                  <i class="icon icon-add" title="添加到播放列表" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: (item.ar as arType[]).map(v => { return v.name }).join('/')}, 1)" />
                   <i class="icon icon-collect" title="收藏" />
                   <i class="icon icon-share" title="分享" />
                   <i class="icon icon-download" title="下载" />
@@ -117,11 +117,11 @@
                 <div class="singer ellipsis-1">
                   <router-link
                     v-for="(singer, index1) in item.ar"
-                    :key="singer.id"
-                    :title="item.ar.map(v => { return v.name })"
+                    :key="(singer as arType).id"
+                    :title="(item.ar as arType[]).map(v => { return v.name })"
                     :to="`/artist/${item.id}`"
                   >
-                    {{ index1 === item.ar.length - 1 ? singer.name : singer.name + '/' }}
+                    {{ index1 === (item.ar as arType[]).length - 1 ? (singer as arType).name : (singer as arType).name + '/' }}
                   </router-link>
                 </div>
               </td>
@@ -141,18 +141,21 @@ import { getPlayListDetail } from '@/apis/playList'
 import { computed, onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { formatMonthDay, getTimestamp, formatSongDuration } from '@/utils/time'
-import Comment from '@/components/Comment'
-import Btns from '@/components/Btns'
+import Comment from '@/components/Comment/index.vue'
+import Btns from '@/components/Btns/index.vue'
+import type { playlistType, arType } from  '@/types'
+import type { songQueueType } from  '@/stores/play'
 
 const topStore = useTopStore()
 const playStore = usePlayStore()
 
 const route = useRoute()
+const id = Number(route.params?.id)
 
-const playlist = ref(null)
+const playlist = ref<playlistType>()
 
 const currentId = computed(() => {
-  return route.params?.id ? route.params?.id : topStore.firstId
+  return id ? id : topStore.firstId
 })
 
 const currentIndex = computed(() => {
@@ -169,11 +172,11 @@ onBeforeRouteUpdate(async to => {
 
 const getPlayList = async () => {
   topStore.topId.length === 0 ? await topStore.actionTopId() : ''
-  const res = await getPlayListDetail(currentId.value)
+  const res = await getPlayListDetail(currentId.value as unknown as number)
   playlist.value = res.data.playlist
 }
 
-const play = (o, type) => { playStore.actionAddSong(o, type) }
+const play = (o: songQueueType, type?: number) => { playStore.actionAddSong(o, type) }
 
 </script>
 

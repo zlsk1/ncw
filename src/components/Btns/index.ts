@@ -1,6 +1,6 @@
 import type { PropType } from 'vue'
 
-interface dynamicType {
+export type dynamicType = {
   bookedCount?: number,
   shareCount: number,
   commentCount: number,
