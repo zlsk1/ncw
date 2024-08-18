@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, onBeforeUnmount } from 'vue'
+import { computed, inject, onMounted, onUnmounted } from 'vue'
 import { usePlayStore } from '@/stores/play'
 import { getLyric } from '@/apis/song'
 import { playBarProvide } from './constances'
@@ -42,7 +42,7 @@ const getLrc = async(id: number) => {
 }
 
 const loadedmetadata = () => {
-  if (store.currentSong.id) {
+  if (store.currentSong?.id) {
     getLrc(store.currentSong.id)
   }
 }
@@ -52,10 +52,10 @@ const timeupdate = (e: Event) => {
     now.value = (e.target as HTMLAudioElement).currentTime
   }
   if (isShowPlaylist.value) {
-    const _index = Array.from(wordRef.value.children).findIndex(v => (v as any).dataset.time > (e.target as HTMLAudioElement).currentTime)
+    const _index = [...wordRef.value.children].findIndex(v => (v as any).dataset.time > (e.target as HTMLAudioElement).currentTime)
     if (index.value < _index) {
-      wordRef.value.children[index.value].textContent ? wordRef.value.children[index.value].classList.replace('per-line', 'active-lyric') : ''
-      wordRef.value.children[index.value - 1]?.classList.replace('active-lyric', 'per-line')
+      wordRef.value.children[index.value].textContent ? wordRef.value.children[index.value].classList.add('active-lyric') : ''
+      wordRef.value.children[index.value - 1]?.classList.remove('active-lyric')
       wordRef.value.scrollTo({ top: _index * 32 - 128, behavior: 'smooth' })
       index.value = _index
     }
@@ -72,5 +72,5 @@ onMounted(() => {
   audioRef.value.volume = store.setting.volume
 })
 
-onBeforeUnmount(() => store.actionUpdateSetting({ volume: audioRef.value.volume }))
+onUnmounted(() => store.actionUpdateSetting({ volume: audioRef.value.volume }))
 </script>

@@ -132,7 +132,6 @@ watch(() => store.currentSong, val => {
   if (wordRef.value) {
     index.value = 0
     wordRef.value.scrollTo({ top: 0 })
-    Array.from(wordRef.value.children).forEach(v => { v.classList.add('per-line') })
   }
   play()
 })
@@ -377,9 +376,8 @@ const delAll = () => {
       color: #fff;
     }
     .word {
-      height: 220px;
-      margin: 20px 0;
-      padding: 0 30px;
+      height: 100%;
+      padding: 30px;
       overflow-y: auto;
       div {
         transition: all .3s linear;

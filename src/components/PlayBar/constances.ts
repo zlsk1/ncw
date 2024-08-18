@@ -1,7 +1,6 @@
 import type { InjectionKey, Ref } from 'vue'
 
 export type playBarContent = {
-  playBarRef: Ref<HTMLElement>,
   barRef: Ref<HTMLElement>,
   audioRef: Ref<HTMLAudioElement>,
   isPaused: Ref<boolean>,
@@ -13,7 +12,7 @@ export type playBarContent = {
   isShowVol: Ref<boolean>,
   isMoving: Ref<boolean>,
   now: Ref<number | string>,
-  playBgWidth: Ref<string>,
+  playedBgWidth: Ref<string>,
   barLeft: Ref<string>,
   volBgHeight: Ref<string>,
   volControlTop: Ref<string>,

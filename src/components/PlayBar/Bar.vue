@@ -48,7 +48,7 @@
               <div class="bar-bg"></div>
               <div
                 ref="playBg"
-                :style="{ width: playBgWidth }"
+                :style="{ width: playedBgWidth }"
                 class="played-bg"
               ></div>
             </div>
@@ -118,14 +118,13 @@ import type { settingType } from '@/config'
 const store = usePlayStore()
 
 const {
-  playBarRef,
   audioRef,
   wordRef,
   isMoving,
   progressBarWidth,
   btnWidth,
   barLeft,
-  playBgWidth,
+  playedBgWidth,
   now,
   index,
   isShowVol,
@@ -152,25 +151,25 @@ const pregressTime = computed(() => {
 const mousedown = (e: MouseEvent) => {
   if (store.currentSong) {
     e.preventDefault()
-    playBarRef.value.onmousemove = () => {
+    window.onmousemove = () => {
       if (isIn.value) {
         isMoving.value = true
         setProgress()
       }
-      playBarRef.value.onmouseup = (e1: MouseEvent) => {
-        e1.stopPropagation()
-        isMoving.value = false
-        audioRef.value.currentTime = pregressTime.value
-        playBarRef.value.onmousemove = null
-        playBarRef.value.onmouseup = null
-      }
+    }
+    window.onmouseup = (e1: MouseEvent) => {
+      e1.stopPropagation()
+      isMoving.value = false
+      audioRef.value.currentTime = pregressTime.value
+      window.onmousemove = null
+      window.onmouseup = null
     }
   }
 }
 
 const setProgress = () => {
   barLeft.value = left.value - btnWidth + 'px'
-  playBgWidth.value = percent.value * 100 + '%'
+  playedBgWidth.value = percent.value * 100 + '%'
   if (store.currentSong?.time) {
     now.value = store.currentSong.time / 1000 * percent.value
   }

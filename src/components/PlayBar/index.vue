@@ -39,7 +39,7 @@ const now = ref('0')
 const index = ref(0)
 const lrc = ref()
 const barLeft = ref('-11px')
-const playBgWidth = ref('0%')
+const playedBgWidth = ref('0%')
 const volBgHeight = ref('0px')
 const volControlTop = ref('84px')
 
@@ -54,12 +54,11 @@ onMounted(() => {
 })
 
 const resetProgressBar = () => {
-  playBgWidth.value = '0%'
+  playedBgWidth.value = '0%'
   barLeft.value = '-11px'
 }
 
 provide(playBarProvide, {
-  playBarRef,
   barRef,
   audioRef,
   isPaused,
@@ -74,7 +73,7 @@ provide(playBarProvide, {
   isMoving,
   btnWidth,
   progressBarWidth,
-  playBgWidth,
+  playedBgWidth,
   barLeft,
   volBgHeight,
   volControlTop,
