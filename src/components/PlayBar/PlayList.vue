@@ -47,12 +47,12 @@
             </div>
             <p class="singer ellipsis-1">
               <router-link
-                v-for="(item1, i1) in item.singer.split('/')"
+                v-for="(item1, i1) in item.singer?.split('/')"
                 :key="i1"
                 to="/"
                 :title="item.singer"
               >
-                {{ i1 === item.singer.split('/').length - 1 ? item1 : `${item1}/` }}
+                {{ i1 === item.singer?.split('/').length! - 1 ? item1 : `${item1}/` }}
               </router-link>
             </p>
             <p class="duration">
@@ -121,7 +121,11 @@ const {
   play
 } = inject(playBarProvide)!
 
-onMounted(() => getLrc(store.currentSong.id))
+onMounted(() => {
+  if (store.currentSong) {
+    getLrc(store.currentSong.id)
+  }
+})
 
 watch(() => store.currentSong, val => {
   if (!val) return

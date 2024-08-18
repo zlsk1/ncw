@@ -143,7 +143,7 @@ const { elementX: left } = useMouseInElement(barWrapRef)
 const percent = computed(() => left.value / progressBarWidth)
 
 const pregressTime = computed(() => {
-  if (store.currentSong) {
+  if (store.currentSong?.time) {
     return percent.value * store.currentSong.time / 1000
   }
   return 0
@@ -171,7 +171,7 @@ const mousedown = (e: MouseEvent) => {
 const setProgress = () => {
   barLeft.value = left.value - btnWidth + 'px'
   playBgWidth.value = percent.value * 100 + '%'
-  if (store.currentSong) {
+  if (store.currentSong?.time) {
     now.value = store.currentSong.time / 1000 * percent.value
   }
 }

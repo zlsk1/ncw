@@ -8,7 +8,7 @@ export const getTimestamp = () => {
  * @param {Number} type 0为ms 1为s
  * @returns '00:00'
  */
-export const formatSongDuration = (t: string | number, type: 0 | 1) => {
+export const formatSongDuration = (t: string | number | undefined, type: 0 | 1) => {
   if (typeof (t) === 'string' || typeof (t) === 'undefined') return '00:00'
   const arr = [1000, 1000 * 60, 1000 * 60 * 60]
   let m, s
