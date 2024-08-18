@@ -7,7 +7,8 @@
     "dev": "vite --open",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint . --ext .vue,.js,.ts,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
+    "lint": "eslint . --ext .vue,.js,.ts,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "typecheck": "vue-tsc -p tsconfig.node.json --composite false  --noEmit"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
@@ -34,7 +35,7 @@
     "vite": "^5.0.10",
     "vue": "^3.3.11",
     "vue-router": "^4.2.5",
-    "vue-tsc": "^2.0.19"
+    "vue-tsc": "^2.0.29"
   },
   "browserslist": [
     "> 1%",

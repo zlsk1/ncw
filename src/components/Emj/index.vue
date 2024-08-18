@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onUnmounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 const emit = defineEmits(['choose'])
 
 const emjArr = [
@@ -303,28 +303,24 @@ const total = computed(() => {
   return Math.ceil(emjArr.length / page.value.pageSize)
 })
 
-let next = () => {
+const next = () => {
   if (page.value.currentPage === total.value) return
   else page.value.currentPage += 1
 }
 
-let prev = () => {
+const prev = () => {
   if (page.value.currentPage === 1) return
   else page.value.currentPage -= 1
 }
 
-let choose = e => {
-  emit('choose', e.target.dataset.txt)
+const choose = (e: Event) => {
+  emit('choose', (e.target as HTMLElement)?.dataset.txt)
 }
 
-let hide = () => {
+const hide = () => {
   if (page.value.currentPage === 1) return
   page.value.currentPage = 1
 }
-
-onUnmounted(() => {
-  next = null; prev = null; choose = null; hide = null
-})
 </script>
 
 <style lang="scss" scoped>

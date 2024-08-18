@@ -260,7 +260,7 @@ const commentObj = ref<songCommentType>()
 const isShow = ref(false)
 
 const currentId = computed(() => {
-  return route.params?.id ? route.params?.id : topStore.firstId
+  return Number(route.params?.id ? route.params?.id : topStore.firstId)
 })
 
 const isPlaylistUrl = computed(() => {
