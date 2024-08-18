@@ -115,7 +115,7 @@ import { Search, ArrowRight } from '@element-plus/icons-vue'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { getSearchSuggest } from '@/apis/search'
-import { debounce } from '@/utils/index'
+import { useThrottleFn } from '@vueuse/core'
 import SearchUser from './components/SearchUser.vue'
 import SearchArtist from './components/SearchArtist.vue'
 import SearchAlbum from './components/SearchAlbum.vue'
@@ -176,7 +176,7 @@ const _handleSearch = e => {
   }
 }
 
-const handleSearch = debounce(_handleSearch, 20)
+const handleSearch = useThrottleFn(_handleSearch, 20)
 
 const handleFocus = () => { isFocus.value = !isFocus.value }
 
