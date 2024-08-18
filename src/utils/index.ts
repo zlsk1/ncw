@@ -23,33 +23,6 @@ export const judgeJson = (str: string): boolean => {
   }
 }
 
-/**
- * 防抖
- * @param {Function} fn
- * @param {*} delay 延迟毫秒数
- * @param {*} immediate 是否立即执行,默认立即执行
- */
-export function debounce(fn: Function, delay: number, immediate: boolean = true): Function {
-  let timer: any = null
-  return function(this: Function, ...args: Array<any>) {
-    if (timer) {
-      if (immediate) return
-      clearTimeout(timer)
-    }
-    if (!timer && immediate) {
-      fn.apply(this, args)
-      timer = setTimeout(() => {
-        timer = null
-      }, delay)
-    }
-    else {
-      timer = setTimeout(() => {
-        fn.apply(this, args)
-      }, delay)
-    }
-  }
-}
-
 export const hideTel = (tel: string) => {
   const reg = /^(\d{3})\d{4}(\d{4})$/
   return tel.replace(reg, '$1****$2')

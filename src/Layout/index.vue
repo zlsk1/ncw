@@ -18,7 +18,7 @@
 import LayoutHeader from './components/LayoutHeader.vue'
 import LayoutFooter from './components/LayoutFooter.vue'
 import { ref } from 'vue'
-import { debounce } from '@/utils'
+import { useThrottleFn } from '@vueuse/core'
 
 const isShowTop = ref(false)
 
@@ -31,7 +31,7 @@ const _scroll = () => {
   else isShowTop.value = false
 }
 
-const scroll = debounce(_scroll, 30)
+const scroll = useThrottleFn(_scroll, 30)
 
 window.addEventListener('scroll', scroll as any)
 </script>

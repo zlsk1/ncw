@@ -208,13 +208,13 @@ import { Search, ArrowRight } from '@element-plus/icons-vue'
 import { getPlCountAPI } from '@/apis/user'
 import { getSearchSuggest } from '@/apis/search'
 import { getLoginStatusAPI } from '@/apis/login'
-import { debounce } from '@/utils/index'
 import type {
   searchResultType,
   userPlCountType
 } from '@/types'
 import Login from '@/views/Login/index.vue'
 import LayoutCategory from './LayoutCategory.vue'
+import { useThrottleFn } from '@vueuse/core'
 
 const route = useRoute()
 const router = useRouter()
@@ -249,7 +249,7 @@ const getPlCount = async() => {
   pl.value = res.data
 }
 
-const _handleSearch = async(e: any) => {
+const _handleSearch = async(e: string) => {
   if (e.trim()) {
     const res = await getSearchSuggest(searchValue.value)
     searchSuggset.value = res.data.result
@@ -259,7 +259,7 @@ const _handleSearch = async(e: any) => {
   }
 }
 
-const handleSearch = debounce(_handleSearch, 20)
+const handleSearch = useThrottleFn(_handleSearch, 20)
 
 const handleFocus = () => { isFocus.value = !isFocus.value }
 

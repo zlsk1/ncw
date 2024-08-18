@@ -222,7 +222,8 @@
 
 <script lang="ts" setup>
 import { formatTimeStamp, isBeforeYesterday } from '@/utils/time'
-import { debounce, hasProfile } from '@/utils/index'
+import { hasProfile } from '@/utils/index'
+import { useThrottleFn } from '@vueuse/core'
 import { nextTick, onMounted, ref, computed } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -301,7 +302,7 @@ const getComment = async(obj: pagingDataType) => {
 
 const _input = () => {}
 
-const input = debounce(_input, 30)
+const input = useThrottleFn(_input, 30)
 
 const onChoose = (e: Event, type: number) => {
   type === 0 ? comment.value += `[${e}]` : reply.value += `[${e}]`
