@@ -19,10 +19,10 @@
                   v-for="(item, i) in store.currentSong?.singer?.split('/')"
                   :key="i"
                   to="/"
-                  :title="store.currentSong.singer"
+                  :title="store.currentSong?.singer"
                 >
                   <p>
-                    {{ store.currentSong?.singer.split('/').length === 1 ? item : i === store.currentSong?.singer.split('/').length - 1 ? item : `${item}/` }}
+                    {{ store.currentSong?.singer?.split('/').length === 1 ? item : i === store.currentSong?.singer?.split('/').length! - 1 ? item : `${item}/` }}
                   </p>
                 </router-link>
               </p>
@@ -42,8 +42,13 @@
             </div>
           </div>
           <div class="time">
-            <span class="now">{{ formatSongDuration(now, 1) }} /</span>
-            <span class="end">{{ formatSongDuration(store.currentSong?.time, 0) }}</span>
+            <template v-if="store.currentSong">
+              <span class="now">{{ formatSongDuration(now, 1) }} /</span>
+              <span class="end">{{ formatSongDuration(store.currentSong.time, 0) }}</span>
+            </template>
+            <template v-else>
+              <span class="now">00:00 /</span>
+            </template>
           </div>
         </div>
         <div class="opera">
@@ -88,6 +93,8 @@ import { useMouseInElement } from '@vueuse/core'
 import { ElMessage } from 'element-plus'
 import { playBarProvide } from './constances'
 
+import type { settingType } from '@/config'
+
 const store = usePlayStore()
 
 const { 
@@ -116,7 +123,12 @@ const { elementX: left } = useMouseInElement(barWrapRef)
 
 const percent = computed(() => left.value / progressBarWidth)
 
-const pregressTime = computed(() => percent.value * store.currentSong.time / 1000)
+const pregressTime = computed(() => {
+  if(store.currentSong) {
+    return percent.value * store.currentSong.time / 1000
+  }
+  return 0
+})
 
 const mousedown = (e: MouseEvent) => {
   if (store.currentSong) {
@@ -140,7 +152,9 @@ const mousedown = (e: MouseEvent) => {
 const setProgress = () => {
   barLeft.value = left.value - btnWidth + 'px'
   playBgWidth.value = percent.value * 100 + '%'
-  now.value = store.currentSong.time / 1000 * percent.value
+  if(store.currentSong) {
+    now.value = store.currentSong.time / 1000 * percent.value
+  }
 }
 
 const clickProgress = () => {
@@ -160,7 +174,7 @@ const openVolControl = () => {
 }
 
 const switchMode = () => {
-  const mode = store.setting.mode >= 2 ? 0 : ++store.setting.mode
+  const mode = (store.setting.mode >= 2 ? 0 : ++store.setting.mode) as settingType['mode']
   store.actionUpdateSetting({ mode })
 }
 
@@ -180,6 +194,9 @@ const openPIP = async () => {
     if (document.pictureInPictureEnabled) {
       if(!PIPRef.value?.requestPictureInPicture) return ElMessage.error('您的浏览器暂不支持此功能')
       // 新建元数据
+      if(!store.currentSong) {
+        return
+      }
       navigator.mediaSession.metadata = new MediaMetadata({
         title: store.currentSong.name,
         artist: store.currentSong.singer,

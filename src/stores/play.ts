@@ -17,7 +17,7 @@ export interface songQueueType {
   id: number,
   name: string,
   picUrl: string,
-  time?: number,
+  time: number,
   url?: string,
   singer?: string,
 }
