@@ -4,7 +4,7 @@
       <h3 class="f12">
         声音主播
       </h3>
-      <el-empty v-if="!result" description="暂无数据" />
+      <el-empty v-if="!result" description="暂无数据"></el-empty>
     </div>
   </div>
 </template>
@@ -32,13 +32,14 @@ onBeforeRouteUpdate(to => {
   if (to.params.k !== route.params.k) handleSearch(to.params.k, limit, offset, to.params.type)
 })
 
-const handleSearch = async (keywords, limit, offset, type) => {
+const handleSearch = async(keywords, limit, offset, type) => {
   isLoad.value = true
   const res = await handleSearchAPI({ keywords, limit, offset, type })
   if (res.result) {
     result.value = res.data.result
     emit('getTotal', res.data.result.songCount)
-  } else {
+  }
+  else {
     emit('getTotal', 0)
   }
   isLoad.value = false

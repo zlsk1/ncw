@@ -6,7 +6,7 @@ const directives = {
 }
 
 export default {
-  install (app: App) {
+  install(app: App) {
     Object.keys(directives).forEach(key => {
       app.directive(key, directives[key as keyof typeof directives])
     })

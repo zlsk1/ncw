@@ -50,18 +50,18 @@
         @input="handleSearch"
         @focus="handleFocus"
         @blur="handleBlur"
-      />
+      ></el-input>
       <div v-if="isFocus && searchSuggset" class="search-suggest">
         <div class="search-header">
           <router-link :to="`/search/${searchValue}/1002`" @mousedown="router.push(`/search/${searchValue}/1002`)">
             搜“{{ searchValue }}”相关用户
-            <span><ArrowRight style="width: 1em; height: 1em" /></span>
+            <span><ArrowRight style="width: 1em; height: 1em"></ArrowRight></span>
           </router-link>
         </div>
         <div class="search-content">
           <dl v-if="searchSuggset?.songs" class="fl">
             <dt class="left">
-              <i />
+              <i></i>
               <span>单曲</span>
             </dt>
             <div class="right">
@@ -76,7 +76,7 @@
           </dl>
           <dl v-if="searchSuggset?.artists" class="fl">
             <dt class="left">
-              <i />
+              <i></i>
               <span>歌手</span>
             </dt>
             <div class="right">
@@ -91,7 +91,7 @@
           </dl>
           <dl v-if="searchSuggset?.albums" class="fl">
             <dt class="left">
-              <i />
+              <i></i>
               <span>专辑</span>
             </dt>
             <div class="right">
@@ -106,7 +106,7 @@
           </dl>
           <dl v-if="searchSuggset?.playlists" class="fl">
             <dt class="left">
-              <i />
+              <i></i>
               <span>歌单</span>
             </dt>
             <div class="right">
@@ -137,10 +137,18 @@
         @visible-change="dropdownChange"
         @command="logout"
       >
-        <el-badge v-if="pl?.msg" :value="pl?.msg" :hidden="!isShowBadge">
+        <el-badge
+          v-if="pl?.msg"
+          :value="pl?.msg"
+          :hidden="!isShowBadge"
+        >
           <img :src="avator + '?param=30y30'" alt="">
         </el-badge>
-        <img v-else :src="avator + '?param=30y30'" alt="">
+        <img
+          v-else
+          :src="avator + '?param=30y30'"
+          alt=""
+        >
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item>
@@ -182,12 +190,12 @@
         </template>
       </el-dropdown>
     </div>
-    <LayoutCategory v-if="route.meta.hasCate" />
+    <LayoutCategory v-if="route.meta.hasCate"></LayoutCategory>
     <template v-else>
-      <div class="bg-bar" />
+      <div class="bg-bar"></div>
     </template>
     <!-- <LayoutCategory /> -->
-    <Login :is-show="isShow" @close="e => isShow = e" />
+    <Login :is-show="isShow" @close="e => isShow = e"></Login>
   </header>
 </template>
 
@@ -236,16 +244,17 @@ const logout = () => {
   store.logoutAction()
 }
 
-const getPlCount = async () => {
+const getPlCount = async() => {
   const res = await getPlCountAPI()
   pl.value = res.data
 }
 
-const _handleSearch = async (e: any) => {
+const _handleSearch = async(e: any) => {
   if (e.trim()) {
     const res = await getSearchSuggest(searchValue.value)
     searchSuggset.value = res.data.result
-  } else {
+  }
+  else {
     searchSuggset.value = null
   }
 }

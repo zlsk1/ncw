@@ -9,9 +9,9 @@
         <Card>
           <div class="img">
             <router-link :to="`/album/${item.id}`">
-              <Pic :src="item.picUrl + '?param=130y130'" album2 />
+              <Pic :src="item.picUrl + '?param=130y130'" album2></Pic>
             </router-link>
-            <i class="icon-play" @click="play(item.id)" />
+            <i class="icon-play" @click="play(item.id)"></i>
           </div>
           <template #footer>
             <router-link :to="`/album/${item.id}`">
@@ -35,7 +35,7 @@
       :page-size="limit"
       small
       @change="changePage"
-    />
+    ></el-pagination>
   </div>
 </template>
 
@@ -65,7 +65,7 @@ onBeforeRouteUpdate(to => {
   if (to.params.k !== route.params.k) handleSearch(to.params.k, limit, offset, to.params.type)
 })
 
-const handleSearch = async (keywords, limit, offset, type) => {
+const handleSearch = async(keywords, limit, offset, type) => {
   isLoad.value = true
   const res = await handleSearchAPI({ keywords, limit, offset, type })
   result.value = res.data.result

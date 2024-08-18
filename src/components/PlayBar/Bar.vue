@@ -1,17 +1,21 @@
 <template>
   <div ref="barRef" class="playBar-content">
-    <div class="bg" />
+    <div class="bg"></div>
     <div class="w980">
       <div class="content">
-        <ControlPlay />
+        <ControlPlay></ControlPlay>
         <div class="progressBar">
           <router-link class="img-container" :to="`/song/${store?.currentSong?.id}`">
-            <i class="img-wrap" />
+            <i class="img-wrap"></i>
             <img :src="store.currentSong ? `${store.currentSong?.picUrl}?param=34y34` : 'https://s4.music.126.net/style/web2/img/default/default_album.jpg?param=34y34'">
           </router-link>
           <div ref="barWrapRef" class="bar-wrap">
             <div class="info">
-              <router-link class="track-name ellipsis-1" :to="`/song/${store?.currentSong?.id}`" :title="store.currentSong?.name">
+              <router-link
+                class="track-name ellipsis-1"
+                :to="`/song/${store?.currentSong?.id}`"
+                :title="store.currentSong?.name"
+              >
                 {{ store.currentSong?.name }}
               </router-link>
               <p class="singer-name ellipsis-1">
@@ -27,7 +31,11 @@
                 </router-link>
               </p>
               <router-link to="/">
-                <i v-if="store.currentSong && store.currentSong.name" class="from" title="来自歌单" />
+                <i
+                  v-if="store.currentSong && store.currentSong.name"
+                  class="from"
+                  title="来自歌单"
+                ></i>
               </router-link>
             </div>
             <div class="bar" @click="clickProgress">
@@ -36,9 +44,13 @@
                 :style="{ left: barLeft }"
                 class="moveBtn"
                 @mousedown="mousedown"
-              />
-              <div class="bar-bg" />
-              <div ref="playBg" :style="{ width: playBgWidth }" class="played-bg" />
+              ></i>
+              <div class="bar-bg"></div>
+              <div
+                ref="playBg"
+                :style="{ width: playBgWidth }"
+                class="played-bg"
+              ></div>
             </div>
           </div>
           <div class="time">
@@ -53,34 +65,42 @@
         </div>
         <div class="opera">
           <div class="fl">
-            <i class="pip" title="画中画歌词" @click="openPIP" />
-            <i class="addlist" title="收藏" />
-            <i class="share" title="分享" />
+            <i
+              class="pip"
+              title="画中画歌词"
+              @click="openPIP"
+            ></i>
+            <i class="addlist" title="收藏"></i>
+            <i class="share" title="分享"></i>
           </div>
           <div class="fl">
-            <VolControl />
-            <i class="volume" @click="openVolControl" />
+            <VolControl></VolControl>
+            <i class="volume" @click="openVolControl"></i>
             <i
               :class="['playType-byOrder', 'playType-byRadom', 'playType-byLoop'][store.setting?.mode]"
               :title="['循环', '随机', '单曲循环'][store.setting?.mode]"
               @click="switchMode"
-            />
+            ></i>
             <div class="playlist">
-              <i class="playlist-icon" title="播放列表" @click.stop="openPlaylist" />
+              <i
+                class="playlist-icon"
+                title="播放列表"
+                @click.stop="openPlaylist"
+              ></i>
               <span class="playlist-count">
                 {{ store.songQueue?.length }}
               </span>
             </div>
           </div>
         </div>
-        <i class="lock" />
-        <i class="unlock" />
+        <i class="lock"></i>
+        <i class="unlock"></i>
       </div>
     </div>
     <video
       ref="PIPRef"
       src="https://vodkgeyttp8.vod.126.net/cloudmusic/obj/core/32993990090/fa31b7abeff1f3490ad289c68da636be.mp4?wsSecret=293ef8d6c8b044c89b54630e84fcfc1b&wsTime=1716904418"
-    />
+    ></video>
   </div>
 </template>
 
@@ -97,7 +117,7 @@ import type { settingType } from '@/config'
 
 const store = usePlayStore()
 
-const { 
+const {
   playBarRef,
   audioRef,
   wordRef,
@@ -111,9 +131,8 @@ const {
   isShowVol,
   isShowPlaylist,
   volBgHeight,
-  volControlTop,
+  volControlTop
 } = inject(playBarProvide)!
-
 
 const barWrapRef = ref(null)
 const PIPRef = ref()
@@ -124,7 +143,7 @@ const { elementX: left } = useMouseInElement(barWrapRef)
 const percent = computed(() => left.value / progressBarWidth)
 
 const pregressTime = computed(() => {
-  if(store.currentSong) {
+  if (store.currentSong) {
     return percent.value * store.currentSong.time / 1000
   }
   return 0
@@ -152,7 +171,7 @@ const mousedown = (e: MouseEvent) => {
 const setProgress = () => {
   barLeft.value = left.value - btnWidth + 'px'
   playBgWidth.value = percent.value * 100 + '%'
-  if(store.currentSong) {
+  if (store.currentSong) {
     now.value = store.currentSong.time / 1000 * percent.value
   }
 }
@@ -178,23 +197,24 @@ const switchMode = () => {
   store.actionUpdateSetting({ mode })
 }
 
-const openPlaylist = async () => {
+const openPlaylist = async() => {
   isShowPlaylist.value = !isShowPlaylist.value
   if (isShowPlaylist.value) {
     setTimeout(() => { wordRef.value.scrollTo({ top: index.value * 32 - 128 }) }, 0)
   }
 }
 
-const openPIP = async () => {
+const openPIP = async() => {
   //  若已存在画中画
   if (document.pictureInPictureElement) {
     // 关闭画中画
-    document.exitPictureInPicture();
-  } else {
+    document.exitPictureInPicture()
+  }
+  else {
     if (document.pictureInPictureEnabled) {
-      if(!PIPRef.value?.requestPictureInPicture) return ElMessage.error('您的浏览器暂不支持此功能')
+      if (!PIPRef.value?.requestPictureInPicture) return ElMessage.error('您的浏览器暂不支持此功能')
       // 新建元数据
-      if(!store.currentSong) {
+      if (!store.currentSong) {
         return
       }
       navigator.mediaSession.metadata = new MediaMetadata({
@@ -202,38 +222,39 @@ const openPIP = async () => {
         artist: store.currentSong.singer,
         artwork: [
           {
-            src: store.currentSong.picUrl,
-          },
-        ],
-      });
+            src: store.currentSong.picUrl
+          }
+        ]
+      })
 
       try {
         PIPRef.value?.requestPictureInPicture().then((pictureInPictureWindow: HTMLElement) => {
           pictureInPictureWindow.addEventListener(
-            "resize",
+            'resize',
             (e: Event) => console.log(e),
-            false,
-          );
-        });// 开启画中画
-      } catch(err: any) {
+            false
+          )
+        })// 开启画中画
+      }
+      catch (err: any) {
         ElMessage.error('数据加载失败，请稍后再试')
         throw new Error(err)
       }
       PIPRef.value!.autoplay = true
       PIPRef.value!.play()
-      
+
       // 添加控件
-      if(navigator.mediaSession.setActionHandler) {
+      if (navigator.mediaSession.setActionHandler) {
         // 控件处理事件
-        navigator.mediaSession.setActionHandler("play", () => {
+        navigator.mediaSession.setActionHandler('play', () => {
           // code here
-        });
-        navigator.mediaSession.setActionHandler("pause", () => {
-        });
-        navigator.mediaSession.setActionHandler("previoustrack", () => {
-        });
-        navigator.mediaSession.setActionHandler("nexttrack", () => {
-        });
+        })
+        navigator.mediaSession.setActionHandler('pause', () => {
+        })
+        navigator.mediaSession.setActionHandler('previoustrack', () => {
+        })
+        navigator.mediaSession.setActionHandler('nexttrack', () => {
+        })
       }
     }
   }
@@ -249,7 +270,7 @@ const openPIP = async () => {
   width: 100%;
   height: 53px;
   margin: 0 auto;
-  
+
   .bg {
     position: absolute;
     left: 0;

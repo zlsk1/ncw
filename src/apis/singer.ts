@@ -15,7 +15,7 @@ export const getHotSinger = (limit: number, offset: number = 0) => {
         limit,
         offset
       }
-    } 
+    }
   )
 }
 

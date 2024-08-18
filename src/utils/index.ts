@@ -17,7 +17,8 @@ export const judgeJson = (str: string): boolean => {
   try {
     JSON.parse(str)
     return true
-  } catch {
+  }
+  catch {
     return false
   }
 }
@@ -28,9 +29,9 @@ export const judgeJson = (str: string): boolean => {
  * @param {*} delay 延迟毫秒数
  * @param {*} immediate 是否立即执行,默认立即执行
  */
-export function debounce (fn: Function, delay: number, immediate: boolean = true): Function {
-  let timer: null | NodeJS.Timeout
-  return function (this: Function, ...args: Array<any>) {
+export function debounce(fn: Function, delay: number, immediate: boolean = true): Function {
+  let timer: any = null
+  return function(this: Function, ...args: Array<any>) {
     if (timer) {
       if (immediate) return
       clearTimeout(timer)
@@ -40,7 +41,8 @@ export function debounce (fn: Function, delay: number, immediate: boolean = true
       timer = setTimeout(() => {
         timer = null
       }, delay)
-    } else {
+    }
+    else {
       timer = setTimeout(() => {
         fn.apply(this, args)
       }, delay)

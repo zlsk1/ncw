@@ -1,11 +1,15 @@
 <template>
   <div v-loading="isLoad" class="SearchPlay-wrap">
     <div class="content">
-      <div v-for="item in result?.playlists" :key="item.id" class="items fl-sb">
+      <div
+        v-for="item in result?.playlists"
+        :key="item.id"
+        class="items fl-sb"
+      >
         <div class="img fl-sb">
-          <i class="icon icon-play" @click="play(item.id)" />
+          <i class="icon icon-play" @click="play(item.id)"></i>
           <router-link :to="`/playlist/${item.id}`">
-            <Pic :src="item.coverImgUrl + '?param=50y50'" />
+            <Pic :src="item.coverImgUrl + '?param=50y50'"></Pic>
           </router-link>
         </div>
         <div class="name">
@@ -14,9 +18,13 @@
           </router-link>
         </div>
         <div class="btns fl-sb">
-          <i class="icon icon-add" title="添加到播放列表" @click="play(item.id)" />
-          <i class="icon icon-collect" title="收藏" />
-          <i class="icon icon-share" title="分享" />
+          <i
+            class="icon icon-add"
+            title="添加到播放列表"
+            @click="play(item.id)"
+          ></i>
+          <i class="icon icon-collect" title="收藏"></i>
+          <i class="icon icon-share" title="分享"></i>
         </div>
         <div class="creator ellipsis-1">
           {{ item.trackCount }}首
@@ -39,7 +47,7 @@
       :page-size="limit"
       small
       @change="changePage"
-    />
+    ></el-pagination>
   </div>
 </template>
 
@@ -70,7 +78,7 @@ onBeforeRouteUpdate(to => {
   if (to.params.k !== route.params.k) handleSearch(to.params.k, limit, offset, to.params.type)
 })
 
-const handleSearch = async (keywords, limit, offset, type) => {
+const handleSearch = async(keywords, limit, offset, type) => {
   isLoad.value = true
   const res = await handleSearchAPI({ keywords, limit, offset, type })
   result.value = res.data.result

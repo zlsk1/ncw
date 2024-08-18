@@ -20,28 +20,44 @@
               >
               <span class="level-wrap">
                 {{ level }}
-                <i class="level" />
+                <i class="level"></i>
               </span>
-              <i v-if="profile?.gender === 1" class="boy" />
-              <i v-else class="girl" />
+              <i v-if="profile?.gender === 1" class="boy"></i>
+              <i v-else class="girl"></i>
               <template v-if="!isMe">
                 <el-button :icon="Message" @click="openSendDialog">
                   发私信
                 </el-button>
-                <el-button v-if="profile?.followed" :icon="Select" @click="follow(0)">
+                <el-button
+                  v-if="profile?.followed"
+                  :icon="Select"
+                  @click="follow(0)"
+                >
                   已关注
                 </el-button>
-                <el-button v-else :icon="Plus" @click="follow(1)">
+                <el-button
+                  v-else
+                  :icon="Plus"
+                  @click="follow(1)"
+                >
                   关注
                 </el-button>
               </template>
             </div>
-            <div v-if="isMe" class="edit-info" @click="toEdit">
+            <div
+              v-if="isMe"
+              class="edit-info"
+              @click="toEdit"
+            >
               <button>
                 编辑个人资料
               </button>
             </div>
-            <div v-else-if="isArtist" class="edit-info" @click="toEdit">
+            <div
+              v-else-if="isArtist"
+              class="edit-info"
+              @click="toEdit"
+            >
               <button>
                 <router-link :to="`/artist/${profile?.artistId}`">
                   查看歌手页
@@ -106,12 +122,16 @@
       <div class="content">
         <Card v-for="item in playlist" :key="item.id">
           <router-link :to="`/playlist/${item.id}`">
-            <Pic :src="item.img + '?param=140y140'" mask1 />
+            <Pic :src="item.img + '?param=140y140'" mask1></Pic>
           </router-link>
           <div class="card-play fl-sb">
-            <i class="icon-listen" />
+            <i class="icon-listen"></i>
             <span class="count f12">{{ formatPlayCount(item.playCount) }}</span>
-            <i class="play" title="播放" @click="addPlayList(item.id)" />
+            <i
+              class="play"
+              title="播放"
+              @click="addPlayList(item.id)"
+            ></i>
           </div>
           <template #footer>
             <router-link :to="`/playlist/${item.id}`">
@@ -146,7 +166,7 @@
           style="max-width: 80px"
           @keyup.enter="handleInputConfirm"
           @blur="handleInputConfirm"
-        />
+        ></el-input>
         <el-button
           v-else
           class="button-new-tag"
@@ -162,11 +182,11 @@
         maxlength="200"
         show-word-limit
         class="sendText"
-      />
+      ></el-input>
       <div class="bottom fl-sb">
         <Emj @choose="chooseEmj">
           <div class="emj">
-            <i class="icon-emj" />
+            <i class="icon-emj"></i>
           </div>
         </Emj>
         <el-button @click="handleSendText">
@@ -174,7 +194,7 @@
         </el-button>
       </div>
     </el-dialog>
-    <Login :is-show="isShow" @close="e => isShow = e" />
+    <Login :is-show="isShow" @close="e => isShow = e"></Login>
   </div>
 </template>
 
@@ -213,14 +233,14 @@ const isMe = computed(() => {
   return hasProfile() ? Number(route.params.id) === JSON.parse(localStorage.getItem('userInfo')).profile.userId : false
 })
 
-onMounted(async () => {
+onMounted(async() => {
   await getDetail(route.params.id)
   getVip(profile.value.userId)
   getUserPlaylist(profile.value.userId)
   dynamicTags.value.push(profile.value?.nickname)
 })
 
-onBeforeRouteUpdate(async (to, from) => {
+onBeforeRouteUpdate(async(to, from) => {
   if (to) {
     await getDetail(to.params.id)
     getVip(to.params.id)
@@ -243,7 +263,7 @@ const getDetail = async id => {
   isArtist = res.data.identify ? res.data.identify : null
 }
 
-const getUserPlaylist = async (uid, limit, offset) => {
+const getUserPlaylist = async(uid, limit, offset) => {
   const res = await getUserPlaylistAPI({ uid, limit, offset })
   playlist.value = res.data.playlist.map(v => { return { name: v.name, id: v.id, playCount: v.playCount, img: v.coverImgUrl } })
 }
@@ -271,11 +291,13 @@ const follow = async t => {
         showConfirmButton: false,
         showCancelButton: false
       })
-    } else {
+    }
+    else {
       await followUserAPI({ id: route.params.id, t })
       getDetail(route.params.id)
     }
-  } else isShow.value = !isShow.value
+  }
+  else isShow.value = !isShow.value
 }
 
 const openSendDialog = () => {
@@ -307,10 +329,11 @@ const chooseEmj = e => {
   sendText.value += `[${e}]`
 }
 
-const handleSendText = async () => {
+const handleSendText = async() => {
   if (!dynamicTags.value.length || !sendText.value) {
     ElMessage.warning('输入点内容再发送吧')
-  } else {
+  }
+  else {
     const res = await sendTextAPI({ user_ids: profile.value.userId, msg: sendText.value.trim() })
     if (res.data.code === 200) ElMessage.success('发送成功！')
   }

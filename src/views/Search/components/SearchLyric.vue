@@ -3,17 +3,25 @@
     <div class="content">
       <SearchPlay v-slot="slotProps" :result="result">
         <div v-if="slotProps.item.isExpand" class="lrc">
-          <p v-for="(lrc, i) in slotProps.item.lyrics" :key="i" v-html="lrc" />
+          <p
+            v-for="(lrc, i) in slotProps.item.lyrics"
+            :key="i"
+            v-html="lrc"
+          ></p>
           <span class="expand" @click="expand(slotProps.index)">
             <span>收起</span>
-            <ArrowUp style="width: 1em; height: 1em" />
+            <ArrowUp style="width: 1em; height: 1em"></ArrowUp>
           </span>
         </div>
         <div v-else class="lrc">
-          <p v-for="(lrc, i) in slotProps.item.lyrics.slice(0 ,4)" :key="i" v-html="lrc" />
+          <p
+            v-for="(lrc, i) in slotProps.item.lyrics.slice(0 ,4)"
+            :key="i"
+            v-html="lrc"
+          ></p>
           <span class="expand" @click="expand(slotProps.index)">
             <span>展开</span>
-            <ArrowDown style="width: 1em; height: 1em" />
+            <ArrowDown style="width: 1em; height: 1em"></ArrowDown>
           </span>
         </div>
       </SearchPlay>
@@ -25,7 +33,7 @@
       :page-size="limit"
       small
       @change="changePage"
-    />
+    ></el-pagination>
   </div>
 </template>
 
@@ -54,7 +62,7 @@ onBeforeRouteUpdate(to => {
   if (to.params.k !== route.params.k) handleSearch(to.params.k, limit, offset, to.params.type)
 })
 
-const handleSearch = async (keywords, limit, offset, type) => {
+const handleSearch = async(keywords, limit, offset, type) => {
   isLoad.value = true
   const res = await handleSearchAPI({ keywords, limit, offset, type })
   result.value = res.data.result

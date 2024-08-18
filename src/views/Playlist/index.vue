@@ -9,11 +9,11 @@
             crown
             mask5
             class="pic"
-          />
+          ></Pic>
         </div>
         <div class="right">
           <div class="title">
-            <i class="icon-play" />
+            <i class="icon-play"></i>
             <h2>{{ playlist?.playlist?.name }}</h2>
           </div>
           <div class="creator">
@@ -27,11 +27,19 @@
               {{ new Date(playlist?.playlist?.createTime as any).toLocaleString().split(' ')[0] }}创建
             </span>
           </div>
-          <Btns :id="id" :dynamic="dynamic as dynamicType" class="btns" />
+          <Btns
+            :id="id"
+            :dynamic="dynamic as dynamicType"
+            class="btns"
+          ></Btns>
           <div v-if="playlist?.playlist?.tags.length !== 0" class="tags fl">
             标签：
             <router-link to="/">
-              <el-tag v-for="(item, index) in playlist?.playlist?.tags" :key="index" type="info">
+              <el-tag
+                v-for="(item, index) in playlist?.playlist?.tags"
+                :key="index"
+                type="info"
+              >
                 {{ item }}
               </el-tag>
             </router-link>
@@ -41,13 +49,21 @@
             {{ description }}
           </p>
           <template v-if="description.length > 100">
-            <div v-if="!isExpand" class="expand" @click="expandDesc">
+            <div
+              v-if="!isExpand"
+              class="expand"
+              @click="expandDesc"
+            >
               展开
-              <ArrowDown style="width: 1em;height: 1em" />
+              <ArrowDown style="width: 1em;height: 1em"></ArrowDown>
             </div>
-            <div v-else class="expand" @click="expandDesc">
+            <div
+              v-else
+              class="expand"
+              @click="expandDesc"
+            >
               收起
-              <ArrowUp style="width: 1em;height: 1em" />
+              <ArrowUp style="width: 1em;height: 1em"></ArrowUp>
             </div>
           </template>
         </div>
@@ -63,7 +79,7 @@
         <table cellspacing="0">
           <thead>
             <tr>
-              <th style="width: 60px;" />
+              <th style="width: 60px;"></th>
               <th style="border-left:1px solid #d1d1d1">
                 歌曲标题
               </th>
@@ -79,14 +95,22 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, index) in playlist?.playlist?.tracks" :key="item.id" :class="index % 2 === 1 ? 'stripe' : ''">
+            <tr
+              v-for="(item, index) in playlist?.playlist?.tracks"
+              :key="item.id"
+              :class="index % 2 === 1 ? 'stripe' : ''"
+            >
               <td class="index">
                 {{ index + 1 }}
               </td>
               <td>
                 <div class="fl title">
-                  <i class="icon icon-play" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: (item.ar as arType[]).map(v => { return v.name }).join('/')})" />
-                  <router-link class="name ellipsis-1" :to="`/song/${item.id}`" :title="item.name">
+                  <i class="icon icon-play" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: (item.ar as arType[]).map(v => { return v.name }).join('/')})"></i>
+                  <router-link
+                    class="name ellipsis-1"
+                    :to="`/song/${item.id}`"
+                    :title="item.name"
+                  >
                     {{ item.name }}
                   </router-link>
                 </div>
@@ -94,10 +118,14 @@
               <td class="duration">
                 <span class="time">{{ formatSongDuration(item.dt as number, 0) }}</span>
                 <div class="fl-sb">
-                  <i class="icon icon-add" title="添加到播放列表" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: (item.ar as arType[]).map(v => { return v.name }).join('/')}, 1)" />
-                  <i class="icon icon-collect" title="收藏" />
-                  <i class="icon icon-share" title="分享" />
-                  <i class="icon icon-download" title="下载" />
+                  <i
+                    class="icon icon-add"
+                    title="添加到播放列表"
+                    @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: (item.ar as arType[]).map(v => { return v.name }).join('/')}, 1)"
+                  ></i>
+                  <i class="icon icon-collect" title="收藏"></i>
+                  <i class="icon icon-share" title="分享"></i>
+                  <i class="icon icon-download" title="下载"></i>
                 </div>
               </td>
               <td>
@@ -126,7 +154,7 @@
           </tbody>
         </table>
       </div>
-      <Comment />
+      <Comment></Comment>
     </div>
     <div class="playlist-right">
       <template v-if="playlist?.playlist?.subscribers.length !== 0">
@@ -143,7 +171,7 @@
           </ul>
         </div>
       </template>
-      <DownLoadSide />
+      <DownLoadSide></DownLoadSide>
     </div>
   </div>
 </template>
@@ -178,7 +206,7 @@ onMounted(() => {
   getDynamic(id)
 })
 
-const getplaylist = async (id: number) => {
+const getplaylist = async(id: number) => {
   const res = await getPlayListDetail(id)
   playlist.value = res.data
   description.value = playlist.value?.playlist?.description.slice(0, 100).concat('...')
@@ -199,7 +227,7 @@ const play = (o: songQueueType, type?: number) => {
   playStore.actionAddSong(o, type)
 }
 
-const getDynamic = async (id: number) => {
+const getDynamic = async(id: number) => {
   const res = await getPlaylistDynamicAPI(id)
   dynamic.value = {
     commentCount: res.data.commentCount,

@@ -14,8 +14,16 @@
           @click="toDetail(JSON.parse(item.notice).generalNotice?.webUrl)"
         >
           <router-link :to="`/user/home/${JSON.parse(item.notice).user.userId}`" class="avatar">
-            <img v-if="item.newMsgCount === 0" :src="JSON.parse(item.notice).user.avatarUrl + '?param=40y40'" alt="">
-            <el-badge v-else :value="item.newMsgCount" class="item">
+            <img
+              v-if="item.newMsgCount === 0"
+              :src="JSON.parse(item.notice).user.avatarUrl + '?param=40y40'"
+              alt=""
+            >
+            <el-badge
+              v-else
+              :value="item.newMsgCount"
+              class="item"
+            >
               <img :src="JSON.parse(item.notice).user.avatarUrl + '?param=40y40'" alt="">
             </el-badge>
           </router-link>
@@ -29,7 +37,7 @@
               </div>
               <div class="time">
                 {{ formatTimeStamp(item.time) }}
-                <i class="icon-clock" />
+                <i class="icon-clock"></i>
               </div>
             </div>
             <div class="msg">
@@ -48,7 +56,7 @@
               </div>
               <div class="time">
                 {{ formatTimeStamp(item.time) }}
-                <i class="icon-clock" />
+                <i class="icon-clock"></i>
               </div>
             </div>
             <div class="msg">
@@ -64,7 +72,7 @@
         ref="bar"
         class="bar"
         style="width: 100%;height:1px"
-      />
+      ></div>
     </div>
   </div>
 </template>
@@ -103,7 +111,7 @@ onMounted(() => {
   getNotices()
 })
 
-const getNotices = async (limit: number = 30, lasttime?: number) => {
+const getNotices = async(limit: number = 30, lasttime?: number) => {
   const res = await getNoticesAPI(limit, lasttime)
   noticeData.value = res.data
   // console.log(JSON.parse(noticeData.value.notices[0].notice))

@@ -15,8 +15,16 @@
           @click="toDetail(item.fromUser.userId, item.fromUser.nickname)"
         >
           <router-link :to="`/user/home/${item.fromUser.userId}`" class="avatar">
-            <img v-if="item.newMsgCount === 0" :src="item.fromUser.avatarUrl + '?param=50y50'" alt="">
-            <el-badge v-else :value="item.newMsgCount" class="item">
+            <img
+              v-if="item.newMsgCount === 0"
+              :src="item.fromUser.avatarUrl + '?param=50y50'"
+              alt=""
+            >
+            <el-badge
+              v-else
+              :value="item.newMsgCount"
+              class="item"
+            >
               <img :src="item.fromUser.avatarUrl + '?param=50y50'" alt="">
             </el-badge>
           </router-link>
@@ -27,7 +35,7 @@
               </router-link>
               <div class="time">
                 {{ formatTimeStamp(item.lastMsgTime) }}
-                <i class="icon-clock" />
+                <i class="icon-clock"></i>
               </div>
             </div>
             <div class="msg fl-sb">
@@ -46,7 +54,7 @@
         ref="bar"
         class="bar"
         style="width: 100%;height:1px"
-      />
+      ></div>
     </div>
   </div>
 </template>
@@ -83,11 +91,11 @@ watch(targetIsVisible, async val => {
   }
 })
 
-onMounted(async () => {
+onMounted(async() => {
   await getMsg(limit, _offset)
 })
 
-const getMsg = async (limit: number, offset: number) => {
+const getMsg = async(limit: number, offset: number) => {
   const res = await getMsgAPI(limit, offset)
   if (offset === 0) msgData.value = res.data
   else {

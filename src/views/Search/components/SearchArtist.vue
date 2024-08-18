@@ -8,7 +8,7 @@
       >
         <router-link :to="`/artist/${item.id}`">
           <Card>
-            <Pic :src="item.picUrl + '?param=130y130'" mask6 />
+            <Pic :src="item.picUrl + '?param=130y130'" mask6></Pic>
             <template #footer>
               <p class="ellipsis-1">
                 {{ item.name }}<span v-if="item.trans">({{ item.trans }})</span>
@@ -25,7 +25,7 @@
       :page-size="limit"
       small
       @change="changePage"
-    />
+    ></el-pagination>
   </div>
 </template>
 
@@ -52,7 +52,7 @@ onBeforeRouteUpdate(to => {
   if (to.params.k !== route.params.k) handleSearch(to.params.k, limit, offset, to.params.type)
 })
 
-const handleSearch = async (keywords, limit, offset, type) => {
+const handleSearch = async(keywords, limit, offset, type) => {
   isLoad.value = true
   const res = await handleSearchAPI({ keywords, limit, offset, type })
   result.value = res.data.result

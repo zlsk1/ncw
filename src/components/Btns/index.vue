@@ -3,10 +3,14 @@
     <ul class="btns fl f12">
       <li class="play fl">
         <i @click="addPlaylist(id)">
-          <i class="icon-play" />
+          <i class="icon-play"></i>
           播放
         </i>
-        <i class="icon-add" title="添加到播放列表" @click="addPlaylist(id)" />
+        <i
+          class="icon-add"
+          title="添加到播放列表"
+          @click="addPlaylist(id)"
+        ></i>
       </li>
       <li class="like">
         <i v-if="!dynamic?.bookedCount" class="icon-like">收藏</i>

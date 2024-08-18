@@ -16,26 +16,29 @@ export const usePlay = (audioRef: HTMLAudioElement, isPaused: Ref<boolean>) => {
     isPaused.value = true
     store.status = 0
   }
-  
+
   const prev = () => {
     isOnelength()
     if (store.index > 0) {
       store.actionUpdateIndex(store.index - 1)
-    } else {
+    }
+    else {
       store.actionUpdateIndex(store.songQueue.length - 1)
     }
   }
-  
+
   const next = () => {
     isOnelength()
     // 顺序播放
     if (store.setting.mode === 0) {
       if (store.index !== store.songQueue.length - 1) {
         store.actionUpdateIndex(store.index + 1)
-      } else {
+      }
+      else {
         store.actionUpdateIndex(0)
       }
-    } else if (store.setting.mode === 1) { // 随机播放
+    }
+    else if (store.setting.mode === 1) { // 随机播放
       const i = Math.floor(Math.random() * store.songQueue.length)
       store.actionUpdateIndex(i)
     }
@@ -48,15 +51,17 @@ export const usePlay = (audioRef: HTMLAudioElement, isPaused: Ref<boolean>) => {
   const keyup = (e: KeyboardEvent) => {
     if (e.ctrlKey && e.code === 'Space') {
       store.currentSong && isPaused.value ? play() : pause()
-    } else if (e.ctrlKey && e.code === 'ArrowRight') {
+    }
+    else if (e.ctrlKey && e.code === 'ArrowRight') {
       isOnelength()
       next()
-    } else if (e.ctrlKey && e.code === 'ArrowLeft') {
+    }
+    else if (e.ctrlKey && e.code === 'ArrowLeft') {
       isOnelength()
       prev()
     }
   }
-  
+
   onMounted(() => window.addEventListener('keyup', keyup))
 
   onBeforeUnmount(() => {

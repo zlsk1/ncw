@@ -37,7 +37,7 @@
         <router-link to="/discover/playlist">
           更多
         </router-link>
-        <i />
+        <i></i>
       </div>
     </div>
     <div class="card-conatiner">
@@ -52,15 +52,23 @@
             crown
             mask1
             class="pic"
-          />
+          ></Pic>
         </router-link>
         <div class="card-play fl-sb">
-          <i class="icon-listen" />
+          <i class="icon-listen"></i>
           <span class="count f12">{{ formatPlayCount(item.playCount) }}</span>
-          <i class="play" title="播放" @click="addPlayList(item.id)" />
+          <i
+            class="play"
+            title="播放"
+            @click="addPlayList(item.id)"
+          ></i>
         </div>
         <template #footer>
-          <router-link :to="`/playlist/${item.id}`" class="desc ellipsis-2" :title="item.name">
+          <router-link
+            :to="`/playlist/${item.id}`"
+            class="desc ellipsis-2"
+            :title="item.name"
+          >
             {{ item.name }}
           </router-link>
         </template>
@@ -84,12 +92,12 @@ onMounted(() => {
   getPersonalizedList()
 })
 
-const getPersonalizedList = async () => {
+const getPersonalizedList = async() => {
   const res = await getPersonalized(8)
   personalizedList.value = res.data.result
 }
 
-const addPlayList = async (id: number) => {
+const addPlayList = async(id: number) => {
   store.actionAddSongs(id)
 }
 

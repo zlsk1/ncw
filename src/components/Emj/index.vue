@@ -18,10 +18,10 @@
       @hide="hide"
     >
       <template #reference>
-        <slot />
+        <slot></slot>
       </template>
       <div class="emj">
-        <i class="icon-emj" />
+        <i class="icon-emj"></i>
       </div>
       <div class="emj-content">
         <span
@@ -31,13 +31,17 @@
           :title="item.txt"
           @click="choose"
         >
-          <img :src="item.url" alt="" :data-txt="item.txt">
+          <img
+            :src="item.url"
+            alt=""
+            :data-txt="item.txt"
+          >
         </span>
       </div>
       <div class="pagination f12 fl-sb">
-        <i class="switch" @click="prev" />
+        <i class="switch" @click="prev"></i>
         {{ page.currentPage }}/{{ total }}
-        <i class="next switch" @click="next" />
+        <i class="next switch" @click="next"></i>
       </div>
     </el-popover>
   </div>

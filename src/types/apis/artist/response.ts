@@ -3,8 +3,8 @@ import type {
   vipRightsType,
   userType,
   albumMainType,
-  songsItem,
-} from "../../index";
+  songsItem
+} from '../../index'
 
 export interface artistAlbumType {
   artist: artistType | artistType[],
@@ -50,13 +50,13 @@ export interface artistProduceType {
 export interface artistHotWorkType {
   songs: songsItem[],
   code: number,
-  more:  boolean
+  more: boolean
 }
 
 export interface artistMVType {
   hasMore: boolean,
   mvs: artistMVItemsType[],
-  time:  number  
+  time: number
 }
 
 export interface artistMVItemsType {

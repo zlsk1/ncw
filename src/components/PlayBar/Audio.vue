@@ -7,7 +7,7 @@
     @loadedmetadata="loadedmetadata"
     @timeupdate="timeupdate"
     @ended="ended"
-  />
+  ></audio>
 </template>
 
 <script lang="ts" setup>
@@ -16,7 +16,7 @@ import { usePlayStore } from '@/stores/play'
 import { getLyric } from '@/apis/song'
 import { playBarProvide } from './constances'
 
-const { 
+const {
   isPaused,
   audioRef,
   wordRef,
@@ -25,7 +25,7 @@ const {
   now,
   isMoving,
   index,
-  
+
   resetProgressBar,
   next
 } = inject(playBarProvide)!
@@ -36,7 +36,7 @@ const isLoop = computed(() => {
   return store.setting?.mode === 2 || store.songQueue.length === 1
 })
 
-const getLrc = async (id: number) => {
+const getLrc = async(id: number) => {
   const res = await getLyric(id)
   lrc.value = res.data.lrc.lyric.split('\n')
 }
@@ -68,7 +68,9 @@ const ended = () => {
   next()
 }
 
-onMounted(() => audioRef.value.volume = store.setting.volume)
+onMounted(() => {
+  audioRef.value.volume = store.setting.volume
+})
 
 onBeforeUnmount(() => store.actionUpdateSetting({ volume: audioRef.value.volume }))
 </script>

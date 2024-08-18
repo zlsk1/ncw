@@ -31,7 +31,7 @@ export const getPlayListDetail = (id: number, s?: number) => {
  * @param {*} offset
  * @returns
  */
-export const getPlayListAllAPI = (id: number, limit?: number, offset?: number ) => {
+export const getPlayListAllAPI = (id: number, limit?: number, offset?: number) => {
   return http({
     url: '/playlist/track/all',
     params: {

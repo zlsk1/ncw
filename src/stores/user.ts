@@ -9,8 +9,8 @@ export const useUserStore = defineStore('user', () => {
   const avator = ref(getAvator())
   const nickname = ref(getNickname())
 
-  const loginAction = async (data: any) => {
-    const { data: { code, token: _token, profile, cookie: _cookie } } = await loginByPassword(data.phone, data.password)
+  const loginAction = async(data: any) => {
+    const { data: { code, token: _token, profile, cookie: _cookie }} = await loginByPassword(data.phone, data.password)
     if (code === 200) {
       localStorage.setItem('token', JSON.stringify(_token))
       localStorage.setItem('cookie', JSON.stringify(_cookie))
@@ -26,7 +26,7 @@ export const useUserStore = defineStore('user', () => {
     avator.value = ''
     token.value = ''
   }
-  const actiongetUserDetail = async (uid: number) => {
+  const actiongetUserDetail = async(uid: number) => {
     const res = await getUserDetail(uid)
     localStorage.setItem('userInfo', JSON.stringify(res.data))
     avator.value = res.data.profile.avatarUrl

@@ -1,10 +1,10 @@
 <template>
   <div class="song-wrap w980 fl">
     <main class="main">
-      <SongMain />
+      <SongMain></SongMain>
     </main>
     <aside class="aside">
-      <SongAside />
+      <SongAside></SongAside>
     </aside>
   </div>
 </template>

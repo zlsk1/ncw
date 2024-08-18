@@ -1,16 +1,24 @@
 <template>
   <div v-loading="isLoad" class="album-wrap">
     <ul class="album-content">
-      <li v-for="item in albumList?.hotAlbums" :key="item.name" class="items">
+      <li
+        v-for="item in albumList?.hotAlbums"
+        :key="item.name"
+        class="items"
+      >
         <Card>
           <div class="album-img">
             <router-link :to="`/album/${item.id}`">
-              <Pic album1 :src="item.picUrl + '?param=120y120'" />
+              <Pic album1 :src="item.picUrl + '?param=120y120'"></Pic>
             </router-link>
-            <i class="icon-play" @click="play(item.id)" />
+            <i class="icon-play" @click="play(item.id)"></i>
           </div>
           <template #footer>
-            <router-link :to="`/album/${item.id}`" :title="item.name" class="name">
+            <router-link
+              :to="`/album/${item.id}`"
+              :title="item.name"
+              class="name"
+            >
               <p class="ellipsis-2">
                 {{ item.name }}
               </p>
@@ -31,7 +39,7 @@
       background
       small
       @change="changePage"
-    />
+    ></el-pagination>
   </div>
 </template>
 
@@ -66,8 +74,8 @@ onBeforeRouteUpdate(() => {
   getArtistAlbum({ id, limit, offset: offset.value })
 })
 
-const getArtistAlbum = async (obj: albumRequestType) => {
-  const { id,  limit, offset } = obj
+const getArtistAlbum = async(obj: albumRequestType) => {
+  const { id, limit, offset } = obj
   isLoad.value = true
   const res = await getArtistAlbumAPI(id, limit, offset)
   albumList.value = res.data

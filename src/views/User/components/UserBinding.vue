@@ -1,9 +1,9 @@
 <template>
   <div class="w980 bind-wrap">
-    <UserHeader />
+    <UserHeader></UserHeader>
     <div class="edit fl-sb f12">
       <div class="left fl-sb">
-        <i class="icon-phone" />
+        <i class="icon-phone"></i>
         <div>
           <p class="tel">
             手机
@@ -27,7 +27,7 @@
       <span>你的手机号：<span class="fw">+86  {{ hideTel(phone) }}</span></span>
       <el-form class="edit-password-form">
         <el-form-item>
-          <el-input placeholder="设置登录密码，不少于8位" />
+          <el-input placeholder="设置登录密码，不少于8位"></el-input>
         </el-form-item>
         <el-form-item class="btn-full">
           <el-button>下一步</el-button>

@@ -1,7 +1,7 @@
 <template>
   <div class="w980 update-wrap">
     <div v-show="!updateImg">
-      <UserHeader />
+      <UserHeader></UserHeader>
       <div class="content">
         <el-form
           ref="form"
@@ -20,7 +20,7 @@
               type="textarea"
               maxlength="300"
               show-word-limit
-            />
+            ></el-input>
           </el-form-item>
           <el-form-item label="性别">
             <el-radio-group v-model="formData.gender">
@@ -38,17 +38,21 @@
               type="date"
               :default-value="!formData.birthday ? new Date(1990, 0, 1) : formData.birthday"
               :placeholder="!formData.birthday ? '请选择生日' : ''"
-            />
+            ></el-date-picker>
           </el-form-item>
           <el-form-item label="地区">
             <el-cascader
               v-model="formData.area"
               :props="CascaderProps"
               :options="provinceAndCityData"
-            />
+            ></el-cascader>
           </el-form-item>
           <el-form-item label-width="40px">
-            <el-button type="primary" class="button" @click="submit">
+            <el-button
+              type="primary"
+              class="button"
+              @click="submit"
+            >
               保存
             </el-button>
           </el-form-item>
@@ -68,7 +72,11 @@
         <span>更换头像</span>
       </div>
       <div class="upload-btn">
-        <el-button type="primary" :disabled="file ? true : false" @click="clickUpload">
+        <el-button
+          type="primary"
+          :disabled="file ? true : false"
+          @click="clickUpload"
+        >
           上传头像
         </el-button> <span>支持jpg、png、bmp格式的图片，且文件小于5M</span>
       </div>
@@ -86,9 +94,9 @@
             class="controlImg"
           >
           <div class="choose">
-            <div class="expand" />
+            <div class="expand"></div>
           </div>
-          <UploadFilled style="width: 6em;height: 6em" />
+          <UploadFilled style="width: 6em;height: 6em"></UploadFilled>
         </div>
         <div class="preview">
           <p>头像预览</p>
@@ -145,7 +153,7 @@ const CascaderProps = {
   value: 'label'
 }
 
-const validNickname = async (rule, value, callback) => {
+const validNickname = async(rule, value, callback) => {
   if (!value) return callback(new Error('请输入昵称'))
   if (value.trim() !== profile.value.nickname) {
     const res = await testNickname(value.trim())
@@ -172,8 +180,8 @@ onMounted(() => {
   getDetail()
 })
 
-const submit = async () => {
-  await form.value.validate(async (valid, fields) => {
+const submit = async() => {
+  await form.value.validate(async(valid, fields) => {
     if (valid) {
       const { value: province, children } = provinceAndCityData.find(v => v.label === formData.value.area[0])
       const { value: city } = children.find(v => v.label === formData.value.area[1])
@@ -197,7 +205,7 @@ const submit = async () => {
   })
 }
 
-const getDetail = async () => {
+const getDetail = async() => {
   const res = await getUserDetail(route.params.id)
   profile.value = res.data.profile
   formData.value = {
@@ -253,13 +261,14 @@ const setImg = url => {
   document.querySelector('.upload .controlImg').src = url
 }
 
-const updateAvatar = async () => {
+const updateAvatar = async() => {
   const formData = new FormData()
   formData.append('imgFile', file.value)
   try {
     await updateUserAvatarAPI(formData)
     userStore.actiongetUserDetail(profile.value.userId)
-  } catch (err) {
+  }
+  catch (err) {
     ElMessage.warning(err.response.data.message)
   }
 }

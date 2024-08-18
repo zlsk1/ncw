@@ -10,7 +10,7 @@
         <router-link to="/">
           更多
         </router-link>
-        <i />
+        <i></i>
       </div>
     </div>
     <div class="content-wrap">
@@ -28,9 +28,13 @@
                     :lazy-load="false"
                     album
                     :src="`${item1.picUrl}?param=100y100`"
-                  />
+                  ></Pic>
                 </router-link>
-                <i class="hoverPlay" title="播放" @click="addPlayList(item1.id)" />
+                <i
+                  class="hoverPlay"
+                  title="播放"
+                  @click="addPlayList(item1.id)"
+                ></i>
                 <template #footer>
                   <div class="desc">
                     <router-link :to="`/album/${item1.id}`">
@@ -52,10 +56,10 @@
       </ul>
     </div>
     <div class="prev" @click="prev">
-      <ArrowLeft style="width: 1.5em;height: 1.5em" />
+      <ArrowLeft style="width: 1.5em;height: 1.5em"></ArrowLeft>
     </div>
     <div class="next" @click="next">
-      <ArrowRight style="width: 1.5em;height: 1.5em" />
+      <ArrowRight style="width: 1.5em;height: 1.5em"></ArrowRight>
     </div>
   </div>
 </template>
@@ -90,7 +94,7 @@ watch(isRender, (newVal, oldVal) => {
   }
 })
 
-const getNewAlbumList = async () => {
+const getNewAlbumList = async() => {
   const res = await getNewAlbum()
   const length = res.data.albums.slice(0, 10).length / per
   for (let i = 0; i < length; i++) {
@@ -109,7 +113,8 @@ const next = () => {
     contentRef.value!.style.transition = 'none'
     contentRef.value!.style.transform = 'translateX(0)'
     setTimeout(() => { i.value = 1; goto() }, 0)
-  } else {
+  }
+  else {
     i.value++
     goto()
   }
@@ -120,13 +125,14 @@ const prev = () => {
     contentRef.value!.style.transition = 'none'
     contentRef.value!.style.transform = `translateX(calc(-100% * ${items.value}))`
     setTimeout(() => { i.value = items.value - 1; goto() }, 0)
-  } else {
+  }
+  else {
     i.value--
     goto()
   }
 }
 
-const addPlayList = async (id: number) => { playStore.actionAddSongs(id) }
+const addPlayList = async(id: number) => { playStore.actionAddSongs(id) }
 </script>
 
 <style lang="scss" scoped>

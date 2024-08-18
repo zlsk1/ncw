@@ -162,7 +162,7 @@ const router = createRouter({
       ]
     }
   ],
-  scrollBehavior () {
+  scrollBehavior() {
     // 始终滚动到顶部
     return { top: 0 }
   }
@@ -172,12 +172,14 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requireLogin) {
     if (hasProfile()) {
       next()
-    } else {
+    }
+    else {
       next({
         path: '/login'
       })
     }
-  } else {
+  }
+  else {
     next()
   }
 })

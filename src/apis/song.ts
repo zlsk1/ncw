@@ -1,8 +1,8 @@
 import http from '@/utils/http'
 import type {
   lyricType,
-  songUrlType,
-}  from '@/types' 
+  songUrlType
+} from '@/types'
 
 /**
  * @param {String} id 音乐id 可传多个id 用逗号分隔

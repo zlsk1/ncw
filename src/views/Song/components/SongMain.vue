@@ -3,24 +3,28 @@
     <div class="songPlay-wrap fl">
       <div class="left">
         <div class="img-wrap">
-          <i class="icon-img" />
+          <i class="icon-img"></i>
           <img :src="`${data?.songs?.al.picUrl}?param=130y130`" alt="">
         </div>
       </div>
       <div class="right">
         <div class="header fl">
-          <i class="icon-singleSong" />
+          <i class="icon-singleSong"></i>
           <div>
             <div class="fl">
               <h2>{{ data?.songs?.al.name }}</h2>
-              <i class="icon-mv" />
+              <i class="icon-mv"></i>
             </div>
           <!-- <span>{{ desc }}</span> -->
           </div>
         </div>
         <div class="info f12">
           <div class="singer">
-            歌手：<router-link v-for="(item, index) in data?.songs?.ar" :key="index" :to="`/artist/${item.id}`">
+            歌手：<router-link
+              v-for="(item, index) in data?.songs?.ar"
+              :key="index"
+              :to="`/artist/${item.id}`"
+            >
               {{ index !== data?.songs.ar.length - 1 ? `${item.name}/` : item.name }}
             </router-link>
           </div>
@@ -33,10 +37,14 @@
         <ul class="btns fl f12">
           <li class="play fl">
             <i @click="play({id:data?.songs.id, picUrl: data?.songs?.al.picUrl, name: data?.songs?.al.name, singer: data?.songs?.ar.map(v=>{return v.name}).join('/') })">
-              <i class="icon-play" />
+              <i class="icon-play"></i>
               播放
             </i>
-            <i class="icon-add" title="添加到播放列表" @click="play({id:data?.songs.id, picUrl: data?.songs?.al.picUrl, name: data?.songs?.al.name, singer: data?.songs?.ar.map(v=>{return v.name}).join('/') }, 1)" />
+            <i
+              class="icon-add"
+              title="添加到播放列表"
+              @click="play({id:data?.songs.id, picUrl: data?.songs?.al.picUrl, name: data?.songs?.al.name, singer: data?.songs?.ar.map(v=>{return v.name}).join('/') }, 1)"
+            ></i>
           </li>
           <li class="like">
             <i class="icon-like">收藏</i>
@@ -53,7 +61,11 @@
         </ul>
         <div class="lrc-wrap">
           <div ref="lrcContent" class="lrc-content">
-            <p v-for="(item, index) in data?.lrc.lyric.split('\n')" :key="index" class="f12 per-line">
+            <p
+              v-for="(item, index) in data?.lrc.lyric.split('\n')"
+              :key="index"
+              class="f12 per-line"
+            >
               {{ judgeJson(item)
                 ? JSON.parse(item).c.length === 1
                   ? JSON.parse(item).c[0].tx
@@ -61,11 +73,15 @@
                 : item.split(']')[1] }}
             </p>
           </div>
-          <span v-if="data?.lrc.lyric.split('\n').length > 20" class="expand f12" @click="expandLrc"><span>展开</span><ArrowDown style="width: 1em;height: 1em" /></span>
+          <span
+            v-if="data?.lrc.lyric.split('\n').length > 20"
+            class="expand f12"
+            @click="expandLrc"
+          ><span>展开</span><ArrowDown style="width: 1em;height: 1em"></ArrowDown></span>
         </div>
       </div>
     </div>
-    <Comment @getTotal="totalComment = $event" />
+    <Comment @getTotal="totalComment = $event"></Comment>
   </div>
 </template>
 
@@ -111,7 +127,8 @@ const expandLrc = () => {
     lrcContent.value.style.maxHeight = '9999px'
     lrcContent.value.nextSibling.children[0].textContent = '收起'
     lrcContent.value.nextSibling.children[1].style.transform = 'rotate(180deg)'
-  } else {
+  }
+  else {
     lrcContent.value.style.maxHeight = maxHeight
     lrcContent.value.nextSibling.children[0].textContent = '展开'
     lrcContent.value.nextSibling.children[1].style.transform = 'rotate(0)'
@@ -123,7 +140,7 @@ const goComment = () => {
   textarea.value.focus()
 }
 
-const play = async (o, type) => { playStore.actionAddSong(o, type) }
+const play = async(o, type) => { playStore.actionAddSong(o, type) }
 
 </script>
 

@@ -34,7 +34,7 @@ export interface searchArtistType {
   fansGroup: any,
   img1v1Url: string,
   tansNames?: string[]
-  trans:  any
+  trans: any
 }
 
 export interface searchSongType {

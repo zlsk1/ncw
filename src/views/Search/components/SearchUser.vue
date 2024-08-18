@@ -16,9 +16,13 @@
             <router-link :to="`/user/home/${item.userId}`">
               <p>{{ item.nickname }}</p>
             </router-link>
-            <img :src="item.avatarDetail?.identityIconUrl" alt="" class="identityImg">
-            <i v-if="item.gender === 1" class="boy" />
-            <i v-else-if="item.gender === 0" class="girl" />
+            <img
+              :src="item.avatarDetail?.identityIconUrl"
+              alt=""
+              class="identityImg"
+            >
+            <i v-if="item.gender === 1" class="boy"></i>
+            <i v-else-if="item.gender === 0" class="girl"></i>
           </div>
           <p class="txt desc ellipsis-1">
             {{ item.signature }}
@@ -38,7 +42,7 @@
       :page-size="limit"
       small
       @change="changePage"
-    />
+    ></el-pagination>
   </div>
 </template>
 
@@ -66,7 +70,7 @@ onBeforeRouteUpdate(to => {
   if (to.params.k !== route.params.k) handleSearch(to.params.k, limit, offset, to.params.type)
 })
 
-const handleSearch = async (keywords, limit, offset, type) => {
+const handleSearch = async(keywords, limit, offset, type) => {
   isLoad.value = true
   const res = await handleSearchAPI({ keywords, limit, offset, type })
   result.value = res.data.result

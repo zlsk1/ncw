@@ -6,7 +6,7 @@
         :key="index"
         class="breakpoint"
         :style="{ left: (perWidth * item) + '% ' }"
-      />
+      ></div>
       <div
         v-for="index in _section + 1"
         :key="index"
@@ -19,7 +19,7 @@
         {{ index - 1 }}
       </div>
     </template>
-    <div class="progress" />
+    <div class="progress"></div>
   </div>
 </template>
 

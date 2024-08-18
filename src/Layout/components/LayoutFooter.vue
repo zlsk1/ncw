@@ -3,35 +3,35 @@
     <div class="w980">
       <ul class="fl-sb help">
         <li>
-          <a href="" target="_blank" />
+          <a href="" target="_blank"></a>
           <span>音乐开放平台</span>
         </li>
         <li>
-          <a href="" target="_blank" />
+          <a href="" target="_blank"></a>
           <span>云村交易所</span>
         </li>
         <li>
-          <a href="" target="_blank" />
+          <a href="" target="_blank"></a>
           <span>Amped Studio</span>
         </li>
         <li>
-          <a href="" target="_blank" />
+          <a href="" target="_blank"></a>
           <span>X Studio虚拟歌手</span>
         </li>
         <li>
-          <a href="" target="_blank" />
+          <a href="" target="_blank"></a>
           <span>用户认证</span>
         </li>
         <li>
-          <a href="" target="_blank" />
+          <a href="" target="_blank"></a>
           <span>音乐交易平台</span>
         </li>
         <li>
-          <a href="" target="_blank" />
+          <a href="" target="_blank"></a>
           <span>云推歌</span>
         </li>
         <li>
-          <a href="" target="_blank" />
+          <a href="" target="_blank"></a>
           <span>赞赏</span>
         </li>
       </ul>
@@ -71,7 +71,11 @@
         <div>
           网易公司版权所有©1997-2024杭州乐读科技有限公司运营：
           <a href="">浙网文[2021] 1186-054号</a>
-          <img class="police" src="@/assets/icons/police.png" alt="">
+          <img
+            class="police"
+            src="@/assets/icons/police.png"
+            alt=""
+          >
           <a href="">浙公网安备 33010802013307号</a>
         </div>
       </div>

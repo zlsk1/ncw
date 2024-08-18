@@ -1,8 +1,8 @@
 <template>
   <div class="card-wrap">
-    <slot />
+    <slot></slot>
     <div class="card-footer">
-      <slot name="footer" />
+      <slot name="footer"></slot>
     </div>
   </div>
 </template>

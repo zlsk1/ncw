@@ -5,36 +5,40 @@
       <div class="tabs">
         <div :class="['tabs-item', route.path === '/msg/at' ? 'active-tabs-item' : '']">
           <router-link to="/msg/at">
-            <i class="icon-at" />
+            <i class="icon-at"></i>
             <span>我的</span>
           </router-link>
         </div>
         <div :class="['tabs-item', route.path === '/msg/private' || route.path.includes('/private_detail') ? 'active-tabs-item' : '']">
           <router-link to="/msg/private">
-            <i class="icon-private" />
+            <i class="icon-private"></i>
             <span>私信</span>
             <span v-if="msgCount" class="f12 msgCount">{{ msgCount }}</span>
           </router-link>
         </div>
         <div :class="['tabs-item', route.path === '/msg/comment' ? 'active-tabs-item' : '']">
           <router-link to="/msg/comment">
-            <i class="icon-comment" />
+            <i class="icon-comment"></i>
             <span>评论</span>
           </router-link>
         </div>
         <div :class="['tabs-item', route.path === '/msg/notify' ? 'active-tabs-item' : '']">
           <router-link to="/msg/notify">
-            <i class="icon-notify" />
+            <i class="icon-notify"></i>
             <span>通知</span>
           </router-link>
         </div>
       </div>
-      <el-button size="small" class="btn" :disabled="!msgCount">
+      <el-button
+        size="small"
+        class="btn"
+        :disabled="!msgCount"
+      >
         一键已读
       </el-button>
     </div>
     <div class="right">
-      <router-view />
+      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -50,7 +54,7 @@ const msgCount = ref<number>(0)
 
 onMounted(() => getMsg())
 
-const getMsg = async () => {
+const getMsg = async() => {
   const res = await getPlCountAPI()
   msgCount.value = res.data.msg
 }

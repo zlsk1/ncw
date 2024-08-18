@@ -10,27 +10,43 @@
         <router-link :to="`/discover/toplist/${topStore?.topId[0]?.id}`">
           更多
         </router-link>
-        <i />
+        <i></i>
       </div>
     </div>
     <div class="top-container">
-      <div v-for="(item, index) in topStore.topId.slice(0, 3)" :key="item.name" class="item">
+      <div
+        v-for="(item, index) in topStore.topId.slice(0, 3)"
+        :key="item.name"
+        class="item"
+      >
         <div class="header">
           <router-link :to="`/discover/toplist/${item.id}`">
-            <Pic :src="`${item.imgUrl}?param=80y80`" mask2 class="img" />
+            <Pic
+              :src="`${item.imgUrl}?param=80y80`"
+              mask2
+              class="img"
+            ></Pic>
           </router-link>
           <div class="right">
             <router-link :to="`/discover/toplist/${item.id}`" class="name">
               {{ item.name }}
             </router-link>
             <span class="fl">
-              <i class="play" title="播放" @click="addPlayList(item.id)" />
-              <i class="like" title="收藏" />
+              <i
+                class="play"
+                title="播放"
+                @click="addPlayList(item.id)"
+              ></i>
+              <i class="like" title="收藏"></i>
             </span>
           </div>
         </div>
         <ul class="content">
-          <li v-for="(track, no) in topList[index]" :key="track?.no" class="content-item">
+          <li
+            v-for="(track, no) in topList[index]"
+            :key="track?.no"
+            class="content-item"
+          >
             <div class="fl">
               <p class="rank">
                 {{ no + 1 }}
@@ -41,9 +57,17 @@
                 </p>
               </router-link>
               <div class="icon">
-                <i class="play" title="播放" @click="updateSong({id: track.id, picUrl: track.al.picUrl, name: track.name, singer: (track.ar as arType[]).map(v => { return v.name }).join('/')})" />
-                <i class="addlist" title="添加到播放列表" @click="updateSong({id: track.id, picUrl: track.al.picUrl, name: track.name, singer: (track.ar as arType[]).map(v => { return v.name }).join('/')}, 1)" />
-                <i class="like" title="收藏" />
+                <i
+                  class="play"
+                  title="播放"
+                  @click="updateSong({id: track.id, picUrl: track.al.picUrl, name: track.name, singer: (track.ar as arType[]).map(v => { return v.name }).join('/')})"
+                ></i>
+                <i
+                  class="addlist"
+                  title="添加到播放列表"
+                  @click="updateSong({id: track.id, picUrl: track.al.picUrl, name: track.name, singer: (track.ar as arType[]).map(v => { return v.name }).join('/')}, 1)"
+                ></i>
+                <i class="like" title="收藏"></i>
               </div>
             </div>
           </li>
@@ -67,13 +91,13 @@ import type { songQueueType } from '@/stores/play'
 import type {
   playlistTracksType,
   arType
-} from  '@/types'
+} from '@/types'
 
 const topStore = useTopStore()
 const playStore = usePlayStore()
 const topList = ref<playlistTracksType[][]>([])
 
-onMounted(async () => {
+onMounted(async() => {
   await topStore.actionTopId()
   const ids = topStore.topId.map(v => { return v.id })
   getTopList(ids)
@@ -92,9 +116,9 @@ const getTopList = (ids: number[]) => {
   })
 }
 
-const updateSong = async (o: songQueueType, type?: number) => { playStore.actionAddSong(o, type) }
+const updateSong = async(o: songQueueType, type?: number) => { playStore.actionAddSong(o, type) }
 
-const addPlayList = async (id: number) => { playStore.actionAddSongs(id) }
+const addPlayList = async(id: number) => { playStore.actionAddSongs(id) }
 </script>
 
 <style lang="scss" scoped>

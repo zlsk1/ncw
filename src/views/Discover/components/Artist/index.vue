@@ -6,7 +6,11 @@
       :default-openeds="['推荐', '华语', '欧美', '日本', '韩国', '其他']"
       router
     >
-      <el-sub-menu v-for="cate in catelist" :key="cate.area" :index="cate.area">
+      <el-sub-menu
+        v-for="cate in catelist"
+        :key="cate.area"
+        :index="cate.area"
+      >
         <template #title>
           <span>{{ cate.area }}</span>
         </template>
@@ -46,10 +50,14 @@
         </li>
       </ul>
       <ul class="hot">
-        <li v-for="item in artistlist?.artists.slice(0, 10)" :key="item.id" class="hot-items">
+        <li
+          v-for="item in artistlist?.artists.slice(0, 10)"
+          :key="item.id"
+          class="hot-items"
+        >
           <Card>
             <router-link :to="`/artist/${item.id}`" :title="item.name">
-              <Pic :src="item.picUrl + '?param=130y130'" />
+              <Pic :src="item.picUrl + '?param=130y130'"></Pic>
             </router-link>
             <template #footer>
               <div class="fl-sb">
@@ -58,8 +66,12 @@
                     {{ item.name }}
                   </p>
                 </router-link>
-                <router-link v-if="item.accountId" :to="`/user/home/${item.accountId}`" :title="item.name + '的主页'">
-                  <i class="icon-home" />
+                <router-link
+                  v-if="item.accountId"
+                  :to="`/user/home/${item.accountId}`"
+                  :title="item.name + '的主页'"
+                >
+                  <i class="icon-home"></i>
                 </router-link>
               </div>
             </template>
@@ -67,14 +79,22 @@
         </li>
       </ul>
       <ul class="all">
-        <li v-for="item in artistlist?.artists.slice(10, 100)" :key="item.id" class="all-items">
+        <li
+          v-for="item in artistlist?.artists.slice(10, 100)"
+          :key="item.id"
+          class="all-items"
+        >
           <router-link :to="`/artist/${item.id}`" :title="item.name">
             <p class="ellipsis-1 all-items-name">
               {{ item.name }}
             </p>
           </router-link>
-          <router-link v-if="item.accountId" :to="`/user/home/${item.accountId}`" :title="item.name + '的主页'">
-            <i class="icon-home" />
+          <router-link
+            v-if="item.accountId"
+            :to="`/user/home/${item.accountId}`"
+            :title="item.name + '的主页'"
+          >
+            <i class="icon-home"></i>
           </router-link>
         </li>
       </ul>
@@ -125,11 +145,12 @@ onMounted(() => {
   })
 })
 
-const getArtistlist = async ({ limit, offset, initial, type, area }: getArtistlistType) => {
+const getArtistlist = async({ limit, offset, initial, type, area }: getArtistlistType) => {
   let res
   if (route.fullPath === '/discover/artist') {
     res = await getHotSinger(100)
-  } else {
+  }
+  else {
     res = await getArtistlistAPI({ limit, offset, initial, type, area })
   }
   artistlist.value = res.data

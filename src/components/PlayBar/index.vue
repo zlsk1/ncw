@@ -1,11 +1,11 @@
 <template>
   <div ref="playBarRef">
     <div class="playBar-wrap">
-      <Audio />
-      <Bar />
+      <Audio></Audio>
+      <Bar></Bar>
     </div>
     <template v-if="isShowPlaylist">
-      <PlayList />
+      <PlayList></PlayList>
     </template>
   </div>
 </template>
@@ -78,7 +78,7 @@ provide(playBarProvide, {
   barLeft,
   volBgHeight,
   volControlTop,
-  
+
   resetProgressBar,
   prev,
   next,

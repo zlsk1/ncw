@@ -1,19 +1,27 @@
 <template>
   <div class="pic-wrap">
-    <i v-if="props.crown" class="crown" />
-    <i v-if="props.mask1" class="mask1" />
-    <i v-if="props.mask2" class="mask2" />
-    <i v-if="props.mask3" class="mask3" />
-    <i v-if="props.mask4" class="mask4" />
-    <i v-if="props.mask5" class="mask5" />
-    <i v-if="props.mask6" class="mask6" />
-    <i v-if="props.album" class="album" />
-    <i v-if="props.album1" class="album1" />
-    <i v-if="props.album2" class="album2" />
-    <i v-if="props.album3" class="album3" />
-    <i v-if="props.play" class="play" />
-    <img v-if="lazyLoad" v-lazy="props.src" alt="">
-    <img v-else :src="props.src" alt="">
+    <i v-if="props.crown" class="crown"></i>
+    <i v-if="props.mask1" class="mask1"></i>
+    <i v-if="props.mask2" class="mask2"></i>
+    <i v-if="props.mask3" class="mask3"></i>
+    <i v-if="props.mask4" class="mask4"></i>
+    <i v-if="props.mask5" class="mask5"></i>
+    <i v-if="props.mask6" class="mask6"></i>
+    <i v-if="props.album" class="album"></i>
+    <i v-if="props.album1" class="album1"></i>
+    <i v-if="props.album2" class="album2"></i>
+    <i v-if="props.album3" class="album3"></i>
+    <i v-if="props.play" class="play"></i>
+    <img
+      v-if="lazyLoad"
+      v-lazy="props.src"
+      alt=""
+    >
+    <img
+      v-else
+      :src="props.src"
+      alt=""
+    >
   </div>
 </template>
 

@@ -8,10 +8,10 @@
             :src="albumInfo?.album?.picUrl + '?param=177y177'"
             album3
             class="pic"
-          />
+          ></Pic>
           <div class="info">
             <div class="fl">
-              <i class="icon-album" />
+              <i class="icon-album"></i>
               <h2>{{ albumInfo?.album?.name }}</h2>
             </div>
             <div>
@@ -29,7 +29,7 @@
               发布时间：{{ new Date(albumInfo?.album?.publishTime as number).toLocaleString().split(' ')[0] }}
             </p>
             <p>发行公司：{{ albumInfo?.album?.company }}</p>
-            <Btns class="btns" :dynamic="{shareCount: albumInfo?.album?.info?.shareCount as number, commentCount: albumInfo?.album?.info?.commentCount as number }" />
+            <Btns class="btns" :dynamic="{shareCount: albumInfo?.album?.info?.shareCount as number, commentCount: albumInfo?.album?.info?.commentCount as number }"></Btns>
           </div>
         </div>
         <div class="desc">
@@ -45,13 +45,21 @@
             </p>
           </template>
         </div>
-        <div v-if="isExpand" class="expand" @click="expand">
+        <div
+          v-if="isExpand"
+          class="expand"
+          @click="expand"
+        >
           <span>收起</span>
-          <ArrowUp style="width: 1em;height: 1em" />
+          <ArrowUp style="width: 1em;height: 1em"></ArrowUp>
         </div>
-        <div v-else class="expand" @click="expand">
+        <div
+          v-else
+          class="expand"
+          @click="expand"
+        >
           <span>展开</span>
-          <ArrowDown style="width: 1em;height: 1em" />
+          <ArrowDown style="width: 1em;height: 1em"></ArrowDown>
         </div>
       </div>
       <div class="main-playlist">
@@ -64,7 +72,7 @@
         <table cellspacing="0">
           <thead>
             <tr>
-              <th style="width: 60px;" />
+              <th style="width: 60px;"></th>
               <th style="border-left:1px solid #d1d1d1">
                 标题
               </th>
@@ -77,14 +85,22 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, index) in albumInfo?.songs" :key="item.id" :class="index % 2 === 1 ? 'stripe' : ''">
+            <tr
+              v-for="(item, index) in albumInfo?.songs"
+              :key="item.id"
+              :class="index % 2 === 1 ? 'stripe' : ''"
+            >
               <td class="index">
                 {{ index + 1 }}
               </td>
               <td>
                 <div class="fl title">
-                  <i class="icon icon-play" @click="play({id: Number(item.id), picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')})" />
-                  <router-link class="name ellipsis-1" :to="`/song/${item.id}`" :title="item.name">
+                  <i class="icon icon-play" @click="play({id: Number(item.id), picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')})"></i>
+                  <router-link
+                    class="name ellipsis-1"
+                    :to="`/song/${item.id}`"
+                    :title="item.name"
+                  >
                     {{ item.name }}
                   </router-link>
                 </div>
@@ -92,10 +108,14 @@
               <td class="duration">
                 <span class="time">{{ formatSongDuration(item.dt, 0) }}</span>
                 <div class="fl-sb">
-                  <i class="icon icon-add" title="添加到播放列表" @click="play({id: Number(item.id), picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')}, 1)" />
-                  <i class="icon icon-collect" title="收藏" />
-                  <i class="icon icon-share" title="分享" />
-                  <i class="icon icon-download" title="下载" />
+                  <i
+                    class="icon icon-add"
+                    title="添加到播放列表"
+                    @click="play({id: Number(item.id), picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')}, 1)"
+                  ></i>
+                  <i class="icon icon-collect" title="收藏"></i>
+                  <i class="icon icon-share" title="分享"></i>
+                  <i class="icon icon-download" title="下载"></i>
                 </div>
               </td>
               <td>
@@ -114,14 +134,14 @@
           </tbody>
         </table>
       </div>
-      <Comment />
+      <Comment></Comment>
     </div>
     <div class="right">
       <div class="header fl-sb">
         <p>Ta的其他热门专辑</p>
         <router-link :to="`/artist/album/${albumInfo?.album?.artist.id}`" class="fl-sb">
           全部
-          <ArrowRight style="width: 1em; height: 1em" />
+          <ArrowRight style="width: 1em; height: 1em"></ArrowRight>
         </router-link>
       </div>
       <div class="content">
@@ -132,7 +152,11 @@
             class="fl items"
           >
             <router-link :to="`/album/${item.id}`">
-              <img :src="item.picUrl + '?param=50y50'" alt="" class="hot-img">
+              <img
+                :src="item.picUrl + '?param=50y50'"
+                alt=""
+                class="hot-img"
+              >
             </router-link>
             <div>
               <router-link :to="`/album/${item.id}`" class="ellipsis-1 name">
@@ -145,7 +169,7 @@
           </li>
         </ul>
       </div>
-      <DownLoadSide />
+      <DownLoadSide></DownLoadSide>
     </div>
   </div>
 </template>
@@ -176,7 +200,7 @@ onMounted(() => {
   getAlbum(Number(route.params.id))
 })
 
-const getAlbum = async (id: number) => {
+const getAlbum = async(id: number) => {
   const res = await getAlbumAPI(id)
   const res1 = await getArtistAlbumAPI(res.data.album.artist.id, 5)
   albumInfo.value = res.data

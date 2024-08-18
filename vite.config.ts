@@ -17,7 +17,7 @@ export default defineConfig({
     }),
     Components({
       resolvers: [ElementPlusResolver()],
-      dts: 'src/components.d.ts',
+      dts: 'src/components.d.ts'
     })
   ],
   resolve: {
@@ -41,9 +41,9 @@ export default defineConfig({
           'default',
           {
             colormin: false,
-            minifyFontValues: false,
-          },
-        ],
+            minifyFontValues: false
+          }
+        ]
       })]
     }
   },

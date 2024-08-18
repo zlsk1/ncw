@@ -15,12 +15,13 @@ http.interceptors.request.use(
       if (config.params) {
         const merge = Object.assign(config.params, { stamp: getTimestamp() })
         config.params = merge
-      } else {
+      }
+      else {
         config.params = { stamp: getTimestamp() }
       }
     }
     return config
-  }, 
+  },
   (err) => {
     // 对请求错误做些什么
     return Promise.reject(err)
@@ -30,7 +31,7 @@ http.interceptors.request.use(
 http.interceptors.response.use(
   (res) => {
     return res
-  }, 
+  },
   (err) => {
     return Promise.reject(err)
   }

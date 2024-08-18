@@ -4,13 +4,18 @@ export interface lyricType {
   qfy: boolean,
   transUser: lyricUserType,
   lyricUser: lyricUserType,
-  lrc: lyricType,
-  klyric: lyricType,
-  tlyric: lyricType,
-  romalrc: lyricType,
-  yrc: lyricType,
-  ytlrc: lyricType,
-  yromalrc: lyricType,
+  lrc: lyricDetail,
+  klyric: lyricDetail,
+  tlyric: lyricDetail,
+  romalrc: lyricDetail,
+  yrc: lyricDetail,
+  ytlrc: lyricDetail,
+  yromalrc: lyricDetail,
+}
+
+export interface lyricDetail {
+  version: number,
+  lyric: string
 }
 
 export interface lyricUserType {
@@ -20,11 +25,6 @@ export interface lyricUserType {
   userid: number,
   nickname: string,
   uptime: number,
-}
-
-export interface lyricType {
-  version: number,
-  lyric: string
 }
 
 export interface songUrlType {

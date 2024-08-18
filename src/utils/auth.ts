@@ -37,7 +37,8 @@ export const getSongIndex = () => {
 export const getSetting = () => {
   if (localStorage.getItem('play_setting')) {
     return JSON.parse(localStorage.getItem('play_setting') as string)
-  } else {
+  }
+  else {
     JSON.parse(localStorage.setItem('play_setting', JSON.stringify(defaultSetting)) as unknown as string)
     return JSON.parse(localStorage.getItem('play_setting') as string)
   }

@@ -1,6 +1,10 @@
 <template>
   <div ref="playlistRef" class="play-queue-wrap w980 fl">
-    <img :src="store.currentSong?.picUrl" alt="" class="bg-img">
+    <img
+      :src="store.currentSong?.picUrl"
+      alt=""
+      class="bg-img"
+    >
     <div class="play-queue">
       <div class="header fl-sb">
         <p class="fw">
@@ -8,11 +12,11 @@
         </p>
         <ul class="fl">
           <li>
-            <i class="add-like" />
+            <i class="add-like"></i>
             <span>收藏全部</span>
           </li>
           <li @click="delAll">
-            <i class="del" />
+            <i class="del"></i>
             <span>清除</span>
           </li>
         </ul>
@@ -25,17 +29,21 @@
           @click="chooseSong(i)"
         >
           <div class="play-wrap">
-            <div v-if="i === store?.index" class="play" />
+            <div v-if="i === store?.index" class="play"></div>
           </div>
           <p class="name ellipsis-1">
             {{ item.name }}
           </p>
           <div>
             <div class="icons">
-              <i class="add-like" title="收藏" />
-              <i class="share" title="分享" />
-              <i class="download" title="下载" />
-              <i class="del" title="删除" @click.stop="store.actionDelSong(i)" />
+              <i class="add-like" title="收藏"></i>
+              <i class="share" title="分享"></i>
+              <i class="download" title="下载"></i>
+              <i
+                class="del"
+                title="删除"
+                @click.stop="store.actionDelSong(i)"
+              ></i>
             </div>
             <p class="singer ellipsis-1">
               <router-link
@@ -50,13 +58,13 @@
             <p class="duration">
               {{ formatSongDuration(item.time, 0) }}
             </p>
-            <i class="from" />
+            <i class="from"></i>
           </div>
         </div>
       </div>
       <div v-else class="no-song">
         <div class="fl-center">
-          <i class="icon-face" />
+          <i class="icon-face"></i>
           <p>你还没有添加任何歌曲</p>
         </div>
         <p>
@@ -70,7 +78,7 @@
     </div>
     <div class="lyric">
       <div class="name">
-        <i class="close" @click.stop="isShowPlaylist = false" />
+        <i class="close" @click.stop="isShowPlaylist = false"></i>
         {{ store.currentSong?.name }}
       </div>
       <div ref="wordRef" class="word">
@@ -101,12 +109,12 @@ import { playBarProvide } from './constances'
 
 const store = usePlayStore()
 
-const { 
+const {
   audioRef,
   wordRef,
   isPaused,
   lrc,
-  isShowPlaylist, 
+  isShowPlaylist,
   index,
 
   resetProgressBar,
@@ -125,7 +133,7 @@ watch(() => store.currentSong, val => {
   play()
 })
 
-const getLrc = async (id: number) => {
+const getLrc = async(id: number) => {
   const res = await getLyric(id)
   lrc.value = res.data.lrc.lyric.split('\n')
 }

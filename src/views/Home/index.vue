@@ -1,14 +1,14 @@
 <template>
   <div>
-    <HomeBanner />
+    <HomeBanner></HomeBanner>
     <div class="w980 content">
       <div class="left">
-        <HomeRecomend />
-        <HomeNewAlbum />
-        <HomeTop />
+        <HomeRecomend></HomeRecomend>
+        <HomeNewAlbum></HomeNewAlbum>
+        <HomeTop></HomeTop>
       </div>
       <div class="right">
-        <HomeSide />
+        <HomeSide></HomeSide>
       </div>
     </div>
   </div>

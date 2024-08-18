@@ -1,12 +1,16 @@
 <template>
   <div class="layout-wrap">
-    <LayoutHeader />
-    <router-view />
-    <LayoutFooter />
-    <div v-if="isShowTop" class="backtoTop" @click="backtoTop">
-      <i class="icon-backtoTop" />
+    <LayoutHeader></LayoutHeader>
+    <router-view></router-view>
+    <LayoutFooter></LayoutFooter>
+    <div
+      v-if="isShowTop"
+      class="backtoTop"
+      @click="backtoTop"
+    >
+      <i class="icon-backtoTop"></i>
     </div>
-    <PlayBar />
+    <PlayBar></PlayBar>
   </div>
 </template>
 

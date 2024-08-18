@@ -10,16 +10,24 @@
             <router-link :to="`/user/home/${userId}`" class="nickname ellipsis-1">
               {{ nickname }}
             </router-link>
-            <img class="vip" src="https://p6.music.126.net/obj/wonDlsKUwrLClGjCm8Kx/32582188101/3e49/6a48/39f3/c4124c59baca58313e16a62c5577808b.png" alt="">
+            <img
+              class="vip"
+              src="https://p6.music.126.net/obj/wonDlsKUwrLClGjCm8Kx/32582188101/3e49/6a48/39f3/c4124c59baca58313e16a62c5577808b.png"
+              alt=""
+            >
           </div>
           <router-link class="level" to="/user/level">
             {{ info?.level }}
-            <i />
+            <i></i>
           </router-link>
           <!-- <el-button class="signin is-check" disabled>
             已签到
           </el-button> -->
-          <el-button type="primary" class="signin" @click="handleSignin">
+          <el-button
+            type="primary"
+            class="signin"
+            @click="handleSignin"
+          >
             签到
           </el-button>
         </div>
@@ -104,7 +112,7 @@
         </li>
       </ul>
     </div>
-    <Login :is-show="isShow" @close="e => isShow = e" />
+    <Login :is-show="isShow" @close="e => isShow = e"></Login>
   </div>
 </template>
 
@@ -150,17 +158,17 @@ const getDetail = () => {
   }
 }
 
-const getSinger = async (limit: number) => {
+const getSinger = async(limit: number) => {
   const res = await getHotSinger(limit)
   singerList.value = res.data.artists
 }
 
-const getDj = async (limit: number) => {
+const getDj = async(limit: number) => {
   const res = await getHotDj(limit)
   djList.value = res.data.data.list
 }
 
-const handleSignin = async () => {
+const handleSignin = async() => {
   const res = await handleSigninAPI()
   ElMessage.warning(res.data.msg)
 }

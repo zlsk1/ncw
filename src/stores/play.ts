@@ -31,12 +31,13 @@ export const usePlayStore = defineStore('play', () => {
   const index = ref<number>(getSongIndex())
   const status = ref(0)
 
-  const actionAddSongs = async (id: number) => {
+  const actionAddSongs = async(id: number) => {
     try {
       const { data: { playlist: { tracks }}} = await getPlayListDetail(id)
       const idsStr = tracks.map(v => { return v.id }).join(',')
       actionGetSongs(idsStr, tracks)
-    } catch {
+    }
+    catch {
       ElMessage.warning('抱歉，暂无资源')
     }
   }
@@ -69,9 +70,9 @@ export const usePlayStore = defineStore('play', () => {
    * @param {*} o 歌曲对象 {id,picUrl,name,singer}
    * @param {*} type =0 插入方式 0为首项即立即播放 1为末项即添加到播放列表
    */
-  const actionAddSong = async (o: songQueueType, type = 0) => {
+  const actionAddSong = async(o: songQueueType, type = 0) => {
     const res = await getSongUrl(o.id as number)
-      
+
     if (res.data.code === -460) ElMessage.error(res.data.message)
     else {
       const mergeObj = Object.assign(o, { url: res.data.data[0].url, time: res.data.data[0].time })
@@ -80,14 +81,17 @@ export const usePlayStore = defineStore('play', () => {
         if (!type) {
           songQueue.value.unshift(mergeObj)
           actionUpdateIndex(0)
-        } else {
+        }
+        else {
           songQueue.value.push(mergeObj)
         }
         localStorage.setItem('song_queue', JSON.stringify(songQueue.value))
-      } else if (has && !type) {
+      }
+      else if (has && !type) {
         const index = songQueue.value.findIndex(v => v.id === mergeObj.id)
         actionUpdateIndex(index)
-      } else if (!songQueue.value && !type) {
+      }
+      else if (!songQueue.value && !type) {
         songQueue.value = [mergeObj]
         localStorage.setItem('song_queue', JSON.stringify([mergeObj]))
         actionUpdateIndex(0)

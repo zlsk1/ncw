@@ -1,6 +1,6 @@
-import type { 
-  userType, 
-  ipLocationType 
+import type {
+  userType,
+  ipLocationType
 } from '../../common'
 
 export interface songCommentType {

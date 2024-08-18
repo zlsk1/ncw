@@ -24,7 +24,7 @@ export interface userPlCountType {
     social_comments: number,
   }
   lastPrivateMsg: any,
-  newProgramCount:  number,
+  newProgramCount: number,
   newTheme: boolean,
   notice: number,
   pushMsg: any,

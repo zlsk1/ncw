@@ -8,9 +8,17 @@
       arrow="always"
     >
       <el-carousel-item v-for="item in bannerList" :key="item.targetId">
-        <router-link v-if="item.targetId" class="fl download-wrap" :to="`/song/${item.targetId}`">
-          <img :src="item.imageUrl" alt="" style="width: 75%">
-          <a href="" class="download" />
+        <router-link
+          v-if="item.targetId"
+          class="fl download-wrap"
+          :to="`/song/${item.targetId}`"
+        >
+          <img
+            :src="item.imageUrl"
+            alt=""
+            style="width: 75%"
+          >
+          <a href="" class="download"></a>
         </router-link>
         <a
           v-else
@@ -18,8 +26,12 @@
           target="_blank"
           class="fl download-wrap"
         >
-          <img :src="item.imageUrl" alt="" style="width: 75%">
-          <a href="" class="download" />
+          <img
+            :src="item.imageUrl"
+            alt=""
+            style="width: 75%"
+          >
+          <a href="" class="download"></a>
         </a>
       </el-carousel-item>
     </el-carousel>
@@ -33,9 +45,9 @@ import type { bannerItemType } from '@/types'
 
 const bannerList = ref<bannerItemType[]>([])
 
-const getBannerList = async () => {
+const getBannerList = async() => {
   const res = await getBanner()
-  
+
   bannerList.value = res.data.banners
 }
 

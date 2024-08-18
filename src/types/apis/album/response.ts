@@ -1,7 +1,7 @@
 import type {
   artistType,
   songsItem
-} from "../../common";
+} from '../../common'
 
 export interface albumType {
   resourceState: boolean,

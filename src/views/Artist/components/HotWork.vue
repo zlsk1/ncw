@@ -3,10 +3,14 @@
     <ul class="btns fl f12">
       <li class="play fl">
         <i @click="addPlaylist()">
-          <i class="icon-play" />
+          <i class="icon-play"></i>
           播放
         </i>
-        <i class="icon-add" title="添加到播放列表" @click="addPlaylist()" />
+        <i
+          class="icon-add"
+          title="添加到播放列表"
+          @click="addPlaylist()"
+        ></i>
       </li>
       <li class="like">
         <i class="icon-like">收藏热门50</i>
@@ -14,14 +18,22 @@
     </ul>
     <table cellspacing="0">
       <tbody>
-        <tr v-for="(item, index) in topSongList" :key="item.id" :class="index % 2 === 0 ? 'stripe' : ''">
+        <tr
+          v-for="(item, index) in topSongList"
+          :key="item.id"
+          :class="index % 2 === 0 ? 'stripe' : ''"
+        >
           <td class="index" style="width: 60px;">
             {{ index + 1 }}
           </td>
           <td>
             <div class="fl title">
-              <i class="icon icon-play" @click="play({id: item.id as unknown as number, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')})" />
-              <router-link class="name ellipsis-1" :to="`/song/${item.id}`" :title="item.name">
+              <i class="icon icon-play" @click="play({id: item.id as unknown as number, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')})"></i>
+              <router-link
+                class="name ellipsis-1"
+                :to="`/song/${item.id}`"
+                :title="item.name"
+              >
                 {{ item.name }}
               </router-link>
             </div>
@@ -29,10 +41,14 @@
           <td class="duration" style="width: 100px">
             <span class="time">{{ formatSongDuration(item.dt, 0) }}</span>
             <div class="fl-sb">
-              <i class="icon icon-add" title="添加到播放列表" @click="play({id: item.id as unknown as number, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')}, 1)" />
-              <i class="icon icon-collect" title="收藏" />
-              <i class="icon icon-share" title="分享" />
-              <i class="icon icon-download" title="下载" />
+              <i
+                class="icon icon-add"
+                title="添加到播放列表"
+                @click="play({id: item.id as unknown as number, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')}, 1)"
+              ></i>
+              <i class="icon icon-collect" title="收藏"></i>
+              <i class="icon icon-share" title="分享"></i>
+              <i class="icon icon-download" title="下载"></i>
             </div>
           </td>
           <td style="width: 30%">
@@ -76,7 +92,7 @@ onBeforeRouteUpdate((to) => {
   }
 })
 
-const getTopSong = async (id: string | string[]) => {
+const getTopSong = async(id: string | string[]) => {
   const res = await getArtistTopSongAPI(id as unknown as number)
   topSongList.value = res.data.songs
   isLoad.value = false
@@ -84,7 +100,7 @@ const getTopSong = async (id: string | string[]) => {
 
 const play = (o: songQueueType, type?: number) => { playStore.actionAddSong(o, type) }
 
-const addPlaylist = async () => {
+const addPlaylist = async() => {
   const ids = topSongList.value!.map(v => v.id).join(',')
   playStore.actionGetSongs<songsItem[]>(ids, topSongList.value as songsItem[])
 }

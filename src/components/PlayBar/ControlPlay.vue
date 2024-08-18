@@ -1,18 +1,26 @@
 <template>
   <div class="btns fl-sb">
-    <i class="prev" title="上一首(ctrl+←)" @click="prev" />
+    <i
+      class="prev"
+      title="上一首(ctrl+←)"
+      @click="prev"
+    ></i>
     <i
       v-if="isPaused"
       class="play"
       title="播放/暂停(ctrl+空格)"
       @click.stop="play()"
-    />
+    ></i>
     <i
       v-else
       class="pause"
       @click.stop="pause()"
-    />
-    <i class="next" title="下一首(ctrl+→)" @click="next" />
+    ></i>
+    <i
+      class="next"
+      title="下一首(ctrl+→)"
+      @click="next"
+    ></i>
   </div>
 </template>
 

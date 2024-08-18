@@ -20,7 +20,7 @@ export type playBarContent = {
   index: Ref<number>,
   btnWidth: number,
   progressBarWidth: number,
-  
+
   resetProgressBar: () => void,
   prev: () => void,
   next: () => void,

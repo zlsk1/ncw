@@ -2,14 +2,14 @@
   <div class="w980 userLevel-wrap">
     <h2 class="title">
       当前等级：
-      <span class="lv"><i class="icon-lv icon-lv-30" />9</span>
+      <span class="lv"><i class="icon-lv icon-lv-30"></i>9</span>
     </h2>
     <Progress
       :percentage="percentage"
       :section="10"
       width="100%"
       color="#f75757"
-    />
+    ></Progress>
     <p class="tips f12">
       等级数据每天下午2点更新
     </p>
@@ -20,7 +20,7 @@
       </dd>
     </dl>
     <div class="other">
-      <span>距离下一个等级：<span class="lv-max"><i class="icon-lv icon-lv-20" />10</span></span>
+      <span>距离下一个等级：<span class="lv-max"><i class="icon-lv icon-lv-20"></i>10</span></span>
       <el-popover
         :width="300"
         placement="bottom-start"
@@ -42,15 +42,23 @@
           登录天数是指使用云音乐的天数，在多端同时使用不会被重复计算。
         </p>
         <template #reference>
-          <InfoFilled style="width:1.5em;height:1.5em;color: #666" class="desc" />
+          <InfoFilled style="width:1.5em;height:1.5em;color: #666" class="desc"></InfoFilled>
         </template>
       </el-popover>
     </div>
     <div class="progress">
-      听歌：<Progress :percentage="percentPlay" height="5px" color="#f75757" /><span class="last">还需听歌{{ lastPLayCount }}首</span>
+      听歌：<Progress
+        :percentage="percentPlay"
+        height="5px"
+        color="#f75757"
+      ></Progress><span class="last">还需听歌{{ lastPLayCount }}首</span>
     </div>
     <div class="progress">
-      登录：<Progress :percentage="percentLogin" height="5px" color="#f75757" /><span class="last">还需登录{{ lastLoginDay }}天</span>
+      登录：<Progress
+        :percentage="percentLogin"
+        height="5px"
+        color="#f75757"
+      ></Progress><span class="last">还需登录{{ lastLoginDay }}天</span>
     </div>
   </div>
 </template>
@@ -87,7 +95,7 @@ onMounted(() => {
   getLevelInfo()
 })
 
-const getLevelInfo = async () => {
+const getLevelInfo = async() => {
   const res = await getUserLevelInfoAPI()
   levelInfo.value = res.data.data
 }

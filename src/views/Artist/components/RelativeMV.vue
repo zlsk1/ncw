@@ -1,9 +1,17 @@
 <template>
-  <div v-loading="isLoad" class="mv-wrap" :style="{justifyContent: MVlist!.length ? '' : 'center'}">
+  <div
+    v-loading="isLoad"
+    class="mv-wrap"
+    :style="{justifyContent: MVlist!.length ? '' : 'center'}"
+  >
     <template v-if="MVlist!.length">
       <Card v-for="item in MVlist" :key="item.id">
         <router-link to="/">
-          <Pic :src="item.imgurl + '?param=120y100'" play mask4 />
+          <Pic
+            :src="item.imgurl + '?param=120y100'"
+            play
+            mask4
+          ></Pic>
         </router-link>
         <template #footer>
           <router-link to="/" :title="item.name">
@@ -15,7 +23,7 @@
       </Card>
     </template>
     <template v-else>
-      <el-empty description="暂无数据" />
+      <el-empty description="暂无数据"></el-empty>
     </template>
     <!-- <el-button type="primary" :loading="loading">
       查看更多
@@ -45,7 +53,7 @@ onBeforeRouteUpdate((to) => {
   }
 })
 
-const getMV = async (id: any) => {
+const getMV = async(id: any) => {
   const res = await getArtistMVAPI(id)
   MVlist.value = res.data.mvs
   isLoad.value = false

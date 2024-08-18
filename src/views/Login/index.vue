@@ -13,7 +13,11 @@
       </template>
       <template v-if="isShow && isQrCode">
         <div v-loading="isLoad" class="fl-sb code-wrap ">
-          <img class="desc" src="https://p5.music.126.net/obj/wo3DlcOGw6DClTvDisK1/9643571155/525c/faac/2dc6/fe695c03c7c358ddaa4651736b26a55f.png" alt="">
+          <img
+            class="desc"
+            src="https://p5.music.126.net/obj/wo3DlcOGw6DClTvDisK1/9643571155/525c/faac/2dc6/fe695c03c7c358ddaa4651736b26a55f.png"
+            alt=""
+          >
           <div class="f12">
             <p class="title f20 ">
               扫码登陆
@@ -28,7 +32,7 @@
               <el-image class="qrcode">
                 <template #error>
                   <div class="image-slot">
-                    <Picture />
+                    <Picture></Picture>
                   </div>
                 </template>
               </el-image>
@@ -37,7 +41,13 @@
                 点击刷新
               </el-button>
             </div>
-            <p>使用<a href="https://music.163.com/#/download" target="_blank" class="tar">网易云音乐app</a>扫码登录</p>
+            <p>
+              使用<a
+                href="https://music.163.com/#/download"
+                target="_blank"
+                class="tar"
+              >网易云音乐app</a>扫码登录
+            </p>
           </div>
         </div>
         <button class="switchButton" @click="chooseOtherWay">
@@ -45,8 +55,12 @@
         </button>
       </template>
       <template v-else>
-        <div class="fl" style="align-items:center; cursor:pointer" @click="backtoQrLogin">
-          <ArrowLeft style="width: 1em; height: 1em" />
+        <div
+          class="fl"
+          style="align-items:center; cursor:pointer"
+          @click="backtoQrLogin"
+        >
+          <ArrowLeft style="width: 1em; height: 1em"></ArrowLeft>
           <p class="f12">
             返回二维码登录
           </p>
@@ -58,7 +72,11 @@
           style="margin: 20px 0"
         >
           <el-form-item prop="phone">
-            <el-input v-model="loginFormData.phone" placeholder="请输入手机号" style="width: 100%" />
+            <el-input
+              v-model="loginFormData.phone"
+              placeholder="请输入手机号"
+              style="width: 100%"
+            ></el-input>
           </el-form-item>
           <el-form-item :prop="!isLoginByPassword ? 'captcha' : 'password'">
             <el-input
@@ -66,14 +84,14 @@
               v-model="loginFormData.captcha"
               style="width: 65%;margin-right: 10px"
               placeholder="请输入短信验证码"
-            />
+            ></el-input>
             <el-input
               v-else
               v-model="loginFormData.password"
               style="width: 100%"
               placeholder="请输入密码"
               type="password"
-            />
+            ></el-input>
             <template v-if="!isLoginByPassword">
               <el-button
                 v-if="!isSentCaptcha"
@@ -96,7 +114,7 @@
                 v-model="loginFormData.nickname"
                 style="width: 100%"
                 placeholder="请输入昵称"
-              />
+              ></el-input>
             </el-form-item>
             <el-form-item prop="password">
               <el-input
@@ -104,7 +122,7 @@
                 style="width: 100%"
                 placeholder="请输入密码"
                 type="password"
-              />
+              ></el-input>
             </el-form-item>
             <el-form-item prop="passwordConfirm">
               <el-input
@@ -112,7 +130,7 @@
                 style="width: 100%"
                 placeholder="确认密码"
                 type="password"
-              />
+              ></el-input>
             </el-form-item>
           </template>
           <el-form-item class="btn-login">
@@ -135,8 +153,16 @@
           </el-form-item>
         </el-form>
         <div class="switchTpye">
-          <span v-if="!isLoginByPassword" class="f12 thumb" @click="switchLoginWay">密码登陆</span>
-          <span v-else class="f12 thumb" @click="switchLoginWay">验证码登陆</span>
+          <span
+            v-if="!isLoginByPassword"
+            class="f12 thumb"
+            @click="switchLoginWay"
+          >密码登陆</span>
+          <span
+            v-else
+            class="f12 thumb"
+            @click="switchLoginWay"
+          >验证码登陆</span>
         </div>
       </template>
       <!-- <template #footer>
@@ -204,7 +230,8 @@ watch(
       const res = await testPhone(val)
       if (res.data.exist < 1) isRegister.value = true
       else isRegister.value = false
-    } else {
+    }
+    else {
       isPhone.value = false
     }
   }
@@ -214,7 +241,8 @@ watch(
   () => props.isShow, val => {
     if (val) {
       createQrCode()
-    } else {
+    }
+    else {
       clearInterval(timer)
       timer = null
     }
@@ -230,7 +258,7 @@ watch(
 )
 
 // 自定义检验验证码
-const validCaptcha = async (rule: any, value: any, callback: any) => {
+const validCaptcha = async(rule: any, value: any, callback: any) => {
   if (!value) {
     return callback(new Error('请输入验证码'))
   }
@@ -240,12 +268,12 @@ const validCaptcha = async (rule: any, value: any, callback: any) => {
   }
 }
 
-const validPasswordConfirm = async (rule: any, value: any, callback: any) => {
+const validPasswordConfirm = async(rule: any, value: any, callback: any) => {
   if (!value) { return callback(new Error('请确认密码')) }
   if (value !== loginFormData.value.password) return callback(new Error('两次输入的密码不一致'))
 }
 
-const validNickname = async (rule: any, value: any, callback: any) => {
+const validNickname = async(rule: any, value: any, callback: any) => {
   if (!value) return callback(new Error('请输入昵称'))
   const res = await testNickname(value.trim())
   if (res.data.duplicated) return callback(new Error(`昵称已存在 推荐昵称：${res.data.candidateNicknames[Math.ceil(Math.random() * 10)]}`))
@@ -265,8 +293,8 @@ const loginFormRules = ref({
   captcha: { validator: validCaptcha, trigger: 'blur' }
 })
 
-let handleLogin = async (formName: any) => {
-  await formName.validate(async (valid: boolean) => {
+const handleLogin = async(formName: any) => {
+  await formName.validate(async(valid: boolean) => {
     if (valid) {
       if (isRegister.value) {
         const res = await register()
@@ -281,7 +309,7 @@ let handleLogin = async (formName: any) => {
   })
 }
 
-let getCaptcha = async () => {
+const getCaptcha = async() => {
   const res = await loginByCaptcha(loginFormData.value.phone)
   if (res.data.code === 200) {
     isSentCaptcha.value = true
@@ -289,7 +317,8 @@ let getCaptcha = async () => {
     i = setInterval(() => {
       if (captchaCountdown.value > 0) {
         captchaCountdown.value--
-      } else {
+      }
+      else {
         isSentCaptcha.value = false
         clearInterval(i)
       }
@@ -297,19 +326,19 @@ let getCaptcha = async () => {
   }
 }
 
-let switchLoginWay = () => {
+const switchLoginWay = () => {
   loginFormRef.value?.resetFields()
   isLoginByPassword.value = !isLoginByPassword.value
   isRegister.value = false
 }
 
-let closeDialog = () => {
+const closeDialog = () => {
   emit('close', false)
   !isQrCode.value ? loginFormRef.value?.resetFields() : ''
   isLoginByPassword.value = false
 }
 
-let chooseOtherWay = () => {
+const chooseOtherWay = () => {
   isQrCode.value = false
   clearInterval(timer)
   timer = null
@@ -319,13 +348,13 @@ const backtoQrLogin = () => {
   isQrCode.value = true
 }
 
-let createQrCode = async () => {
+const createQrCode = async() => {
   isLoad.value = true
   const res = await getQrKeyAPI()
   const qr = await createQrCodeAPI(res.data.data.unikey)
   qrCodeUrl.value = qr.data.data.qrimg
   isLoad.value = false
-  timer = setInterval(async () => {
+  timer = setInterval(async() => {
     const status = await checkQrCodeAPI(res.data.data.unikey)
     if (status.data.code === 803) {
       clearInterval(timer)
@@ -335,7 +364,8 @@ let createQrCode = async () => {
       userStore.avator = data.profile.avatarUrl
       emit('close', false)
       ElMessage.success('登录成功！')
-    } else if (status.data.code === 800 && status.data.message === '二维码不存在或已过期') {
+    }
+    else if (status.data.code === 800 && status.data.message === '二维码不存在或已过期') {
       qrCodeUrl.value = ''
       clearInterval(timer)
       timer = null

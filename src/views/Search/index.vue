@@ -8,20 +8,24 @@
       @blur="handleBlur"
     >
       <template #append>
-        <el-button :icon="Search" title="搜索" @click="pushRoute" />
+        <el-button
+          :icon="Search"
+          title="搜索"
+          @click="pushRoute"
+        ></el-button>
       </template>
     </el-input>
     <div v-if="isFocus && searchSuggset" class="search-suggest">
       <div class="search-header">
         <router-link :to="`/search/${searchVal}/1002`" @mousedown="router.push(`/search/${searchVal}/1002`)">
           搜“{{ searchVal }}”相关用户
-          <span><ArrowRight style="width: 1em; height: 1em" /></span>
+          <span><ArrowRight style="width: 1em; height: 1em"></ArrowRight></span>
         </router-link>
       </div>
       <div class="search-content">
         <dl v-if="searchSuggset?.songs" class="fl">
           <dt class="left">
-            <i />
+            <i></i>
             <span>单曲</span>
           </dt>
           <div class="right">
@@ -36,7 +40,7 @@
         </dl>
         <dl v-if="searchSuggset?.artists" class="fl">
           <dt class="left">
-            <i />
+            <i></i>
             <span>歌手</span>
           </dt>
           <div class="right">
@@ -51,7 +55,7 @@
         </dl>
         <dl v-if="searchSuggset?.albums" class="fl">
           <dt class="left">
-            <i />
+            <i></i>
             <span>专辑</span>
           </dt>
           <div class="right">
@@ -66,7 +70,7 @@
         </dl>
         <dl v-if="searchSuggset?.playlists" class="fl">
           <dt class="left">
-            <i />
+            <i></i>
             <span>歌单</span>
           </dt>
           <div class="right">
@@ -86,17 +90,21 @@
         <span>搜索“{{ searchVal }}”，找到<span class="resCount">{{ total }}</span>个{{ tabLabel }}</span>
       </div>
     </div>
-    <el-tabs v-model="index" type="border-card" @tab-click="changeTab">
+    <el-tabs
+      v-model="index"
+      type="border-card"
+      @tab-click="changeTab"
+    >
       <el-tab-pane
         v-for="item in tablist"
         :key="item.label"
         :label="item.label"
         :name="item.name"
-      />
+      ></el-tab-pane>
     </el-tabs>
     <Transition name="fade" mode="out-in">
       <keep-alive>
-        <component :is="tablist[tablist.findIndex(v => v.name === Number(route.params.type))].component" @getTotal="total = $event" />
+        <component :is="tablist[tablist.findIndex(v => v.name === Number(route.params.type))].component" @getTotal="total = $event"></component>
       </keep-alive>
     </Transition>
   </div>
@@ -154,7 +162,7 @@ const changeTab = e => {
   router.push({ path: `/search/${searchVal.value}/${e.props.name}` })
 }
 
-const getSearchResult = async () => {
+const getSearchResult = async() => {
   const res = await getSearchSuggest(searchVal.value)
   searchSuggset.value = res.data.result
 }
@@ -162,7 +170,8 @@ const getSearchResult = async () => {
 const _handleSearch = e => {
   if (e.trim()) {
     getSearchResult()
-  } else {
+  }
+  else {
     searchSuggset.value = null
   }
 }

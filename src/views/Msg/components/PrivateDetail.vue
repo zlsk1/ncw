@@ -17,8 +17,12 @@
       @scroll="scroll"
     >
       <div class="msg-history">
-        <div class="loading" style="width: 100%; height: 1px" />
-        <div v-for="item in historyData?.msgs" :key="item.id" class="msg-items">
+        <div class="loading" style="width: 100%; height: 1px"></div>
+        <div
+          v-for="item in historyData?.msgs"
+          :key="item.id"
+          class="msg-items"
+        >
           <p class="time">
             {{ formatMsgTime(item.time) }}
           </p>
@@ -45,7 +49,7 @@
                   alt=""
                   style="width:99px; height: 280px"
                   :preview-src-list="[JSON.parse(item.msg).picInfo.picUrl]"
-                />
+                ></el-image>
               </div>
             </template>
             <template v-else>
@@ -99,11 +103,11 @@
         show-word-limit
         maxlength="200"
         class="textarea"
-      />
+      ></el-input>
       <div class="fl-sb">
         <Emj @choose="chooseEmj">
           <div class="emj">
-            <i class="icon-emj" />
+            <i class="icon-emj"></i>
           </div>
         </Emj>
         <el-button @click="sendText">
@@ -133,12 +137,12 @@ const userId = JSON.parse(localStorage.getItem('userInfo') as string)?.profile.u
 let _scrollHeight = 0
 let _before = 0
 
-onMounted(async () => {
+onMounted(async() => {
   await getMsgContent(route.query.id as unknown as number, 10, _before)
   scrollbar.value?.setScrollTop(10000)
 })
 
-const getMsgContent = async (uid: number, limit: number, before?: number) => {
+const getMsgContent = async(uid: number, limit: number, before?: number) => {
   const loadingInstance = ElLoading.service({
     target: '.loading',
     text: '加载中'
@@ -147,7 +151,8 @@ const getMsgContent = async (uid: number, limit: number, before?: number) => {
   if (!before) {
     historyData.value = res.data
     historyData.value.msgs = historyData.value.msgs.reverse()
-  } else {
+  }
+  else {
     historyData.value.msgs = [...res.data.msgs.reverse(), ...historyData.value.msgs]
     historyData.value.more = res.data.more
   }
@@ -160,7 +165,7 @@ const chooseEmj = (e: any) => {
   textValue.value += `[${e}]`
 }
 
-const scroll = async ({ scrollTop }: any) => {
+const scroll = async({ scrollTop }: any) => {
   if (scrollTop === 0 && historyData.value.more) {
     // 记录获取新数据前的高度
     _scrollHeight = document.querySelector('.msg-history')?.clientHeight as number
@@ -169,7 +174,7 @@ const scroll = async ({ scrollTop }: any) => {
   }
 }
 
-const sendText = async () => {
+const sendText = async() => {
   await sendTextAPI({ user_ids: route.query.id, msg: textValue.value })
   getMsgContent(route.query.id as unknown as number, 10)
 }

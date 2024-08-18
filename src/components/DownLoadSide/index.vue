@@ -6,13 +6,17 @@
       </div>
       <ul class="download-bg fl-sb">
         <li>
-          <a class="apple" href="https://itunes.apple.com/cn/app/id590338362" target="_blank" />
+          <a
+            class="apple"
+            href="https://itunes.apple.com/cn/app/id590338362"
+            target="_blank"
+          ></a>
         </li>
         <li>
-          <a href="" class="window" />
+          <a href="" class="window"></a>
         </li>
         <li>
-          <a href="" class="android" />
+          <a href="" class="android"></a>
         </li>
       </ul>
       <p class="desc f12">

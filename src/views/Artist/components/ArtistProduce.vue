@@ -28,7 +28,7 @@
       </div>
     </template>
     <template v-else>
-      <el-empty description="暂无介绍~" />
+      <el-empty description="暂无介绍~"></el-empty>
     </template>
   </div>
 </template>
@@ -61,7 +61,7 @@ onBeforeRouteUpdate((to) => {
   }
 })
 
-const getProduce = async (id: string | string[]) => {
+const getProduce = async(id: string | string[]) => {
   const res = await getArtistProduceAPI(id as unknown as number)
   data.value = res.data
 }

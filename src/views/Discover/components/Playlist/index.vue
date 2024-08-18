@@ -28,7 +28,11 @@
             </el-button>
           </div>
           <div class="category-content">
-            <dl v-for="(cate, index) in catelist" :key="index" class="fl items">
+            <dl
+              v-for="(cate, index) in catelist"
+              :key="index"
+              class="fl items"
+            >
               <dt class="cate">
                 {{ cate.type }}
               </dt>
@@ -49,7 +53,7 @@
         <template #reference>
           <el-button @click.stop="openPopover">
             选择分类
-            <ArrowDown style="width: 1em; height: 1em;margin-left: 4px;" />
+            <ArrowDown style="width: 1em; height: 1em;margin-left: 4px;"></ArrowDown>
           </el-button>
         </template>
       </el-popover>
@@ -66,19 +70,31 @@
               :src="`${item.coverImgUrl}?param=140y140`"
               mask1
               class="pic"
-            />
+            ></Pic>
           </router-link>
           <div class="card-play fl-sb">
-            <i class="icon-listen" />
+            <i class="icon-listen"></i>
             <span class="count f12">{{ formatPlayCount(item.playCount) }}</span>
-            <i class="play" title="播放" @click="addPlayList(item.id)" />
+            <i
+              class="play"
+              title="播放"
+              @click="addPlayList(item.id)"
+            ></i>
           </div>
           <template #footer>
-            <router-link :to="`/playlist/${item.id}`" class="desc ellipsis-1" :title="item.name">
+            <router-link
+              :to="`/playlist/${item.id}`"
+              class="desc ellipsis-1"
+              :title="item.name"
+            >
               {{ item.name }}
             </router-link>
             <span class="f12">by</span>
-            <router-link :to="`/user/home/${item.creator!.userId}`" class="creator ellipsis-1 f12" :title="item.creator!.nickname">
+            <router-link
+              :to="`/user/home/${item.creator!.userId}`"
+              class="creator ellipsis-1 f12"
+              :title="item.creator!.nickname"
+            >
               {{ item.creator!.nickname }}
             </router-link>
           </template>
@@ -90,7 +106,7 @@
         background
         small
         @current-change="changePage"
-      />
+      ></el-pagination>
     </div>
   </div>
 </template>
@@ -131,12 +147,12 @@ onMounted(() => {
   onClickOutside(menuRef, () => { isShow.value = false })
 })
 
-const getFirstTopPlaylistHigh = async ({ limit, cat = route.query.category as string }: getAllPlaylistType) => {
+const getFirstTopPlaylistHigh = async({ limit, cat = route.query.category as string }: getAllPlaylistType) => {
   await getTopPlaylistHigh({ limit, cat })
   currentCate.value = cat as string || '全部'
 }
 
-const getPlaylistHighCate = async () => {
+const getPlaylistHighCate = async() => {
   const { data } = await getPlaylistCateAPI()
   // 遍历主类
   for (const key in data.categories) {
@@ -145,18 +161,18 @@ const getPlaylistHighCate = async () => {
     data.sub.forEach(item => {
       // 次类属于主类？插入到主类的children中
       item.category === Number(key) ? catelist.value![key].children.push(item) : ''
-    })  
+    })
   }
 }
 
-const getTopPlaylistHigh = async ({ order, cat, limit }: getAllPlaylistType) => {
+const getTopPlaylistHigh = async({ order, cat, limit }: getAllPlaylistType) => {
   const res = await getAllPlaylistAPI({ order, cat, limit })
   playlist.value = res.data
 }
 
 const select = (tag: UnionTypeToArray<playlistCategoryType>) => {
-  console.log(tag);
-  
+  console.log(tag)
+
   isShow.value = false
   currentCate.value = tag
   getTopPlaylistHigh({ cat: tag, limit })

@@ -9,7 +9,7 @@
         <Card>
           <div class="img">
             <router-link to="/">
-              <Pic :key="Date.now()" :src="item.coverUrl + '?param=159y90'" />
+              <Pic :key="Date.now()" :src="item.coverUrl + '?param=159y90'"></Pic>
             </router-link>
           </div>
           <template #footer>
@@ -52,7 +52,7 @@
       :page-size="limit"
       small
       @change="changePage"
-    />
+    ></el-pagination>
   </div>
 </template>
 
@@ -81,7 +81,7 @@ onBeforeRouteUpdate(to => {
   if (to.params.k !== route.params.k) handleSearch(to.params.k, limit, offset, to.params.type)
 })
 
-const handleSearch = async (keywords, limit, offset, type) => {
+const handleSearch = async(keywords, limit, offset, type) => {
   isLoad.value = true
   const res = await handleSearchAPI({ keywords, limit, offset, type })
   result.value = res.data.result

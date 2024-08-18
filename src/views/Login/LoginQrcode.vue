@@ -1,6 +1,10 @@
 <template>
   <div v-loading="isLoad" class="fl-sb w980 code-wrap container">
-    <img class="desc" src="https://p5.music.126.net/obj/wo3DlcOGw6DClTvDisK1/9643571155/525c/faac/2dc6/fe695c03c7c358ddaa4651736b26a55f.png" alt="">
+    <img
+      class="desc"
+      src="https://p5.music.126.net/obj/wo3DlcOGw6DClTvDisK1/9643571155/525c/faac/2dc6/fe695c03c7c358ddaa4651736b26a55f.png"
+      alt=""
+    >
     <div class="f12">
       <p class="title f20 ">
         扫码登陆
@@ -15,7 +19,7 @@
         <el-image class="qrcode">
           <template #error>
             <div class="image-slot">
-              <Picture />
+              <Picture></Picture>
             </div>
           </template>
         </el-image>
@@ -24,7 +28,13 @@
           点击刷新
         </el-button>
       </div>
-      <p>使用<a href="https://music.163.com/#/download" target="_blank" class="tar">网易云音乐app</a>扫码登录</p>
+      <p>
+        使用<a
+          href="https://music.163.com/#/download"
+          target="_blank"
+          class="tar"
+        >网易云音乐app</a>扫码登录
+      </p>
     </div>
   </div>
 </template>
@@ -55,13 +65,13 @@ onMounted(() => {
   createQrCode()
 })
 
-let createQrCode = async () => {
+const createQrCode = async() => {
   isLoad.value = true
   const res = await getQrKeyAPI()
   const qr = await createQrCodeAPI(res.data.data.unikey)
   qrCodeUrl.value = qr.data.data.qrimg
   isLoad.value = false
-  timer = setInterval(async () => {
+  timer = setInterval(async() => {
     const status = await checkQrCodeAPI(res.data.data.unikey)
     if (status.data.code === 803) {
       clearInterval(timer)
@@ -73,7 +83,8 @@ let createQrCode = async () => {
       route.redirectedFrom
         ? router.push({ path: route.redirectedFrom.fullPath })
         : router.push({ path: '/' })
-    } else if (status.data.code === 800 && status.data.message === '二维码不存在或已过期') {
+    }
+    else if (status.data.code === 800 && status.data.message === '二维码不存在或已过期') {
       qrCodeUrl.value = ''
       clearInterval(timer)
       timer = null

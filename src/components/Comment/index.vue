@@ -26,16 +26,24 @@
             placeholder="评论"
             @input="input"
             @focus="showLogin"
-          />
+          ></textarea>
           <div class="utils fl-sb">
             <div class="fl">
               <Emj @choose="onChoose($event, 0)">
                 <div class="emj">
-                  <i class="icon-emj" />
+                  <i class="icon-emj"></i>
                 </div>
               </Emj>
-              <i ref="addAiteRef" class="icon-aite" @click="addAite(0)" />
-              <el-popover :virtual-ref="addAiteRef" trigger="click" virtual-triggering>
+              <i
+                ref="addAiteRef"
+                class="icon-aite"
+                @click="addAite(0)"
+              ></i>
+              <el-popover
+                :virtual-ref="addAiteRef"
+                trigger="click"
+                virtual-triggering
+              >
                 空格后加上用户名
               </el-popover>
             </div>
@@ -57,7 +65,11 @@
             class="fl hot-comment-items f12"
           >
             <router-link :to="`/user/home/${item.user.userId}`">
-              <img v-lazy="item.user.avatarUrl + '?param=50y50'" alt="" class="avatar">
+              <img
+                v-lazy="item.user.avatarUrl + '?param=50y50'"
+                alt=""
+                class="avatar"
+              >
             </router-link>
             <div class="content">
               <router-link :to="`/user/home/${item.user.userId}`" class="name">
@@ -69,7 +81,11 @@
                 class="vip"
                 alt=""
               >：
-              <span v-for="(content, indexC) in item.content.split('\n')" :key="indexC" class="words">
+              <span
+                v-for="(content, indexC) in item.content.split('\n')"
+                :key="indexC"
+                class="words"
+              >
                 {{ content }}<br>
               </span>
               <div class="bottom fl-sb">
@@ -78,25 +94,25 @@
                 </div>
                 <div class="fl">
                   <span>
-                    <i :class="item.liked ? 'icon-liked' :'icon-like'" @click="like(item.commentId, item.liked, i)" />
+                    <i :class="item.liked ? 'icon-liked' :'icon-like'" @click="like(item.commentId, item.liked, i)"></i>
                     <span class="like-count">({{ item.likedCount }})</span>
                   </span>
                   <span class="reply" @click="openReply(i, item.user.nickname)">回复</span>
                 </div>
               </div>
               <div v-if="DOMIndex === i" class="reply-textarea">
-                <textarea ref="replyTextarea" v-model="reply" />
+                <textarea ref="replyTextarea" v-model="reply"></textarea>
                 <div class="utils fl-sb">
                   <div class="fl">
                     <Emj @choose="onChoose($event, 1)">
                       <div class="emj">
-                        <i class="icon-emj" />
+                        <i class="icon-emj"></i>
                       </div>
                     </Emj>
                     <el-popover trigger="click">
                       空格后加上用户名
                       <template #reference>
-                        <i class="icon-aite" @click="addAite(1)" />
+                        <i class="icon-aite" @click="addAite(1)"></i>
                       </template>
                     </el-popover>
                   </div>
@@ -118,9 +134,13 @@
             :key="item.commentId"
             class="fl hot-comment-items f12"
           >
-            <template v-if="!item.parentCommentId" />
+            <template v-if="!item.parentCommentId"></template>
             <router-link :to="`/user/home/${item.user.userId}`">
-              <img v-lazy="item.user.avatarUrl + '?param=50y50'" alt="" class="avatar">
+              <img
+                v-lazy="item.user.avatarUrl + '?param=50y50'"
+                alt=""
+                class="avatar"
+              >
             </router-link>
             <div class="content">
               <router-link :to="`/user/home/${item.user.userId}`" class="name">
@@ -132,7 +152,11 @@
                 class="vip"
                 alt=""
               >：
-              <span v-for="(content, indexC) in item.content.split('\n')" :key="indexC" class="words">
+              <span
+                v-for="(content, indexC) in item.content.split('\n')"
+                :key="indexC"
+                class="words"
+              >
                 {{ content }}<br>
               </span>
               <template v-if="item.beReplied.length > 0">
@@ -148,26 +172,26 @@
                 <div class="fl">
                   <span v-if="item.user.userId === myId" @click="delComment">删除</span>
                   <span>
-                    <i class="icon-like" />
+                    <i class="icon-like"></i>
                     <span v-if="item.likedCount > 0" class="like-count">({{ item.likedCount }})</span>
-                    <span v-else class="like-count-zero" />
+                    <span v-else class="like-count-zero"></span>
                   </span>
                   <span class="reply" @click="openReply(Number(!isPlaylistUrl ? offset <= limit ? i + commentObj?.hotComments.length : i : i) , item.user.nickname)">回复</span>
                 </div>
               </div>
               <div v-if="!isPlaylistUrl ? offset <= limit ? DOMIndex === i + 15 : DOMIndex === i : DOMIndex === i" class="reply-textarea">
-                <textarea ref="replyTextarea" v-model="reply" />
+                <textarea ref="replyTextarea" v-model="reply"></textarea>
                 <div class="utils fl-sb">
                   <div class="fl">
                     <Emj @choose="onChoose($event, 1)">
                       <div class="emj">
-                        <i class="icon-emj" />
+                        <i class="icon-emj"></i>
                       </div>
                     </Emj>
                     <el-popover trigger="click">
                       空格后加上用户名
                       <template #reference>
-                        <i class="icon-aite" @click="addAite(1)" />
+                        <i class="icon-aite" @click="addAite(1)"></i>
                       </template>
                     </el-popover>
                   </div>
@@ -189,10 +213,10 @@
           prev-text="上一页"
           next-text="下一页"
           @change="changePage"
-        />
+        ></el-pagination>
       </div>
     </div>
-    <Login :is-show="isShow" @close="e => isShow = e" />
+    <Login :is-show="isShow" @close="e => isShow = e"></Login>
   </div>
 </template>
 
@@ -202,13 +226,13 @@ import { debounce, hasProfile } from '@/utils/index'
 import { nextTick, onMounted, ref, computed } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { 
+import {
   likeComment,
   sendCommentAPI,
   delCommentAPI,
   getSongComment,
   getCommentPlaylistAPI,
-  getCommentAlbumAPI,
+  getCommentAlbumAPI
 } from '@/apis/comment'
 import { useUserStore } from '@/stores/user'
 import { useTopStore } from '@/stores/top'
@@ -258,16 +282,18 @@ onBeforeRouteUpdate((to) => {
   if (to) getComment({ id: currentId.value, offset: offset.value, limit: limit.value })
 })
 
-const getComment = async (obj: pagingDataType) => {
+const getComment = async(obj: pagingDataType) => {
   const { id, offset, limit } = obj
   if (isPlaylistUrl.value) {
     const res = await getCommentPlaylistAPI({ id, offset, limit })
     commentObj.value = res.data
-  } else if (route.path.includes('/song')) {
+  }
+  else if (route.path.includes('/song')) {
     const res = await getSongComment({ id, offset, limit })
     commentObj.value = res.data
     emit('getTotal', commentObj.value?.total)
-  } else if (route.path.includes('/album')) {
+  }
+  else if (route.path.includes('/album')) {
     const res = await getCommentAlbumAPI({ id, offset, limit })
     commentObj.value = res.data
   }
@@ -281,7 +307,7 @@ const onChoose = (e: Event, type: number) => {
   type === 0 ? comment.value += `[${e}]` : reply.value += `[${e}]`
 }
 
-const handleComment = async () => {
+const handleComment = async() => {
   if (comment.value.trim().length === 0) {
     ElMessage({
       message: '输入点内容再提交吧',
@@ -289,7 +315,8 @@ const handleComment = async () => {
       offset: window.innerHeight / 2,
       duration: 2000
     })
-  } else {
+  }
+  else {
     const res = await sendCommentAPI({ t: 1, type: 0, id: route.params.id as string, content: comment.value })
     console.log(res)
   }
@@ -326,11 +353,11 @@ const handleReply = (nickname: string) => {
   }
 }
 
-const like = async (cid: number, liked: boolean, index: number) => {
+const like = async(cid: number, liked: boolean, index: number) => {
   const res = await likeComment({ id: route.params.id as string, cid, t: liked ? 0 : 1 })
   if (res.status === 200) {
     const currentComment = (commentObj.value as songCommentType).hotComments[index]
-    
+
     currentComment.liked = !liked
     !liked
       ? currentComment.likedCount += 1
@@ -345,9 +372,9 @@ const changePage = (currPage: number) => {
   getComment({ id: currentId.value, offset: offset.value, limit: limit.value })
 }
 
-const delComment = async () => {
+const delComment = async() => {
   ElMessageBox.confirm('确定删除你的评论', { type: 'warning' })
-    .then(async () => {
+    .then(async() => {
       const res = await delCommentAPI({ t: 0, type: 0, id: route.params.id as string })
       if (res.status === 200) ElMessage.success('删除成功！')
     })

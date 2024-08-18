@@ -1,7 +1,7 @@
 <template>
   <div v-loading="isLoad" class="SearchLyric-wrap">
     <div class="content">
-      <SearchPlay :result="result" />
+      <SearchPlay :result="result"></SearchPlay>
     </div>
     <el-pagination
       background
@@ -10,7 +10,7 @@
       :page-size="limit"
       small
       @change="changePage"
-    />
+    ></el-pagination>
   </div>
 </template>
 
@@ -38,7 +38,7 @@ onBeforeRouteUpdate(to => {
   if (to.params.k !== route.params.k) handleSearch(to.params.k, limit, offset, to.params.type)
 })
 
-const handleSearch = async (keywords, limit, offset, type) => {
+const handleSearch = async(keywords, limit, offset, type) => {
   isLoad.value = true
   const res = await handleSearchAPI({ keywords, limit, offset, type })
   result.value = res.data.result

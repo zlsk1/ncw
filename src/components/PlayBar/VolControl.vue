@@ -1,14 +1,22 @@
 <template>
-  <div v-show="isShowVol" ref="volWrapRef" class="vol-wrap">
+  <div
+    v-show="isShowVol"
+    ref="volWrapRef"
+    class="vol-wrap"
+  >
     <div class="vol-bg" @click="setVolume">
-      <div ref="volBgRef" class="bg-red" :style="{ height: volBgHeight }" />
+      <div
+        ref="volBgRef"
+        class="bg-red"
+        :style="{ height: volBgHeight }"
+      ></div>
       <div
         ref="volControlRef"
         class="vol-control-icon"
         :style="{ top: volControlTop }"
         @mousedown="controlVol"
       >
-        <div class="inner" />
+        <div class="inner"></div>
       </div>
     </div>
   </div>
@@ -45,7 +53,8 @@ const setVolume = () => {
     const percent = (90 - offsetTop) / 90
     if (percent) {
       audioRef.value.volume = percent
-    } else audioRef.value.volume = 0
+    }
+    else audioRef.value.volume = 0
   }
 }
 </script>

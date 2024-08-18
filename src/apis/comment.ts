@@ -1,7 +1,7 @@
 import http from '@/utils/http'
 
 // request type
-import type { 
+import type {
   pagingDataType,
   commentFloorType,
   likeCommentType,

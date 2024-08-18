@@ -1,31 +1,47 @@
 <template>
   <div>
-    <div v-for="(item, index) in props?.result?.songs" :key="item.id" class="items">
+    <div
+      v-for="(item, index) in props?.result?.songs"
+      :key="item.id"
+      class="items"
+    >
       <div class="fl-sb song">
         <div class="name fl">
-          <i class="icon icon-play" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')})" />
+          <i class="icon icon-play" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')})"></i>
           <RouterLink :to="`/song/${item.id}`" :title="item.name">
             <span>{{ item.name }}</span>
           </RouterLink>
           <span v-if="item.tns" class="tns"> - ({{ item.tns.map(v => v).join(',') }})</span>
         </div>
         <div class="fl-sb btns">
-          <i class="icon icon-add" title="添加到播放列表" @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')}, 1)" />
-          <i class="icon icon-collect" title="收藏" />
-          <i class="icon icon-share" title="分享" />
-          <i class="icon icon-download" title="下载" />
+          <i
+            class="icon icon-add"
+            title="添加到播放列表"
+            @click="play({id:item.id, picUrl: item.al.picUrl, name: item.name, singer: item.ar.map(v => { return v.name }).join('/')}, 1)"
+          ></i>
+          <i class="icon icon-collect" title="收藏"></i>
+          <i class="icon icon-share" title="分享"></i>
+          <i class="icon icon-download" title="下载"></i>
         </div>
         <div class="artist ellipsis-1" :title="item.ar.map(v => v.name).join('/')">
-          <router-link v-for="(item1, i) in item.ar" :key="item1.id" :to="`/artist/${item1.id}`">
+          <router-link
+            v-for="(item1, i) in item.ar"
+            :key="item1.id"
+            :to="`/artist/${item1.id}`"
+          >
             <span>{{ i === item.ar.length - 1 ? item1.name : `${item1.name}/` }}</span>
           </router-link>
         </div>
-        <router-link to="/" class="album ellipsis-1" :title="item.al.name">
+        <router-link
+          to="/"
+          class="album ellipsis-1"
+          :title="item.al.name"
+        >
           <span>《{{ item.al.name }}》</span>
         </router-link>
         <span>{{ formatSongDuration(item.dt, 0) }}</span>
       </div>
-      <slot :item="item" :index="index" />
+      <slot :item="item" :index="index"></slot>
     </div>
   </div>
 </template>

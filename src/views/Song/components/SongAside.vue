@@ -5,7 +5,11 @@
         相似歌曲
       </div>
       <ul>
-        <li v-for="item in simiList" :key="item.id" class="simi-items fl-sb">
+        <li
+          v-for="item in simiList"
+          :key="item.id"
+          class="simi-items fl-sb"
+        >
           <div class="left">
             <div>
               <router-link :to="`/song/${item.id}`" class="name">
@@ -26,13 +30,13 @@
             </div>
           </div>
           <div class="right">
-            <i class="icon-play" @click="play({ id: item.id, picUrl: item.album.picUrl, name: item.name, singer:item.artists.map(v => { return v.name }).join('/') })" />
-            <i class="icon-add" @click="play({ id: item.id, picUrl: item.album.picUrl, name: item.name, singer:item.artists.map(v => { return v.name }).join('/') }, 1)" />
+            <i class="icon-play" @click="play({ id: item.id, picUrl: item.album.picUrl, name: item.name, singer:item.artists.map(v => { return v.name }).join('/') })"></i>
+            <i class="icon-add" @click="play({ id: item.id, picUrl: item.album.picUrl, name: item.name, singer:item.artists.map(v => { return v.name }).join('/') }, 1)"></i>
           </div>
         </li>
       </ul>
     </div>
-    <DownLoadSide />
+    <DownLoadSide></DownLoadSide>
   </div>
 </template>
 
@@ -57,7 +61,7 @@ onBeforeRouteUpdate((to, from) => {
   if (to) getSimi(to.params.id)
 })
 
-const getSimi = async () => {
+const getSimi = async() => {
   const res = await getSongSimilar(route.params.id)
   simiList.value = res.data.songs
 }

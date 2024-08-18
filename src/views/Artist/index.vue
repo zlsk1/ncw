@@ -6,8 +6,12 @@
       </h2>
       <div class="artist-bg">
         <img :src="`${artistData?.artist?.cover}?param=640y300`" alt="">
-        <router-link v-if="artistData?.user" :to="`/user/home/${artistData?.user.userId}`" class="icon-home" />
-        <router-link to="/" class="icon-collect" />
+        <router-link
+          v-if="artistData?.user"
+          :to="`/user/home/${artistData?.user.userId}`"
+          class="icon-home"
+        ></router-link>
+        <router-link to="/" class="icon-collect"></router-link>
       </div>
       <el-tabs
         v-model="current.str"
@@ -20,9 +24,9 @@
           :key="item.label"
           :label="item.label"
           :name="item.str"
-        />
+        ></el-tab-pane>
       </el-tabs>
-      <component :is="current.com" :name="artistData?.artist?.name" />
+      <component :is="current.com" :name="artistData?.artist?.name"></component>
     </div>
     <div class="aside">
       <div>
@@ -30,7 +34,11 @@
           热门歌手
         </div>
         <ul class="hotSinger">
-          <li v-for="item in hotSinger" :key="item.id" class="hot-items">
+          <li
+            v-for="item in hotSinger"
+            :key="item.id"
+            class="hot-items"
+          >
             <router-link :to="`/artist/${item.id}`">
               <img :src="item.picUrl + '?param=50y50'" alt="">
             </router-link>
@@ -42,7 +50,7 @@
           </li>
         </ul>
       </div>
-      <DownLoadSide />
+      <DownLoadSide></DownLoadSide>
     </div>
   </div>
 </template>
@@ -93,12 +101,12 @@ onBeforeRouteUpdate((to) => {
   }
 })
 
-const getArtistDetail = async (id: any) => {
+const getArtistDetail = async(id: any) => {
   const res = await getArtistDetailAPI(id)
   artistData.value = res.data.data
 }
 
-const getHSinger = async () => {
+const getHSinger = async() => {
   const res = await getHotSinger(6)
   hotSinger.value = res.data.artists
 }
@@ -124,11 +132,14 @@ const changeTab = (e: any) => {
 const refreshIndex = () => {
   if (route.fullPath.includes('album')) {
     tabIndex.value = 1
-  } else if (route.fullPath.includes('mv')) {
+  }
+  else if (route.fullPath.includes('mv')) {
     tabIndex.value = 2
-  } else if (route.fullPath.includes('desc')) {
+  }
+  else if (route.fullPath.includes('desc')) {
     tabIndex.value = 3
-  } else {
+  }
+  else {
     tabIndex.value = 0
   }
 }
